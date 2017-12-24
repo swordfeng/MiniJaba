@@ -15,8 +15,11 @@ import moe.taiho.minijaba.Parser;
 
 %{
     Object yylval;
-    public Object getLVal() {
+    Object getLVal() {
         return yylval;
+    }
+    void yyerror(String msg) {
+        System.out.println(msg);
     }
 %}
 
