@@ -112,7 +112,12 @@ param_declaration:
 
 statements:
   %empty
-| statements statement
+| statements_nonempty
+;
+
+statements_nonempty:
+  statement
+| statements_nonempty statement
 ;
 
 type:
