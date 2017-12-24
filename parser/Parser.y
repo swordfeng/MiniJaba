@@ -1,11 +1,9 @@
-/*
 %language "Java"
 %define package {moe.taiho.minijaba}
 %define parser_class_name {Parser}
 
 %code imports {
 }
-*/
 
 %token K_CLASS "class"
 %token K_PUBLIC "public"
@@ -58,7 +56,6 @@
 
 %%
 
-// Goal ::= MainClass ( ClassDeclaration )* <EOF>
 goal:
   main_class classes
 ;
@@ -68,12 +65,10 @@ classes:
 | classes class_declaration
 ;
 
-// MainClass ::= "class" Identifier "{" "public" "static" "void" "main" "(" "String" "[" "]" Identifier ")" "{" Statement "}" "}"
 main_class:
   "class" IDENTIFIER "{" "public" "static" "void" "main" "(" "String" "[" "]" IDENTIFIER ")" "{" statement "}" "}"
 ;
 
-// ClassDeclaration ::= "class" Identifier ( "extends" Identifier )? "{" ( VarDeclaration )* ( MethodDeclaration )* "}"
 class_declaration:
   "class" IDENTIFIER extends "{" vars methods "}"
 ;
@@ -93,12 +88,10 @@ methods:
 | methods method_declaration
 ;
 
-// VarDeclaration ::= Type Identifier ";"
 var_declaration:
   type IDENTIFIER ";"
 ;
 
-// MethodDeclaration ::= "public" Type Identifier "(" ( Type Identifier ( "," Type Identifier )* )? ")" "{" ( VarDeclaration )* ( Statement )* "return" Expression ";" "}"
 method_declaration:
   "public" type IDENTIFIER "(" params ")" "{" vars statements "return" expression ";" "}"
 ;
@@ -122,10 +115,6 @@ statements:
 | statements statement
 ;
 
-// Type ::= "int" "[" "]"
-//        | "boolean"
-//        | "int"
-//        | Identifier
 type:
   "int" "[" "]"
 | "boolean"
@@ -133,23 +122,12 @@ type:
 | IDENTIFIER
 ;
 
-// Statement ::= "{" ( Statement )* "}"
-//             | "if" "(" Expression ")" Statement "else" Statement
-//             | "while" "(" Expression ")" Statement
-//             | "System.out.println" "(" Expression ")" ";"
-//             | Identifier "=" Expression ";"
-//             | Identifier "[" Expression "]" "=" Expression ";"
 statement:
   "{" statements "}"
 | "if" "(" expression ")" statement "else" statement
 | "while" "(" expression ")" statement
 | K_PRINTLN "(" expression ")" ";"
 | IDENTIFIER "=" expression ";"
-| INTEGER_LITERAL
-| "true"
-| "false"
-| IDENTIFIER
-| "this"
 | IDENTIFIER "[" expression "]" "=" expression ";"
 ;
 
