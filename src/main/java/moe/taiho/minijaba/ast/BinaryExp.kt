@@ -1,3 +1,3 @@
 package moe.taiho.minijaba.ast
 
-abstract class BinaryExp(val left: Exp, val right: Exp) : Exp()
+abstract class BinaryExp(var left: Exp, var right: Exp) : Exp()

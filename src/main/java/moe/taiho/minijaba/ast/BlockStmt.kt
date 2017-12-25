@@ -1,3 +1,3 @@
 package moe.taiho.minijaba.ast
 
-class BlockStmt(val stmtList: List<Stmt>) : Stmt()
+class BlockStmt(var stmtList: List<Stmt>) : Stmt()

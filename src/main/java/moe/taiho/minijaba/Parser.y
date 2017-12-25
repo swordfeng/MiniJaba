@@ -1,6 +1,7 @@
 %language "Java"
 %define package {moe.taiho.minijaba}
 %define parser_class_name {Parser}
+%define public
 
 %code imports {
     import java.util.ArrayList;
@@ -96,7 +97,7 @@ classes:
 ;
 
 main_class:
-  "class" IDENTIFIER "{" "public" "static" "void" "main" "(" "String" "[" "]" IDENTIFIER ")" "{" statement "}" "}" { $$ = new MainClassDecl($2, $15); }
+  "class" IDENTIFIER "{" "public" "static" "void" "main" "(" "String" "[" "]" IDENTIFIER ")" "{" statement "}" "}" { $$ = new MainClassDecl($2, $15, $12); }
 ;
 
 class_declaration:

@@ -1,3 +1,3 @@
 package moe.taiho.minijaba.ast
 
-class IfStmt(val cond: Exp, val onTrue: Stmt, val onFalse: Stmt) : Stmt()
+class IfStmt(var cond: Exp, var trueStmt: Stmt, var falseStmt: Stmt) : Stmt()

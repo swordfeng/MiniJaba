@@ -2,10 +2,10 @@ package moe.taiho.minijaba.ast
 
 
 class MethodDecl(
-        val ident: String,
-        val returnType: Type,
-        val paramList: List<VarDecl>,
-        val varList: List<VarDecl>,
-        val stmtList: List<Stmt>,
-        val returnExp: Exp
+        var ident: String,
+        var returnType: Type,
+        var paramList: List<VarDecl>,
+        var varList: List<VarDecl>,
+        var stmtList: List<Stmt>,
+        var returnExp: Exp
 ) : BaseDecl()

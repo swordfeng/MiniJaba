@@ -1,3 +1,3 @@
 package moe.taiho.minijaba.ast
 
-class ArrayAllocExp(val size: Exp) : Exp()
+class ArrayAllocExp(var size: Exp) : Exp()

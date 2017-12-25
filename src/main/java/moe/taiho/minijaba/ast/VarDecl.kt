@@ -1,3 +1,3 @@
 package moe.taiho.minijaba.ast
 
-class VarDecl(val ident: String, val type: Type) : BaseDecl()
+class VarDecl(var ident: String, var type: Type) : BaseDecl()

@@ -1,3 +1,3 @@
 package moe.taiho.minijaba.ast
 
-class Goal(val mainClass: MainClassDecl, val classes: List<ClassDecl>) : BaseDecl()
+class Goal(var mainClass: MainClassDecl, var classes: List<ClassDecl>) : BaseDecl()

@@ -1,3 +1,3 @@
 package moe.taiho.minijaba.ast
 
-class AssignStmt(val ident: String, val value: Exp) : Stmt()
+class AssignStmt(var ident: String, var value: Exp) : Stmt()
