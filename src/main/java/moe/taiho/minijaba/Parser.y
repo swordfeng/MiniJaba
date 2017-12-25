@@ -2,6 +2,7 @@
 %define package {moe.taiho.minijaba}
 %define parser_class_name {Parser}
 %define public
+%locations
 
 %code imports {
     import java.util.ArrayList;
@@ -198,3 +199,18 @@ args_nonempty:
 ;
 
 %%
+
+class Position {
+    public int line;
+    public int column;
+    public int charpos;
+    Position(int line, int column, int charpos) {
+        this.line = line;
+        this.column = column;
+        this.charpos = charpos;
+    }
+    @Override
+    public String toString() {
+        return line + ":" + column + "(" + charpos + ")";
+    }
+}
