@@ -59,13 +59,13 @@
 
 %token UNEXPECTED
 
+%left error
 %left "&&"
 %left "<"
 %left "+" "-"
 %left "*"
 %right "!"
 %precedence "[" "."
-
 
 %type <Goal> goal
 %type <ArrayList<ClassDecl>> classes

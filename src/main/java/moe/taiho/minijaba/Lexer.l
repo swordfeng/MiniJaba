@@ -17,22 +17,15 @@ import moe.taiho.minijaba.Parser;
 %{
     private Object yylval;
     public Object getLVal() {
+        //debug();
         return yylval;
     }
 
-    private int lline = 0;
-    private int lcolumn = 0;
-    private int lchar = 0;
     public Position getStartPos() {
-        return new Position(lline, lcolumn, lchar);
+        return new Position(yyline + 1, yycolumn + 1, yychar);
     }
     public Position getEndPos() {
-        return new Position(yyline, yycolumn, yychar);
-    }
-    private void updateLastPos() {
-        lline = yyline;
-        lcolumn = yycolumn;
-        lchar = yychar;
+        return new Position(yyline + 1, yycolumn + 1 + yylength(), yychar + yylength());
     }
 
     public void yyerror(Parser.Location location, String msg) {
@@ -40,6 +33,12 @@ import moe.taiho.minijaba.Parser;
             location.begin.toString() +
             (location.begin.equals(location.end) ? "" : "-" + location.end.toString())
             + ": " + msg);
+    }
+
+    private void debug() {
+        System.err.println("Debug@" +
+            getStartPos().toString() + "-" + getEndPos().toString()
+            + ": " + yytext());
     }
 %}
 
@@ -57,50 +56,50 @@ IDENTIFIER = [A-Za-z_][A-Za-z0-9_]*
 %%
 
 /* keywords */
-"class" { updateLastPos(); return K_CLASS; }
-"public" { updateLastPos(); return K_PUBLIC; }
-"static" { updateLastPos(); return K_STATIC; }
-"void" { updateLastPos(); return K_VOID; }
-"main" { updateLastPos(); return K_MAIN; }
-"String" { updateLastPos(); return K_STRING; }
-"extends" { updateLastPos(); return K_EXTENDS; }
-"return" { updateLastPos(); return K_RETURN; }
-"int" { updateLastPos(); return K_INT; }
-"boolean" { updateLastPos(); return K_BOOLEAN; }
-"if" { updateLastPos(); return K_IF; }
-"else" { updateLastPos(); return K_ELSE; }
-"while" { updateLastPos(); return K_WHILE; }
-"System.out.println" { updateLastPos(); return K_PRINTLN; }
-"length" { updateLastPos(); return K_LENGTH; }
-"true" { updateLastPos(); return K_TRUE; }
-"false" { updateLastPos(); return K_FALSE; }
-"this" { updateLastPos(); return K_THIS; }
-"new" { updateLastPos(); return K_NEW; }
+"class" { return K_CLASS; }
+"public" { return K_PUBLIC; }
+"static" { return K_STATIC; }
+"void" { return K_VOID; }
+"main" { return K_MAIN; }
+"String" { return K_STRING; }
+"extends" { return K_EXTENDS; }
+"return" { return K_RETURN; }
+"int" { return K_INT; }
+"boolean" { return K_BOOLEAN; }
+"if" { return K_IF; }
+"else" { return K_ELSE; }
+"while" { return K_WHILE; }
+"System.out.println" { return K_PRINTLN; }
+"length" { return K_LENGTH; }
+"true" { return K_TRUE; }
+"false" { return K_FALSE; }
+"this" { return K_THIS; }
+"new" { return K_NEW; }
 /* separators */
-"{" { updateLastPos(); return S_LBRACE; }
-"}" { updateLastPos(); return S_RBRACE; }
-"(" { updateLastPos(); return S_LBRACKET; }
-")" { updateLastPos(); return S_RBRACKET; }
-"[" { updateLastPos(); return S_LSBRACKET; }
-"]" { updateLastPos(); return S_RSBRACKET; }
-";" { updateLastPos(); return S_SEMICOLON; }
-"," { updateLastPos(); return S_COMMA; }
-"." { updateLastPos(); return S_DOT; }
+"{" { return S_LBRACE; }
+"}" { return S_RBRACE; }
+"(" { return S_LBRACKET; }
+")" { return S_RBRACKET; }
+"[" { return S_LSBRACKET; }
+"]" { return S_RSBRACKET; }
+";" { return S_SEMICOLON; }
+"," { return S_COMMA; }
+"." { return S_DOT; }
 /* operators */
-"=" { updateLastPos(); return O_ASSIGN; }
-"&&" { updateLastPos(); return O_AND; }
-"<" { updateLastPos(); return O_LT; }
-"+" { updateLastPos(); return O_ADD; }
-"-" { updateLastPos(); return O_SUB; }
-"*" { updateLastPos(); return O_MUL; }
-"!" { updateLastPos(); return O_NOT; }
+"=" { return O_ASSIGN; }
+"&&" { return O_AND; }
+"<" { return O_LT; }
+"+" { return O_ADD; }
+"-" { return O_SUB; }
+"*" { return O_MUL; }
+"!" { return O_NOT; }
 
-{INTEGER_LITERAL} { yylval = Integer.valueOf(yytext()); updateLastPos(); return INTEGER_LITERAL; }
-{IDENTIFIER} { yylval = yytext(); updateLastPos(); return IDENTIFIER; }
+{INTEGER_LITERAL} { yylval = Integer.valueOf(yytext()); return INTEGER_LITERAL; }
+{IDENTIFIER} { yylval = yytext(); return IDENTIFIER; }
 
 {WHITE_SPACE} {}
 {COMMENT} {}
 
-<<EOF>> { updateLastPos(); return EOF; }
+<<EOF>> { return EOF; }
 
-[^] { updateLastPos(); return UNEXPECTED; }
+[^] { debug(); return UNEXPECTED; }

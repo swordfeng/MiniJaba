@@ -302,22 +302,15 @@ class Lexer implements Parser.Lexer {
   /* user code: */
     private Object yylval;
     public Object getLVal() {
+        //debug();
         return yylval;
     }
 
-    private int lline = 0;
-    private int lcolumn = 0;
-    private int lchar = 0;
     public Position getStartPos() {
-        return new Position(lline, lcolumn, lchar);
+        return new Position(yyline + 1, yycolumn + 1, yychar);
     }
     public Position getEndPos() {
-        return new Position(yyline, yycolumn, yychar);
-    }
-    private void updateLastPos() {
-        lline = yyline;
-        lcolumn = yycolumn;
-        lchar = yychar;
+        return new Position(yyline + 1, yycolumn + 1 + yylength(), yychar + yylength());
     }
 
     public void yyerror(Parser.Location location, String msg) {
@@ -325,6 +318,12 @@ class Lexer implements Parser.Lexer {
             location.begin.toString() +
             (location.begin.equals(location.end) ? "" : "-" + location.end.toString())
             + ": " + msg);
+    }
+
+    private void debug() {
+        System.err.println("Debug@" +
+            getStartPos().toString() + "-" + getEndPos().toString()
+            + ": " + yytext());
     }
 
 
@@ -697,13 +696,13 @@ class Lexer implements Parser.Lexer {
       if (zzInput == YYEOF && zzStartRead == zzCurrentPos) {
         zzAtEOF = true;
               {
-                updateLastPos(); return EOF;
+                return EOF;
               }
       }
       else {
         switch (zzAction < 0 ? zzAction : ZZ_ACTION[zzAction]) {
           case 1: 
-            { updateLastPos(); return UNEXPECTED;
+            { debug(); return UNEXPECTED;
             }
           case 40: break;
           case 2: 
@@ -711,151 +710,151 @@ class Lexer implements Parser.Lexer {
             }
           case 41: break;
           case 3: 
-            { updateLastPos(); return O_MUL;
+            { return O_MUL;
             }
           case 42: break;
           case 4: 
-            { yylval = Integer.valueOf(yytext()); updateLastPos(); return INTEGER_LITERAL;
+            { yylval = Integer.valueOf(yytext()); return INTEGER_LITERAL;
             }
           case 43: break;
           case 5: 
-            { yylval = yytext(); updateLastPos(); return IDENTIFIER;
+            { yylval = yytext(); return IDENTIFIER;
             }
           case 44: break;
           case 6: 
-            { updateLastPos(); return S_DOT;
+            { return S_DOT;
             }
           case 45: break;
           case 7: 
-            { updateLastPos(); return S_LBRACE;
+            { return S_LBRACE;
             }
           case 46: break;
           case 8: 
-            { updateLastPos(); return S_RBRACE;
+            { return S_RBRACE;
             }
           case 47: break;
           case 9: 
-            { updateLastPos(); return S_LBRACKET;
+            { return S_LBRACKET;
             }
           case 48: break;
           case 10: 
-            { updateLastPos(); return S_RBRACKET;
+            { return S_RBRACKET;
             }
           case 49: break;
           case 11: 
-            { updateLastPos(); return S_LSBRACKET;
+            { return S_LSBRACKET;
             }
           case 50: break;
           case 12: 
-            { updateLastPos(); return S_RSBRACKET;
+            { return S_RSBRACKET;
             }
           case 51: break;
           case 13: 
-            { updateLastPos(); return S_SEMICOLON;
+            { return S_SEMICOLON;
             }
           case 52: break;
           case 14: 
-            { updateLastPos(); return S_COMMA;
+            { return S_COMMA;
             }
           case 53: break;
           case 15: 
-            { updateLastPos(); return O_ASSIGN;
+            { return O_ASSIGN;
             }
           case 54: break;
           case 16: 
-            { updateLastPos(); return O_LT;
+            { return O_LT;
             }
           case 55: break;
           case 17: 
-            { updateLastPos(); return O_ADD;
+            { return O_ADD;
             }
           case 56: break;
           case 18: 
-            { updateLastPos(); return O_SUB;
+            { return O_SUB;
             }
           case 57: break;
           case 19: 
-            { updateLastPos(); return O_NOT;
+            { return O_NOT;
             }
           case 58: break;
           case 20: 
-            { updateLastPos(); return K_IF;
+            { return K_IF;
             }
           case 59: break;
           case 21: 
-            { updateLastPos(); return O_AND;
+            { return O_AND;
             }
           case 60: break;
           case 22: 
-            { updateLastPos(); return K_INT;
+            { return K_INT;
             }
           case 61: break;
           case 23: 
-            { updateLastPos(); return K_NEW;
+            { return K_NEW;
             }
           case 62: break;
           case 24: 
-            { updateLastPos(); return K_TRUE;
+            { return K_TRUE;
             }
           case 63: break;
           case 25: 
-            { updateLastPos(); return K_THIS;
+            { return K_THIS;
             }
           case 64: break;
           case 26: 
-            { updateLastPos(); return K_VOID;
+            { return K_VOID;
             }
           case 65: break;
           case 27: 
-            { updateLastPos(); return K_MAIN;
+            { return K_MAIN;
             }
           case 66: break;
           case 28: 
-            { updateLastPos(); return K_ELSE;
+            { return K_ELSE;
             }
           case 67: break;
           case 29: 
-            { updateLastPos(); return K_CLASS;
+            { return K_CLASS;
             }
           case 68: break;
           case 30: 
-            { updateLastPos(); return K_FALSE;
+            { return K_FALSE;
             }
           case 69: break;
           case 31: 
-            { updateLastPos(); return K_WHILE;
+            { return K_WHILE;
             }
           case 70: break;
           case 32: 
-            { updateLastPos(); return K_LENGTH;
+            { return K_LENGTH;
             }
           case 71: break;
           case 33: 
-            { updateLastPos(); return K_STATIC;
+            { return K_STATIC;
             }
           case 72: break;
           case 34: 
-            { updateLastPos(); return K_PUBLIC;
+            { return K_PUBLIC;
             }
           case 73: break;
           case 35: 
-            { updateLastPos(); return K_STRING;
+            { return K_STRING;
             }
           case 74: break;
           case 36: 
-            { updateLastPos(); return K_RETURN;
+            { return K_RETURN;
             }
           case 75: break;
           case 37: 
-            { updateLastPos(); return K_BOOLEAN;
+            { return K_BOOLEAN;
             }
           case 76: break;
           case 38: 
-            { updateLastPos(); return K_EXTENDS;
+            { return K_EXTENDS;
             }
           case 77: break;
           case 39: 
-            { updateLastPos(); return K_PRINTLN;
+            { return K_PRINTLN;
             }
           case 78: break;
           default:
