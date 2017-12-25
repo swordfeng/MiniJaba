@@ -35,12 +35,13 @@ class Lexer implements Parser.Lexer {
    * Translates characters to character classes
    */
   private static final String ZZ_CMAP_PACKED = 
-    "\41\0\1\52\4\0\1\45\1\0\1\36\1\37\1\51\1\47\1\43"+
-    "\1\50\1\33\1\0\1\1\11\2\1\0\1\42\1\46\1\44\3\0"+
-    "\22\3\1\22\7\3\1\40\1\0\1\41\1\0\1\3\1\0\1\6"+
-    "\1\12\1\4\1\17\1\25\1\27\1\24\1\31\1\13\2\3\1\5"+
-    "\1\20\1\21\1\16\1\10\1\3\1\23\1\7\1\14\1\11\1\15"+
-    "\1\30\1\26\1\32\1\3\1\34\1\0\1\35\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uff92\0";
+    "\11\0\1\3\1\2\1\0\1\3\1\1\22\0\1\3\1\55\4\0"+
+    "\1\50\1\0\1\41\1\42\1\54\1\52\1\46\1\53\1\36\1\0"+
+    "\1\4\11\5\1\0\1\45\1\51\1\47\3\0\22\6\1\25\7\6"+
+    "\1\43\1\0\1\44\1\0\1\6\1\0\1\11\1\15\1\7\1\22"+
+    "\1\30\1\32\1\27\1\34\1\16\2\6\1\10\1\23\1\24\1\21"+
+    "\1\13\1\6\1\26\1\12\1\17\1\14\1\20\1\33\1\31\1\35"+
+    "\1\6\1\37\1\0\1\40\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uffff\0\uff92\0";
 
   /** 
    * Translates characters to character classes
@@ -53,16 +54,16 @@ class Lexer implements Parser.Lexer {
   private static final int [] ZZ_ACTION = zzUnpackAction();
 
   private static final String ZZ_ACTION_PACKED_0 =
-    "\1\0\2\1\20\2\1\3\1\4\1\5\1\6\1\7"+
-    "\1\10\1\11\1\12\1\13\1\14\1\0\1\15\1\16"+
-    "\1\17\1\20\1\21\6\2\1\22\14\2\1\23\5\2"+
-    "\1\24\4\2\1\25\14\2\1\26\1\27\1\30\1\31"+
-    "\3\2\1\32\3\2\1\33\10\2\1\34\1\35\1\36"+
-    "\1\37\1\40\1\2\1\41\1\2\1\42\1\2\1\43"+
-    "\1\0\1\44\12\0\1\45";
+    "\1\0\2\1\2\2\20\3\1\4\1\5\1\6\1\7"+
+    "\1\10\1\11\1\12\1\13\1\14\1\15\1\0\1\16"+
+    "\1\17\1\20\1\21\1\22\6\3\1\23\14\3\1\24"+
+    "\5\3\1\25\4\3\1\26\14\3\1\27\1\30\1\31"+
+    "\1\32\3\3\1\33\3\3\1\34\10\3\1\35\1\36"+
+    "\1\37\1\40\1\41\1\3\1\42\1\3\1\43\1\3"+
+    "\1\44\1\0\1\45\12\0\1\46";
 
   private static int [] zzUnpackAction() {
-    int [] result = new int[122];
+    int [] result = new int[124];
     int offset = 0;
     offset = zzUnpackAction(ZZ_ACTION_PACKED_0, offset, result);
     return result;
@@ -87,25 +88,25 @@ class Lexer implements Parser.Lexer {
   private static final int [] ZZ_ROWMAP = zzUnpackRowMap();
 
   private static final String ZZ_ROWMAP_PACKED_0 =
-    "\0\0\0\53\0\126\0\201\0\254\0\327\0\u0102\0\u012d"+
-    "\0\u0158\0\u0183\0\u01ae\0\u01d9\0\u0204\0\u022f\0\u025a\0\u0285"+
-    "\0\u02b0\0\u02db\0\u0306\0\53\0\53\0\53\0\53\0\53"+
-    "\0\53\0\53\0\53\0\53\0\53\0\u0331\0\53\0\53"+
-    "\0\53\0\53\0\53\0\u035c\0\u0387\0\u03b2\0\u03dd\0\u0408"+
-    "\0\u0433\0\201\0\u045e\0\u0489\0\u04b4\0\u04df\0\u050a\0\u0535"+
-    "\0\u0560\0\u058b\0\u05b6\0\u05e1\0\u060c\0\u0637\0\53\0\u0662"+
-    "\0\u068d\0\u06b8\0\u06e3\0\u070e\0\201\0\u0739\0\u0764\0\u078f"+
-    "\0\u07ba\0\201\0\u07e5\0\u0810\0\u083b\0\u0866\0\u0891\0\u08bc"+
-    "\0\u08e7\0\u0912\0\u093d\0\u0968\0\u0993\0\u09be\0\201\0\201"+
-    "\0\201\0\201\0\u09e9\0\u0a14\0\u0a3f\0\201\0\u0a6a\0\u0a95"+
-    "\0\u0ac0\0\201\0\u0aeb\0\u0b16\0\u0b41\0\u0b6c\0\u0b97\0\u0bc2"+
-    "\0\u0bed\0\u0c18\0\201\0\201\0\201\0\201\0\201\0\u0c43"+
-    "\0\201\0\u0c6e\0\201\0\u0c99\0\201\0\u0cc4\0\201\0\u0cef"+
-    "\0\u0d1a\0\u0d45\0\u0d70\0\u0d9b\0\u0dc6\0\u0df1\0\u0e1c\0\u0e47"+
-    "\0\u0e72\0\53";
+    "\0\0\0\56\0\134\0\134\0\212\0\270\0\346\0\u0114"+
+    "\0\u0142\0\u0170\0\u019e\0\u01cc\0\u01fa\0\u0228\0\u0256\0\u0284"+
+    "\0\u02b2\0\u02e0\0\u030e\0\u033c\0\u036a\0\134\0\134\0\134"+
+    "\0\134\0\134\0\134\0\134\0\134\0\134\0\134\0\u0398"+
+    "\0\134\0\134\0\134\0\134\0\134\0\u03c6\0\u03f4\0\u0422"+
+    "\0\u0450\0\u047e\0\u04ac\0\270\0\u04da\0\u0508\0\u0536\0\u0564"+
+    "\0\u0592\0\u05c0\0\u05ee\0\u061c\0\u064a\0\u0678\0\u06a6\0\u06d4"+
+    "\0\134\0\u0702\0\u0730\0\u075e\0\u078c\0\u07ba\0\270\0\u07e8"+
+    "\0\u0816\0\u0844\0\u0872\0\270\0\u08a0\0\u08ce\0\u08fc\0\u092a"+
+    "\0\u0958\0\u0986\0\u09b4\0\u09e2\0\u0a10\0\u0a3e\0\u0a6c\0\u0a9a"+
+    "\0\270\0\270\0\270\0\270\0\u0ac8\0\u0af6\0\u0b24\0\270"+
+    "\0\u0b52\0\u0b80\0\u0bae\0\270\0\u0bdc\0\u0c0a\0\u0c38\0\u0c66"+
+    "\0\u0c94\0\u0cc2\0\u0cf0\0\u0d1e\0\270\0\270\0\270\0\270"+
+    "\0\270\0\u0d4c\0\270\0\u0d7a\0\270\0\u0da8\0\270\0\u0dd6"+
+    "\0\270\0\u0e04\0\u0e32\0\u0e60\0\u0e8e\0\u0ebc\0\u0eea\0\u0f18"+
+    "\0\u0f46\0\u0f74\0\u0fa2\0\134";
 
   private static int [] zzUnpackRowMap() {
-    int [] result = new int[122];
+    int [] result = new int[124];
     int offset = 0;
     offset = zzUnpackRowMap(ZZ_ROWMAP_PACKED_0, offset, result);
     return result;
@@ -128,54 +129,55 @@ class Lexer implements Parser.Lexer {
   private static final int [] ZZ_TRANS = zzUnpackTrans();
 
   private static final String ZZ_TRANS_PACKED_0 =
-    "\1\0\1\2\1\3\1\4\1\5\1\6\1\4\1\7"+
-    "\1\10\1\4\1\11\1\12\1\13\1\14\2\4\1\15"+
-    "\1\16\1\17\1\20\1\4\1\21\1\4\1\22\1\23"+
-    "\2\4\1\24\1\25\1\26\1\27\1\30\1\31\1\32"+
+    "\1\0\1\2\2\3\1\4\1\5\1\6\1\7\1\10"+
+    "\1\6\1\11\1\12\1\6\1\13\1\14\1\15\1\16"+
+    "\2\6\1\17\1\20\1\21\1\22\1\6\1\23\1\6"+
+    "\1\24\1\25\2\6\1\26\1\27\1\30\1\31\1\32"+
     "\1\33\1\34\1\35\1\36\1\37\1\40\1\41\1\42"+
-    "\1\43\54\0\2\3\51\0\32\4\21\0\4\4\1\44"+
-    "\25\4\21\0\24\4\1\45\5\4\21\0\13\4\1\46"+
-    "\16\4\21\0\10\4\1\47\21\4\21\0\15\4\1\50"+
-    "\14\4\21\0\20\4\1\51\5\4\1\52\3\4\21\0"+
-    "\22\4\1\53\5\4\1\54\1\4\21\0\15\4\1\55"+
-    "\14\4\21\0\5\4\1\56\24\4\21\0\24\4\1\57"+
-    "\5\4\21\0\13\4\1\60\15\4\1\61\21\0\24\4"+
-    "\1\62\5\4\21\0\4\4\1\63\20\4\1\64\4\4"+
-    "\21\0\5\4\1\65\24\4\21\0\30\4\1\66\1\4"+
-    "\65\0\1\67\6\0\5\4\1\70\24\4\21\0\20\4"+
-    "\1\71\11\4\21\0\5\4\1\72\24\4\21\0\11\4"+
-    "\1\73\20\4\21\0\15\4\1\74\14\4\21\0\13\4"+
-    "\1\75\16\4\21\0\10\4\1\76\21\4\21\0\12\4"+
-    "\1\77\17\4\21\0\12\4\1\100\17\4\21\0\12\4"+
-    "\1\101\17\4\21\0\27\4\1\102\2\4\21\0\22\4"+
-    "\1\103\7\4\21\0\6\4\1\104\23\4\21\0\13\4"+
-    "\1\105\16\4\21\0\6\4\1\106\23\4\21\0\13\4"+
-    "\1\107\16\4\21\0\4\4\1\110\25\4\21\0\12\4"+
-    "\1\111\17\4\21\0\6\4\1\112\23\4\21\0\23\4"+
-    "\1\113\6\4\21\0\13\4\1\114\16\4\21\0\4\4"+
-    "\1\115\25\4\21\0\4\4\1\116\25\4\21\0\24\4"+
-    "\1\117\5\4\21\0\6\4\1\120\23\4\21\0\16\4"+
-    "\1\121\13\4\21\0\20\4\1\122\11\4\21\0\12\4"+
-    "\1\123\17\4\21\0\13\4\1\124\16\4\21\0\10\4"+
-    "\1\125\21\4\21\0\24\4\1\126\5\4\21\0\24\4"+
-    "\1\127\5\4\21\0\6\4\1\130\23\4\21\0\4\4"+
-    "\1\131\25\4\21\0\6\4\1\132\23\4\21\0\13\4"+
-    "\1\133\16\4\21\0\12\4\1\134\17\4\21\0\12\4"+
-    "\1\135\17\4\21\0\24\4\1\136\5\4\21\0\20\4"+
-    "\1\137\11\4\21\0\24\4\1\140\5\4\21\0\22\4"+
-    "\1\141\7\4\21\0\20\4\1\142\11\4\21\0\24\4"+
-    "\1\143\5\4\21\0\24\4\1\144\5\4\21\0\30\4"+
-    "\1\145\1\4\21\0\3\4\1\146\26\4\21\0\3\4"+
-    "\1\147\26\4\21\0\5\4\1\150\24\4\21\0\23\4"+
-    "\1\151\6\4\21\0\17\4\1\152\12\4\21\0\20\4"+
-    "\1\153\11\4\21\0\16\4\1\154\13\4\21\0\20\4"+
-    "\1\155\11\4\21\0\32\4\1\156\20\0\6\4\1\157"+
-    "\23\4\36\0\1\160\45\0\1\161\55\0\1\162\71\0"+
-    "\1\163\27\0\1\164\65\0\1\165\42\0\1\166\60\0"+
-    "\1\167\45\0\1\170\43\0\1\171\66\0\1\172\31\0";
+    "\1\43\1\44\1\45\2\0\1\3\135\0\2\5\54\0"+
+    "\32\6\24\0\4\6\1\46\25\6\24\0\24\6\1\47"+
+    "\5\6\24\0\13\6\1\50\16\6\24\0\10\6\1\51"+
+    "\21\6\24\0\15\6\1\52\14\6\24\0\20\6\1\53"+
+    "\5\6\1\54\3\6\24\0\22\6\1\55\5\6\1\56"+
+    "\1\6\24\0\15\6\1\57\14\6\24\0\5\6\1\60"+
+    "\24\6\24\0\24\6\1\61\5\6\24\0\13\6\1\62"+
+    "\15\6\1\63\24\0\24\6\1\64\5\6\24\0\4\6"+
+    "\1\65\20\6\1\66\4\6\24\0\5\6\1\67\24\6"+
+    "\24\0\30\6\1\70\1\6\70\0\1\71\11\0\5\6"+
+    "\1\72\24\6\24\0\20\6\1\73\11\6\24\0\5\6"+
+    "\1\74\24\6\24\0\11\6\1\75\20\6\24\0\15\6"+
+    "\1\76\14\6\24\0\13\6\1\77\16\6\24\0\10\6"+
+    "\1\100\21\6\24\0\12\6\1\101\17\6\24\0\12\6"+
+    "\1\102\17\6\24\0\12\6\1\103\17\6\24\0\27\6"+
+    "\1\104\2\6\24\0\22\6\1\105\7\6\24\0\6\6"+
+    "\1\106\23\6\24\0\13\6\1\107\16\6\24\0\6\6"+
+    "\1\110\23\6\24\0\13\6\1\111\16\6\24\0\4\6"+
+    "\1\112\25\6\24\0\12\6\1\113\17\6\24\0\6\6"+
+    "\1\114\23\6\24\0\23\6\1\115\6\6\24\0\13\6"+
+    "\1\116\16\6\24\0\4\6\1\117\25\6\24\0\4\6"+
+    "\1\120\25\6\24\0\24\6\1\121\5\6\24\0\6\6"+
+    "\1\122\23\6\24\0\16\6\1\123\13\6\24\0\20\6"+
+    "\1\124\11\6\24\0\12\6\1\125\17\6\24\0\13\6"+
+    "\1\126\16\6\24\0\10\6\1\127\21\6\24\0\24\6"+
+    "\1\130\5\6\24\0\24\6\1\131\5\6\24\0\6\6"+
+    "\1\132\23\6\24\0\4\6\1\133\25\6\24\0\6\6"+
+    "\1\134\23\6\24\0\13\6\1\135\16\6\24\0\12\6"+
+    "\1\136\17\6\24\0\12\6\1\137\17\6\24\0\24\6"+
+    "\1\140\5\6\24\0\20\6\1\141\11\6\24\0\24\6"+
+    "\1\142\5\6\24\0\22\6\1\143\7\6\24\0\20\6"+
+    "\1\144\11\6\24\0\24\6\1\145\5\6\24\0\24\6"+
+    "\1\146\5\6\24\0\30\6\1\147\1\6\24\0\3\6"+
+    "\1\150\26\6\24\0\3\6\1\151\26\6\24\0\5\6"+
+    "\1\152\24\6\24\0\23\6\1\153\6\6\24\0\17\6"+
+    "\1\154\12\6\24\0\20\6\1\155\11\6\24\0\16\6"+
+    "\1\156\13\6\24\0\20\6\1\157\11\6\24\0\32\6"+
+    "\1\160\23\0\6\6\1\161\23\6\41\0\1\162\50\0"+
+    "\1\163\60\0\1\164\74\0\1\165\32\0\1\166\70\0"+
+    "\1\167\45\0\1\170\63\0\1\171\50\0\1\172\46\0"+
+    "\1\173\71\0\1\174\31\0";
 
   private static int [] zzUnpackTrans() {
-    int [] result = new int[3741];
+    int [] result = new int[4048];
     int offset = 0;
     offset = zzUnpackTrans(ZZ_TRANS_PACKED_0, offset, result);
     return result;
@@ -213,11 +215,11 @@ class Lexer implements Parser.Lexer {
   private static final int [] ZZ_ATTRIBUTE = zzUnpackAttribute();
 
   private static final String ZZ_ATTRIBUTE_PACKED_0 =
-    "\1\0\1\11\21\1\12\11\1\0\5\11\23\1\1\11"+
-    "\66\1\1\0\1\1\12\0\1\11";
+    "\1\0\1\1\2\11\21\1\12\11\1\0\5\11\23\1"+
+    "\1\11\66\1\1\0\1\1\12\0\1\11";
 
   private static int [] zzUnpackAttribute() {
-    int [] result = new int[122];
+    int [] result = new int[124];
     int offset = 0;
     offset = zzUnpackAttribute(ZZ_ATTRIBUTE_PACKED_0, offset, result);
     return result;
@@ -322,7 +324,7 @@ class Lexer implements Parser.Lexer {
     char [] map = new char[0x110000];
     int i = 0;  /* index in packed string  */
     int j = 0;  /* index in unpacked array */
-    while (i < 148) {
+    while (i < 162) {
       int  count = packed.charAt(i++);
       char value = packed.charAt(i++);
       do map[j++] = value; while (--count > 0);
@@ -675,153 +677,157 @@ class Lexer implements Parser.Lexer {
       else {
         switch (zzAction < 0 ? zzAction : ZZ_ACTION[zzAction]) {
           case 1: 
-            { yylval = Integer.valueOf(yytext()); return INTEGER_LITERAL;
-            }
-          case 38: break;
-          case 2: 
-            { yylval = yytext(); return IDENTIFIER;
+            { 
             }
           case 39: break;
-          case 3: 
-            { return S_DOT;
+          case 2: 
+            { yylval = Integer.valueOf(yytext()); return INTEGER_LITERAL;
             }
           case 40: break;
-          case 4: 
-            { return S_LBRACE;
+          case 3: 
+            { yylval = yytext(); return IDENTIFIER;
             }
           case 41: break;
-          case 5: 
-            { return S_RBRACE;
+          case 4: 
+            { return S_DOT;
             }
           case 42: break;
-          case 6: 
-            { return S_LBRACKET;
+          case 5: 
+            { return S_LBRACE;
             }
           case 43: break;
-          case 7: 
-            { return S_RBRACKET;
+          case 6: 
+            { return S_RBRACE;
             }
           case 44: break;
-          case 8: 
-            { return S_LSBRACKET;
+          case 7: 
+            { return S_LBRACKET;
             }
           case 45: break;
-          case 9: 
-            { return S_RSBRACKET;
+          case 8: 
+            { return S_RBRACKET;
             }
           case 46: break;
-          case 10: 
-            { return S_SEMICOLON;
+          case 9: 
+            { return S_LSBRACKET;
             }
           case 47: break;
-          case 11: 
-            { return S_COMMA;
+          case 10: 
+            { return S_RSBRACKET;
             }
           case 48: break;
-          case 12: 
-            { return O_ASSIGN;
+          case 11: 
+            { return S_SEMICOLON;
             }
           case 49: break;
-          case 13: 
-            { return O_LT;
+          case 12: 
+            { return S_COMMA;
             }
           case 50: break;
-          case 14: 
-            { return O_ADD;
+          case 13: 
+            { return O_ASSIGN;
             }
           case 51: break;
-          case 15: 
-            { return O_SUB;
+          case 14: 
+            { return O_LT;
             }
           case 52: break;
-          case 16: 
-            { return O_MUL;
+          case 15: 
+            { return O_ADD;
             }
           case 53: break;
-          case 17: 
-            { return O_NOT;
+          case 16: 
+            { return O_SUB;
             }
           case 54: break;
-          case 18: 
-            { return K_IF;
+          case 17: 
+            { return O_MUL;
             }
           case 55: break;
-          case 19: 
-            { return O_AND;
+          case 18: 
+            { return O_NOT;
             }
           case 56: break;
-          case 20: 
-            { return K_INT;
+          case 19: 
+            { return K_IF;
             }
           case 57: break;
-          case 21: 
-            { return K_NEW;
+          case 20: 
+            { return O_AND;
             }
           case 58: break;
-          case 22: 
-            { return K_TRUE;
+          case 21: 
+            { return K_INT;
             }
           case 59: break;
-          case 23: 
-            { return K_THIS;
+          case 22: 
+            { return K_NEW;
             }
           case 60: break;
-          case 24: 
-            { return K_VOID;
+          case 23: 
+            { return K_TRUE;
             }
           case 61: break;
-          case 25: 
-            { return K_MAIN;
+          case 24: 
+            { return K_THIS;
             }
           case 62: break;
-          case 26: 
-            { return K_ELSE;
+          case 25: 
+            { return K_VOID;
             }
           case 63: break;
-          case 27: 
-            { return K_CLASS;
+          case 26: 
+            { return K_MAIN;
             }
           case 64: break;
-          case 28: 
-            { return K_FALSE;
+          case 27: 
+            { return K_ELSE;
             }
           case 65: break;
-          case 29: 
-            { return K_WHILE;
+          case 28: 
+            { return K_CLASS;
             }
           case 66: break;
-          case 30: 
-            { return K_LENGTH;
+          case 29: 
+            { return K_FALSE;
             }
           case 67: break;
-          case 31: 
-            { return K_STATIC;
+          case 30: 
+            { return K_WHILE;
             }
           case 68: break;
-          case 32: 
-            { return K_PUBLIC;
+          case 31: 
+            { return K_LENGTH;
             }
           case 69: break;
-          case 33: 
-            { return K_STRING;
+          case 32: 
+            { return K_STATIC;
             }
           case 70: break;
-          case 34: 
-            { return K_RETURN;
+          case 33: 
+            { return K_PUBLIC;
             }
           case 71: break;
-          case 35: 
-            { return K_BOOLEAN;
+          case 34: 
+            { return K_STRING;
             }
           case 72: break;
-          case 36: 
-            { return K_EXTENDS;
+          case 35: 
+            { return K_RETURN;
             }
           case 73: break;
-          case 37: 
-            { return K_PRINTLN;
+          case 36: 
+            { return K_BOOLEAN;
             }
           case 74: break;
+          case 37: 
+            { return K_EXTENDS;
+            }
+          case 75: break;
+          case 38: 
+            { return K_PRINTLN;
+            }
+          case 76: break;
           default:
             zzScanError(ZZ_NO_MATCH);
         }

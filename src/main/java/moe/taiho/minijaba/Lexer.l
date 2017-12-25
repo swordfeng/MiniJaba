@@ -23,6 +23,11 @@ import moe.taiho.minijaba.Parser;
     }
 %}
 
+
+EOL = \r|\n|\r\n
+WHITE_SPACE = {EOL} | [ \t\f]
+
+
 INTEGER_LITERAL = 0 | [1-9][0-9]*
 IDENTIFIER = [A-Za-z_][A-Za-z0-9_]*
 
@@ -70,5 +75,7 @@ IDENTIFIER = [A-Za-z_][A-Za-z0-9_]*
 {INTEGER_LITERAL} { yylval = Integer.valueOf(yytext()); return INTEGER_LITERAL; }
 /* identifiers */
 {IDENTIFIER} { yylval = yytext(); return IDENTIFIER; }
+/* white spaces */
+{WHITE_SPACE} {}
 /* EOF */
 <<EOF>> { return EOF; }

@@ -7,6 +7,13 @@
     import moe.taiho.minijaba.ast.*;
 }
 
+%code {
+    private Goal result = null;
+    public Goal getResult() {
+        return result;
+    }
+}
+
 %token K_CLASS "class"
 %token K_PUBLIC "public"
 %token K_STATIC "static"
@@ -80,7 +87,7 @@
 %%
 
 goal:
-  main_class classes { $$ = new Goal($1, $2); }
+  main_class classes { result = new Goal($1, $2); $$ = result; return YYACCEPT; }
 ;
 
 classes:
