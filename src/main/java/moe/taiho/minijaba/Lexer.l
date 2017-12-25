@@ -14,11 +14,11 @@ import moe.taiho.minijaba.Parser;
 %column
 
 %{
-    Object yylval;
-    Object getLVal() {
+    private Object yylval;
+    public Object getLVal() {
         return yylval;
     }
-    void yyerror(String msg) {
+    public void yyerror(String msg) {
         System.out.println(msg);
     }
 %}
@@ -59,7 +59,7 @@ IDENTIFIER = [A-Za-z_][A-Za-z0-9_]*
 "," { return S_COMMA; }
 "." { return S_DOT; }
 /* operators */
-"=" { return O_EQUAL; }
+"=" { return O_ASSIGN; }
 "&&" { return O_AND; }
 "<" { return O_LT; }
 "+" { return O_ADD; }

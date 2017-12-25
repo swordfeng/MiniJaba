@@ -44,8 +44,8 @@
 %token O_MUL "*"
 %token O_NOT "!"
 
-%token INTEGER_LITERAL
-%token IDENTIFIER
+%token <int> INTEGER_LITERAL
+%token <String> IDENTIFIER
 
 %left "&&"
 %left "<"

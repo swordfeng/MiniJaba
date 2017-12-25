@@ -1,0 +1,1665 @@
+语法
+
+    0 $accept: goal $end
+
+    1 goal: main_class classes
+
+    2 classes: %empty
+    3        | classes class_declaration
+
+    4 main_class: "class" IDENTIFIER "{" "public" "static" "void" "main" "(" "String" "[" "]" IDENTIFIER ")" "{" statement "}" "}"
+
+    5 class_declaration: "class" IDENTIFIER extends "{" vars methods "}"
+
+    6 extends: %empty
+    7        | "extends" IDENTIFIER
+
+    8 vars: %empty
+    9     | vars var_declaration
+
+   10 methods: %empty
+   11        | methods method_declaration
+
+   12 var_declaration: type IDENTIFIER ";"
+
+   13 method_declaration: "public" type IDENTIFIER "(" params ")" "{" vars statements "return" expression ";" "}"
+
+   14 params: %empty
+   15       | params_nonempty
+
+   16 params_nonempty: param_declaration
+   17                | params_nonempty "," param_declaration
+
+   18 param_declaration: type IDENTIFIER
+
+   19 statements: %empty
+   20           | statements_nonempty
+
+   21 statements_nonempty: statement
+   22                    | statements_nonempty statement
+
+   23 type: "int" "[" "]"
+   24     | "boolean"
+   25     | "int"
+   26     | IDENTIFIER
+
+   27 statement: "{" statements "}"
+   28          | "if" "(" expression ")" statement "else" statement
+   29          | "while" "(" expression ")" statement
+   30          | K_PRINTLN "(" expression ")" ";"
+   31          | IDENTIFIER "=" expression ";"
+   32          | IDENTIFIER "[" expression "]" "=" expression ";"
+
+   33 expression: expression "&&" expression
+   34           | expression "<" expression
+   35           | expression "+" expression
+   36           | expression "-" expression
+   37           | expression "*" expression
+   38           | expression "[" expression "]"
+   39           | expression "." "length"
+   40           | expression "." IDENTIFIER "(" args ")"
+   41           | INTEGER_LITERAL
+   42           | "true"
+   43           | "false"
+   44           | IDENTIFIER
+   45           | "this"
+   46           | "new" "int" "[" expression "]"
+   47           | "new" IDENTIFIER "(" ")"
+   48           | "!" expression
+   49           | "(" expression ")"
+
+   50 args: %empty
+   51     | args_nonempty
+
+   52 args_nonempty: expression
+   53              | args_nonempty "," expression
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+error (256)
+"class" (258) 4 5
+"public" (259) 4 13
+"static" (260) 4
+"void" (261) 4
+"main" (262) 4
+"String" (263) 4
+"extends" (264) 7
+"return" (265) 13
+"int" (266) 23 25 46
+"boolean" (267) 24
+"if" (268) 28
+"else" (269) 28
+"while" (270) 29
+K_PRINTLN (271) 30
+"length" (272) 39
+"true" (273) 42
+"false" (274) 43
+"this" (275) 45
+"new" (276) 46 47
+"{" (277) 4 5 13 27
+"}" (278) 4 5 13 27
+"(" (279) 4 13 28 29 30 40 47 49
+")" (280) 4 13 28 29 30 40 47 49
+"[" (281) 4 23 32 38 46
+"]" (282) 4 23 32 38 46
+";" (283) 12 13 30 31 32
+"," (284) 17 53
+"." (285) 39 40
+"=" (286) 31 32
+"&&" (287) 33
+"<" (288) 34
+"+" (289) 35
+"-" (290) 36
+"*" (291) 37
+"!" (292) 48
+INTEGER_LITERAL (293) 41
+IDENTIFIER (294) 4 5 7 12 13 18 26 31 32 40 44 47
+
+
+Nonterminals, with rules where they appear
+
+$accept (40)
+    on left: 0
+goal (41)
+    on left: 1, on right: 0
+classes (42)
+    on left: 2 3, on right: 1 3
+main_class (43)
+    on left: 4, on right: 1
+class_declaration (44)
+    on left: 5, on right: 3
+extends (45)
+    on left: 6 7, on right: 5
+vars (46)
+    on left: 8 9, on right: 5 9 13
+methods (47)
+    on left: 10 11, on right: 5 11
+var_declaration (48)
+    on left: 12, on right: 9
+method_declaration (49)
+    on left: 13, on right: 11
+params (50)
+    on left: 14 15, on right: 13
+params_nonempty (51)
+    on left: 16 17, on right: 15 17
+param_declaration (52)
+    on left: 18, on right: 16 17
+statements (53)
+    on left: 19 20, on right: 13 27
+statements_nonempty (54)
+    on left: 21 22, on right: 20 22
+type (55)
+    on left: 23 24 25 26, on right: 12 13 18
+statement (56)
+    on left: 27 28 29 30 31 32, on right: 4 21 22 28 29
+expression (57)
+    on left: 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49, on right:
+    13 28 29 30 31 32 33 34 35 36 37 38 39 40 46 48 49 52 53
+args (58)
+    on left: 50 51, on right: 40
+args_nonempty (59)
+    on left: 52 53, on right: 51 53
+
+
+State 0
+
+    0 $accept: . goal $end
+
+    "class"  shift, and go to state 1
+
+    goal        转到状态 2
+    main_class  转到状态 3
+
+
+State 1
+
+    4 main_class: "class" . IDENTIFIER "{" "public" "static" "void" "main" "(" "String" "[" "]" IDENTIFIER ")" "{" statement "}" "}"
+
+    IDENTIFIER  shift, and go to state 4
+
+
+State 2
+
+    0 $accept: goal . $end
+
+    $end  shift, and go to state 5
+
+
+State 3
+
+    1 goal: main_class . classes
+
+    $default  reduce using rule 2 (classes)
+
+    classes  转到状态 6
+
+
+State 4
+
+    4 main_class: "class" IDENTIFIER . "{" "public" "static" "void" "main" "(" "String" "[" "]" IDENTIFIER ")" "{" statement "}" "}"
+
+    "{"  shift, and go to state 7
+
+
+State 5
+
+    0 $accept: goal $end .
+
+    $default  接受
+
+
+State 6
+
+    1 goal: main_class classes .
+    3 classes: classes . class_declaration
+
+    "class"  shift, and go to state 8
+
+    $default  reduce using rule 1 (goal)
+
+    class_declaration  转到状态 9
+
+
+State 7
+
+    4 main_class: "class" IDENTIFIER "{" . "public" "static" "void" "main" "(" "String" "[" "]" IDENTIFIER ")" "{" statement "}" "}"
+
+    "public"  shift, and go to state 10
+
+
+State 8
+
+    5 class_declaration: "class" . IDENTIFIER extends "{" vars methods "}"
+
+    IDENTIFIER  shift, and go to state 11
+
+
+State 9
+
+    3 classes: classes class_declaration .
+
+    $default  reduce using rule 3 (classes)
+
+
+State 10
+
+    4 main_class: "class" IDENTIFIER "{" "public" . "static" "void" "main" "(" "String" "[" "]" IDENTIFIER ")" "{" statement "}" "}"
+
+    "static"  shift, and go to state 12
+
+
+State 11
+
+    5 class_declaration: "class" IDENTIFIER . extends "{" vars methods "}"
+
+    "extends"  shift, and go to state 13
+
+    $default  reduce using rule 6 (extends)
+
+    extends  转到状态 14
+
+
+State 12
+
+    4 main_class: "class" IDENTIFIER "{" "public" "static" . "void" "main" "(" "String" "[" "]" IDENTIFIER ")" "{" statement "}" "}"
+
+    "void"  shift, and go to state 15
+
+
+State 13
+
+    7 extends: "extends" . IDENTIFIER
+
+    IDENTIFIER  shift, and go to state 16
+
+
+State 14
+
+    5 class_declaration: "class" IDENTIFIER extends . "{" vars methods "}"
+
+    "{"  shift, and go to state 17
+
+
+State 15
+
+    4 main_class: "class" IDENTIFIER "{" "public" "static" "void" . "main" "(" "String" "[" "]" IDENTIFIER ")" "{" statement "}" "}"
+
+    "main"  shift, and go to state 18
+
+
+State 16
+
+    7 extends: "extends" IDENTIFIER .
+
+    $default  reduce using rule 7 (extends)
+
+
+State 17
+
+    5 class_declaration: "class" IDENTIFIER extends "{" . vars methods "}"
+
+    $default  reduce using rule 8 (vars)
+
+    vars  转到状态 19
+
+
+State 18
+
+    4 main_class: "class" IDENTIFIER "{" "public" "static" "void" "main" . "(" "String" "[" "]" IDENTIFIER ")" "{" statement "}" "}"
+
+    "("  shift, and go to state 20
+
+
+State 19
+
+    5 class_declaration: "class" IDENTIFIER extends "{" vars . methods "}"
+    9 vars: vars . var_declaration
+
+    "int"       shift, and go to state 21
+    "boolean"   shift, and go to state 22
+    IDENTIFIER  shift, and go to state 23
+
+    $default  reduce using rule 10 (methods)
+
+    methods          转到状态 24
+    var_declaration  转到状态 25
+    type             转到状态 26
+
+
+State 20
+
+    4 main_class: "class" IDENTIFIER "{" "public" "static" "void" "main" "(" . "String" "[" "]" IDENTIFIER ")" "{" statement "}" "}"
+
+    "String"  shift, and go to state 27
+
+
+State 21
+
+   23 type: "int" . "[" "]"
+   25     | "int" .
+
+    "["  shift, and go to state 28
+
+    $default  reduce using rule 25 (type)
+
+
+State 22
+
+   24 type: "boolean" .
+
+    $default  reduce using rule 24 (type)
+
+
+State 23
+
+   26 type: IDENTIFIER .
+
+    $default  reduce using rule 26 (type)
+
+
+State 24
+
+    5 class_declaration: "class" IDENTIFIER extends "{" vars methods . "}"
+   11 methods: methods . method_declaration
+
+    "public"  shift, and go to state 29
+    "}"       shift, and go to state 30
+
+    method_declaration  转到状态 31
+
+
+State 25
+
+    9 vars: vars var_declaration .
+
+    $default  reduce using rule 9 (vars)
+
+
+State 26
+
+   12 var_declaration: type . IDENTIFIER ";"
+
+    IDENTIFIER  shift, and go to state 32
+
+
+State 27
+
+    4 main_class: "class" IDENTIFIER "{" "public" "static" "void" "main" "(" "String" . "[" "]" IDENTIFIER ")" "{" statement "}" "}"
+
+    "["  shift, and go to state 33
+
+
+State 28
+
+   23 type: "int" "[" . "]"
+
+    "]"  shift, and go to state 34
+
+
+State 29
+
+   13 method_declaration: "public" . type IDENTIFIER "(" params ")" "{" vars statements "return" expression ";" "}"
+
+    "int"       shift, and go to state 21
+    "boolean"   shift, and go to state 22
+    IDENTIFIER  shift, and go to state 23
+
+    type  转到状态 35
+
+
+State 30
+
+    5 class_declaration: "class" IDENTIFIER extends "{" vars methods "}" .
+
+    $default  reduce using rule 5 (class_declaration)
+
+
+State 31
+
+   11 methods: methods method_declaration .
+
+    $default  reduce using rule 11 (methods)
+
+
+State 32
+
+   12 var_declaration: type IDENTIFIER . ";"
+
+    ";"  shift, and go to state 36
+
+
+State 33
+
+    4 main_class: "class" IDENTIFIER "{" "public" "static" "void" "main" "(" "String" "[" . "]" IDENTIFIER ")" "{" statement "}" "}"
+
+    "]"  shift, and go to state 37
+
+
+State 34
+
+   23 type: "int" "[" "]" .
+
+    $default  reduce using rule 23 (type)
+
+
+State 35
+
+   13 method_declaration: "public" type . IDENTIFIER "(" params ")" "{" vars statements "return" expression ";" "}"
+
+    IDENTIFIER  shift, and go to state 38
+
+
+State 36
+
+   12 var_declaration: type IDENTIFIER ";" .
+
+    $default  reduce using rule 12 (var_declaration)
+
+
+State 37
+
+    4 main_class: "class" IDENTIFIER "{" "public" "static" "void" "main" "(" "String" "[" "]" . IDENTIFIER ")" "{" statement "}" "}"
+
+    IDENTIFIER  shift, and go to state 39
+
+
+State 38
+
+   13 method_declaration: "public" type IDENTIFIER . "(" params ")" "{" vars statements "return" expression ";" "}"
+
+    "("  shift, and go to state 40
+
+
+State 39
+
+    4 main_class: "class" IDENTIFIER "{" "public" "static" "void" "main" "(" "String" "[" "]" IDENTIFIER . ")" "{" statement "}" "}"
+
+    ")"  shift, and go to state 41
+
+
+State 40
+
+   13 method_declaration: "public" type IDENTIFIER "(" . params ")" "{" vars statements "return" expression ";" "}"
+
+    "int"       shift, and go to state 21
+    "boolean"   shift, and go to state 22
+    IDENTIFIER  shift, and go to state 23
+
+    $default  reduce using rule 14 (params)
+
+    params             转到状态 42
+    params_nonempty    转到状态 43
+    param_declaration  转到状态 44
+    type               转到状态 45
+
+
+State 41
+
+    4 main_class: "class" IDENTIFIER "{" "public" "static" "void" "main" "(" "String" "[" "]" IDENTIFIER ")" . "{" statement "}" "}"
+
+    "{"  shift, and go to state 46
+
+
+State 42
+
+   13 method_declaration: "public" type IDENTIFIER "(" params . ")" "{" vars statements "return" expression ";" "}"
+
+    ")"  shift, and go to state 47
+
+
+State 43
+
+   15 params: params_nonempty .
+   17 params_nonempty: params_nonempty . "," param_declaration
+
+    ","  shift, and go to state 48
+
+    $default  reduce using rule 15 (params)
+
+
+State 44
+
+   16 params_nonempty: param_declaration .
+
+    $default  reduce using rule 16 (params_nonempty)
+
+
+State 45
+
+   18 param_declaration: type . IDENTIFIER
+
+    IDENTIFIER  shift, and go to state 49
+
+
+State 46
+
+    4 main_class: "class" IDENTIFIER "{" "public" "static" "void" "main" "(" "String" "[" "]" IDENTIFIER ")" "{" . statement "}" "}"
+
+    "if"        shift, and go to state 50
+    "while"     shift, and go to state 51
+    K_PRINTLN   shift, and go to state 52
+    "{"         shift, and go to state 53
+    IDENTIFIER  shift, and go to state 54
+
+    statement  转到状态 55
+
+
+State 47
+
+   13 method_declaration: "public" type IDENTIFIER "(" params ")" . "{" vars statements "return" expression ";" "}"
+
+    "{"  shift, and go to state 56
+
+
+State 48
+
+   17 params_nonempty: params_nonempty "," . param_declaration
+
+    "int"       shift, and go to state 21
+    "boolean"   shift, and go to state 22
+    IDENTIFIER  shift, and go to state 23
+
+    param_declaration  转到状态 57
+    type               转到状态 45
+
+
+State 49
+
+   18 param_declaration: type IDENTIFIER .
+
+    $default  reduce using rule 18 (param_declaration)
+
+
+State 50
+
+   28 statement: "if" . "(" expression ")" statement "else" statement
+
+    "("  shift, and go to state 58
+
+
+State 51
+
+   29 statement: "while" . "(" expression ")" statement
+
+    "("  shift, and go to state 59
+
+
+State 52
+
+   30 statement: K_PRINTLN . "(" expression ")" ";"
+
+    "("  shift, and go to state 60
+
+
+State 53
+
+   27 statement: "{" . statements "}"
+
+    "if"        shift, and go to state 50
+    "while"     shift, and go to state 51
+    K_PRINTLN   shift, and go to state 52
+    "{"         shift, and go to state 53
+    IDENTIFIER  shift, and go to state 54
+
+    $default  reduce using rule 19 (statements)
+
+    statements           转到状态 61
+    statements_nonempty  转到状态 62
+    statement            转到状态 63
+
+
+State 54
+
+   31 statement: IDENTIFIER . "=" expression ";"
+   32          | IDENTIFIER . "[" expression "]" "=" expression ";"
+
+    "["  shift, and go to state 64
+    "="  shift, and go to state 65
+
+
+State 55
+
+    4 main_class: "class" IDENTIFIER "{" "public" "static" "void" "main" "(" "String" "[" "]" IDENTIFIER ")" "{" statement . "}" "}"
+
+    "}"  shift, and go to state 66
+
+
+State 56
+
+   13 method_declaration: "public" type IDENTIFIER "(" params ")" "{" . vars statements "return" expression ";" "}"
+
+    $default  reduce using rule 8 (vars)
+
+    vars  转到状态 67
+
+
+State 57
+
+   17 params_nonempty: params_nonempty "," param_declaration .
+
+    $default  reduce using rule 17 (params_nonempty)
+
+
+State 58
+
+   28 statement: "if" "(" . expression ")" statement "else" statement
+
+    "true"           shift, and go to state 68
+    "false"          shift, and go to state 69
+    "this"           shift, and go to state 70
+    "new"            shift, and go to state 71
+    "("              shift, and go to state 72
+    "!"              shift, and go to state 73
+    INTEGER_LITERAL  shift, and go to state 74
+    IDENTIFIER       shift, and go to state 75
+
+    expression  转到状态 76
+
+
+State 59
+
+   29 statement: "while" "(" . expression ")" statement
+
+    "true"           shift, and go to state 68
+    "false"          shift, and go to state 69
+    "this"           shift, and go to state 70
+    "new"            shift, and go to state 71
+    "("              shift, and go to state 72
+    "!"              shift, and go to state 73
+    INTEGER_LITERAL  shift, and go to state 74
+    IDENTIFIER       shift, and go to state 75
+
+    expression  转到状态 77
+
+
+State 60
+
+   30 statement: K_PRINTLN "(" . expression ")" ";"
+
+    "true"           shift, and go to state 68
+    "false"          shift, and go to state 69
+    "this"           shift, and go to state 70
+    "new"            shift, and go to state 71
+    "("              shift, and go to state 72
+    "!"              shift, and go to state 73
+    INTEGER_LITERAL  shift, and go to state 74
+    IDENTIFIER       shift, and go to state 75
+
+    expression  转到状态 78
+
+
+State 61
+
+   27 statement: "{" statements . "}"
+
+    "}"  shift, and go to state 79
+
+
+State 62
+
+   20 statements: statements_nonempty .
+   22 statements_nonempty: statements_nonempty . statement
+
+    "if"        shift, and go to state 50
+    "while"     shift, and go to state 51
+    K_PRINTLN   shift, and go to state 52
+    "{"         shift, and go to state 53
+    IDENTIFIER  shift, and go to state 54
+
+    $default  reduce using rule 20 (statements)
+
+    statement  转到状态 80
+
+
+State 63
+
+   21 statements_nonempty: statement .
+
+    $default  reduce using rule 21 (statements_nonempty)
+
+
+State 64
+
+   32 statement: IDENTIFIER "[" . expression "]" "=" expression ";"
+
+    "true"           shift, and go to state 68
+    "false"          shift, and go to state 69
+    "this"           shift, and go to state 70
+    "new"            shift, and go to state 71
+    "("              shift, and go to state 72
+    "!"              shift, and go to state 73
+    INTEGER_LITERAL  shift, and go to state 74
+    IDENTIFIER       shift, and go to state 75
+
+    expression  转到状态 81
+
+
+State 65
+
+   31 statement: IDENTIFIER "=" . expression ";"
+
+    "true"           shift, and go to state 68
+    "false"          shift, and go to state 69
+    "this"           shift, and go to state 70
+    "new"            shift, and go to state 71
+    "("              shift, and go to state 72
+    "!"              shift, and go to state 73
+    INTEGER_LITERAL  shift, and go to state 74
+    IDENTIFIER       shift, and go to state 75
+
+    expression  转到状态 82
+
+
+State 66
+
+    4 main_class: "class" IDENTIFIER "{" "public" "static" "void" "main" "(" "String" "[" "]" IDENTIFIER ")" "{" statement "}" . "}"
+
+    "}"  shift, and go to state 83
+
+
+State 67
+
+    9 vars: vars . var_declaration
+   13 method_declaration: "public" type IDENTIFIER "(" params ")" "{" vars . statements "return" expression ";" "}"
+
+    "int"       shift, and go to state 21
+    "boolean"   shift, and go to state 22
+    "if"        shift, and go to state 50
+    "while"     shift, and go to state 51
+    K_PRINTLN   shift, and go to state 52
+    "{"         shift, and go to state 53
+    IDENTIFIER  shift, and go to state 84
+
+    $default  reduce using rule 19 (statements)
+
+    var_declaration      转到状态 25
+    statements           转到状态 85
+    statements_nonempty  转到状态 62
+    type                 转到状态 26
+    statement            转到状态 63
+
+
+State 68
+
+   42 expression: "true" .
+
+    $default  reduce using rule 42 (expression)
+
+
+State 69
+
+   43 expression: "false" .
+
+    $default  reduce using rule 43 (expression)
+
+
+State 70
+
+   45 expression: "this" .
+
+    $default  reduce using rule 45 (expression)
+
+
+State 71
+
+   46 expression: "new" . "int" "[" expression "]"
+   47           | "new" . IDENTIFIER "(" ")"
+
+    "int"       shift, and go to state 86
+    IDENTIFIER  shift, and go to state 87
+
+
+State 72
+
+   49 expression: "(" . expression ")"
+
+    "true"           shift, and go to state 68
+    "false"          shift, and go to state 69
+    "this"           shift, and go to state 70
+    "new"            shift, and go to state 71
+    "("              shift, and go to state 72
+    "!"              shift, and go to state 73
+    INTEGER_LITERAL  shift, and go to state 74
+    IDENTIFIER       shift, and go to state 75
+
+    expression  转到状态 88
+
+
+State 73
+
+   48 expression: "!" . expression
+
+    "true"           shift, and go to state 68
+    "false"          shift, and go to state 69
+    "this"           shift, and go to state 70
+    "new"            shift, and go to state 71
+    "("              shift, and go to state 72
+    "!"              shift, and go to state 73
+    INTEGER_LITERAL  shift, and go to state 74
+    IDENTIFIER       shift, and go to state 75
+
+    expression  转到状态 89
+
+
+State 74
+
+   41 expression: INTEGER_LITERAL .
+
+    $default  reduce using rule 41 (expression)
+
+
+State 75
+
+   44 expression: IDENTIFIER .
+
+    $default  reduce using rule 44 (expression)
+
+
+State 76
+
+   28 statement: "if" "(" expression . ")" statement "else" statement
+   33 expression: expression . "&&" expression
+   34           | expression . "<" expression
+   35           | expression . "+" expression
+   36           | expression . "-" expression
+   37           | expression . "*" expression
+   38           | expression . "[" expression "]"
+   39           | expression . "." "length"
+   40           | expression . "." IDENTIFIER "(" args ")"
+
+    ")"   shift, and go to state 90
+    "["   shift, and go to state 91
+    "."   shift, and go to state 92
+    "&&"  shift, and go to state 93
+    "<"   shift, and go to state 94
+    "+"   shift, and go to state 95
+    "-"   shift, and go to state 96
+    "*"   shift, and go to state 97
+
+
+State 77
+
+   29 statement: "while" "(" expression . ")" statement
+   33 expression: expression . "&&" expression
+   34           | expression . "<" expression
+   35           | expression . "+" expression
+   36           | expression . "-" expression
+   37           | expression . "*" expression
+   38           | expression . "[" expression "]"
+   39           | expression . "." "length"
+   40           | expression . "." IDENTIFIER "(" args ")"
+
+    ")"   shift, and go to state 98
+    "["   shift, and go to state 91
+    "."   shift, and go to state 92
+    "&&"  shift, and go to state 93
+    "<"   shift, and go to state 94
+    "+"   shift, and go to state 95
+    "-"   shift, and go to state 96
+    "*"   shift, and go to state 97
+
+
+State 78
+
+   30 statement: K_PRINTLN "(" expression . ")" ";"
+   33 expression: expression . "&&" expression
+   34           | expression . "<" expression
+   35           | expression . "+" expression
+   36           | expression . "-" expression
+   37           | expression . "*" expression
+   38           | expression . "[" expression "]"
+   39           | expression . "." "length"
+   40           | expression . "." IDENTIFIER "(" args ")"
+
+    ")"   shift, and go to state 99
+    "["   shift, and go to state 91
+    "."   shift, and go to state 92
+    "&&"  shift, and go to state 93
+    "<"   shift, and go to state 94
+    "+"   shift, and go to state 95
+    "-"   shift, and go to state 96
+    "*"   shift, and go to state 97
+
+
+State 79
+
+   27 statement: "{" statements "}" .
+
+    $default  reduce using rule 27 (statement)
+
+
+State 80
+
+   22 statements_nonempty: statements_nonempty statement .
+
+    $default  reduce using rule 22 (statements_nonempty)
+
+
+State 81
+
+   32 statement: IDENTIFIER "[" expression . "]" "=" expression ";"
+   33 expression: expression . "&&" expression
+   34           | expression . "<" expression
+   35           | expression . "+" expression
+   36           | expression . "-" expression
+   37           | expression . "*" expression
+   38           | expression . "[" expression "]"
+   39           | expression . "." "length"
+   40           | expression . "." IDENTIFIER "(" args ")"
+
+    "["   shift, and go to state 91
+    "]"   shift, and go to state 100
+    "."   shift, and go to state 92
+    "&&"  shift, and go to state 93
+    "<"   shift, and go to state 94
+    "+"   shift, and go to state 95
+    "-"   shift, and go to state 96
+    "*"   shift, and go to state 97
+
+
+State 82
+
+   31 statement: IDENTIFIER "=" expression . ";"
+   33 expression: expression . "&&" expression
+   34           | expression . "<" expression
+   35           | expression . "+" expression
+   36           | expression . "-" expression
+   37           | expression . "*" expression
+   38           | expression . "[" expression "]"
+   39           | expression . "." "length"
+   40           | expression . "." IDENTIFIER "(" args ")"
+
+    "["   shift, and go to state 91
+    ";"   shift, and go to state 101
+    "."   shift, and go to state 92
+    "&&"  shift, and go to state 93
+    "<"   shift, and go to state 94
+    "+"   shift, and go to state 95
+    "-"   shift, and go to state 96
+    "*"   shift, and go to state 97
+
+
+State 83
+
+    4 main_class: "class" IDENTIFIER "{" "public" "static" "void" "main" "(" "String" "[" "]" IDENTIFIER ")" "{" statement "}" "}" .
+
+    $default  reduce using rule 4 (main_class)
+
+
+State 84
+
+   26 type: IDENTIFIER .
+   31 statement: IDENTIFIER . "=" expression ";"
+   32          | IDENTIFIER . "[" expression "]" "=" expression ";"
+
+    "["  shift, and go to state 64
+    "="  shift, and go to state 65
+
+    $default  reduce using rule 26 (type)
+
+
+State 85
+
+   13 method_declaration: "public" type IDENTIFIER "(" params ")" "{" vars statements . "return" expression ";" "}"
+
+    "return"  shift, and go to state 102
+
+
+State 86
+
+   46 expression: "new" "int" . "[" expression "]"
+
+    "["  shift, and go to state 103
+
+
+State 87
+
+   47 expression: "new" IDENTIFIER . "(" ")"
+
+    "("  shift, and go to state 104
+
+
+State 88
+
+   33 expression: expression . "&&" expression
+   34           | expression . "<" expression
+   35           | expression . "+" expression
+   36           | expression . "-" expression
+   37           | expression . "*" expression
+   38           | expression . "[" expression "]"
+   39           | expression . "." "length"
+   40           | expression . "." IDENTIFIER "(" args ")"
+   49           | "(" expression . ")"
+
+    ")"   shift, and go to state 105
+    "["   shift, and go to state 91
+    "."   shift, and go to state 92
+    "&&"  shift, and go to state 93
+    "<"   shift, and go to state 94
+    "+"   shift, and go to state 95
+    "-"   shift, and go to state 96
+    "*"   shift, and go to state 97
+
+
+State 89
+
+   33 expression: expression . "&&" expression
+   34           | expression . "<" expression
+   35           | expression . "+" expression
+   36           | expression . "-" expression
+   37           | expression . "*" expression
+   38           | expression . "[" expression "]"
+   39           | expression . "." "length"
+   40           | expression . "." IDENTIFIER "(" args ")"
+   48           | "!" expression .
+
+    "["  shift, and go to state 91
+    "."  shift, and go to state 92
+
+    $default  reduce using rule 48 (expression)
+
+
+State 90
+
+   28 statement: "if" "(" expression ")" . statement "else" statement
+
+    "if"        shift, and go to state 50
+    "while"     shift, and go to state 51
+    K_PRINTLN   shift, and go to state 52
+    "{"         shift, and go to state 53
+    IDENTIFIER  shift, and go to state 54
+
+    statement  转到状态 106
+
+
+State 91
+
+   38 expression: expression "[" . expression "]"
+
+    "true"           shift, and go to state 68
+    "false"          shift, and go to state 69
+    "this"           shift, and go to state 70
+    "new"            shift, and go to state 71
+    "("              shift, and go to state 72
+    "!"              shift, and go to state 73
+    INTEGER_LITERAL  shift, and go to state 74
+    IDENTIFIER       shift, and go to state 75
+
+    expression  转到状态 107
+
+
+State 92
+
+   39 expression: expression "." . "length"
+   40           | expression "." . IDENTIFIER "(" args ")"
+
+    "length"    shift, and go to state 108
+    IDENTIFIER  shift, and go to state 109
+
+
+State 93
+
+   33 expression: expression "&&" . expression
+
+    "true"           shift, and go to state 68
+    "false"          shift, and go to state 69
+    "this"           shift, and go to state 70
+    "new"            shift, and go to state 71
+    "("              shift, and go to state 72
+    "!"              shift, and go to state 73
+    INTEGER_LITERAL  shift, and go to state 74
+    IDENTIFIER       shift, and go to state 75
+
+    expression  转到状态 110
+
+
+State 94
+
+   34 expression: expression "<" . expression
+
+    "true"           shift, and go to state 68
+    "false"          shift, and go to state 69
+    "this"           shift, and go to state 70
+    "new"            shift, and go to state 71
+    "("              shift, and go to state 72
+    "!"              shift, and go to state 73
+    INTEGER_LITERAL  shift, and go to state 74
+    IDENTIFIER       shift, and go to state 75
+
+    expression  转到状态 111
+
+
+State 95
+
+   35 expression: expression "+" . expression
+
+    "true"           shift, and go to state 68
+    "false"          shift, and go to state 69
+    "this"           shift, and go to state 70
+    "new"            shift, and go to state 71
+    "("              shift, and go to state 72
+    "!"              shift, and go to state 73
+    INTEGER_LITERAL  shift, and go to state 74
+    IDENTIFIER       shift, and go to state 75
+
+    expression  转到状态 112
+
+
+State 96
+
+   36 expression: expression "-" . expression
+
+    "true"           shift, and go to state 68
+    "false"          shift, and go to state 69
+    "this"           shift, and go to state 70
+    "new"            shift, and go to state 71
+    "("              shift, and go to state 72
+    "!"              shift, and go to state 73
+    INTEGER_LITERAL  shift, and go to state 74
+    IDENTIFIER       shift, and go to state 75
+
+    expression  转到状态 113
+
+
+State 97
+
+   37 expression: expression "*" . expression
+
+    "true"           shift, and go to state 68
+    "false"          shift, and go to state 69
+    "this"           shift, and go to state 70
+    "new"            shift, and go to state 71
+    "("              shift, and go to state 72
+    "!"              shift, and go to state 73
+    INTEGER_LITERAL  shift, and go to state 74
+    IDENTIFIER       shift, and go to state 75
+
+    expression  转到状态 114
+
+
+State 98
+
+   29 statement: "while" "(" expression ")" . statement
+
+    "if"        shift, and go to state 50
+    "while"     shift, and go to state 51
+    K_PRINTLN   shift, and go to state 52
+    "{"         shift, and go to state 53
+    IDENTIFIER  shift, and go to state 54
+
+    statement  转到状态 115
+
+
+State 99
+
+   30 statement: K_PRINTLN "(" expression ")" . ";"
+
+    ";"  shift, and go to state 116
+
+
+State 100
+
+   32 statement: IDENTIFIER "[" expression "]" . "=" expression ";"
+
+    "="  shift, and go to state 117
+
+
+State 101
+
+   31 statement: IDENTIFIER "=" expression ";" .
+
+    $default  reduce using rule 31 (statement)
+
+
+State 102
+
+   13 method_declaration: "public" type IDENTIFIER "(" params ")" "{" vars statements "return" . expression ";" "}"
+
+    "true"           shift, and go to state 68
+    "false"          shift, and go to state 69
+    "this"           shift, and go to state 70
+    "new"            shift, and go to state 71
+    "("              shift, and go to state 72
+    "!"              shift, and go to state 73
+    INTEGER_LITERAL  shift, and go to state 74
+    IDENTIFIER       shift, and go to state 75
+
+    expression  转到状态 118
+
+
+State 103
+
+   46 expression: "new" "int" "[" . expression "]"
+
+    "true"           shift, and go to state 68
+    "false"          shift, and go to state 69
+    "this"           shift, and go to state 70
+    "new"            shift, and go to state 71
+    "("              shift, and go to state 72
+    "!"              shift, and go to state 73
+    INTEGER_LITERAL  shift, and go to state 74
+    IDENTIFIER       shift, and go to state 75
+
+    expression  转到状态 119
+
+
+State 104
+
+   47 expression: "new" IDENTIFIER "(" . ")"
+
+    ")"  shift, and go to state 120
+
+
+State 105
+
+   49 expression: "(" expression ")" .
+
+    $default  reduce using rule 49 (expression)
+
+
+State 106
+
+   28 statement: "if" "(" expression ")" statement . "else" statement
+
+    "else"  shift, and go to state 121
+
+
+State 107
+
+   33 expression: expression . "&&" expression
+   34           | expression . "<" expression
+   35           | expression . "+" expression
+   36           | expression . "-" expression
+   37           | expression . "*" expression
+   38           | expression . "[" expression "]"
+   38           | expression "[" expression . "]"
+   39           | expression . "." "length"
+   40           | expression . "." IDENTIFIER "(" args ")"
+
+    "["   shift, and go to state 91
+    "]"   shift, and go to state 122
+    "."   shift, and go to state 92
+    "&&"  shift, and go to state 93
+    "<"   shift, and go to state 94
+    "+"   shift, and go to state 95
+    "-"   shift, and go to state 96
+    "*"   shift, and go to state 97
+
+
+State 108
+
+   39 expression: expression "." "length" .
+
+    $default  reduce using rule 39 (expression)
+
+
+State 109
+
+   40 expression: expression "." IDENTIFIER . "(" args ")"
+
+    "("  shift, and go to state 123
+
+
+State 110
+
+   33 expression: expression . "&&" expression
+   33           | expression "&&" expression .
+   34           | expression . "<" expression
+   35           | expression . "+" expression
+   36           | expression . "-" expression
+   37           | expression . "*" expression
+   38           | expression . "[" expression "]"
+   39           | expression . "." "length"
+   40           | expression . "." IDENTIFIER "(" args ")"
+
+    "["  shift, and go to state 91
+    "."  shift, and go to state 92
+    "<"  shift, and go to state 94
+    "+"  shift, and go to state 95
+    "-"  shift, and go to state 96
+    "*"  shift, and go to state 97
+
+    $default  reduce using rule 33 (expression)
+
+
+State 111
+
+   33 expression: expression . "&&" expression
+   34           | expression . "<" expression
+   34           | expression "<" expression .
+   35           | expression . "+" expression
+   36           | expression . "-" expression
+   37           | expression . "*" expression
+   38           | expression . "[" expression "]"
+   39           | expression . "." "length"
+   40           | expression . "." IDENTIFIER "(" args ")"
+
+    "["  shift, and go to state 91
+    "."  shift, and go to state 92
+    "+"  shift, and go to state 95
+    "-"  shift, and go to state 96
+    "*"  shift, and go to state 97
+
+    $default  reduce using rule 34 (expression)
+
+
+State 112
+
+   33 expression: expression . "&&" expression
+   34           | expression . "<" expression
+   35           | expression . "+" expression
+   35           | expression "+" expression .
+   36           | expression . "-" expression
+   37           | expression . "*" expression
+   38           | expression . "[" expression "]"
+   39           | expression . "." "length"
+   40           | expression . "." IDENTIFIER "(" args ")"
+
+    "["  shift, and go to state 91
+    "."  shift, and go to state 92
+    "*"  shift, and go to state 97
+
+    $default  reduce using rule 35 (expression)
+
+
+State 113
+
+   33 expression: expression . "&&" expression
+   34           | expression . "<" expression
+   35           | expression . "+" expression
+   36           | expression . "-" expression
+   36           | expression "-" expression .
+   37           | expression . "*" expression
+   38           | expression . "[" expression "]"
+   39           | expression . "." "length"
+   40           | expression . "." IDENTIFIER "(" args ")"
+
+    "["  shift, and go to state 91
+    "."  shift, and go to state 92
+    "*"  shift, and go to state 97
+
+    $default  reduce using rule 36 (expression)
+
+
+State 114
+
+   33 expression: expression . "&&" expression
+   34           | expression . "<" expression
+   35           | expression . "+" expression
+   36           | expression . "-" expression
+   37           | expression . "*" expression
+   37           | expression "*" expression .
+   38           | expression . "[" expression "]"
+   39           | expression . "." "length"
+   40           | expression . "." IDENTIFIER "(" args ")"
+
+    "["  shift, and go to state 91
+    "."  shift, and go to state 92
+
+    $default  reduce using rule 37 (expression)
+
+
+State 115
+
+   29 statement: "while" "(" expression ")" statement .
+
+    $default  reduce using rule 29 (statement)
+
+
+State 116
+
+   30 statement: K_PRINTLN "(" expression ")" ";" .
+
+    $default  reduce using rule 30 (statement)
+
+
+State 117
+
+   32 statement: IDENTIFIER "[" expression "]" "=" . expression ";"
+
+    "true"           shift, and go to state 68
+    "false"          shift, and go to state 69
+    "this"           shift, and go to state 70
+    "new"            shift, and go to state 71
+    "("              shift, and go to state 72
+    "!"              shift, and go to state 73
+    INTEGER_LITERAL  shift, and go to state 74
+    IDENTIFIER       shift, and go to state 75
+
+    expression  转到状态 124
+
+
+State 118
+
+   13 method_declaration: "public" type IDENTIFIER "(" params ")" "{" vars statements "return" expression . ";" "}"
+   33 expression: expression . "&&" expression
+   34           | expression . "<" expression
+   35           | expression . "+" expression
+   36           | expression . "-" expression
+   37           | expression . "*" expression
+   38           | expression . "[" expression "]"
+   39           | expression . "." "length"
+   40           | expression . "." IDENTIFIER "(" args ")"
+
+    "["   shift, and go to state 91
+    ";"   shift, and go to state 125
+    "."   shift, and go to state 92
+    "&&"  shift, and go to state 93
+    "<"   shift, and go to state 94
+    "+"   shift, and go to state 95
+    "-"   shift, and go to state 96
+    "*"   shift, and go to state 97
+
+
+State 119
+
+   33 expression: expression . "&&" expression
+   34           | expression . "<" expression
+   35           | expression . "+" expression
+   36           | expression . "-" expression
+   37           | expression . "*" expression
+   38           | expression . "[" expression "]"
+   39           | expression . "." "length"
+   40           | expression . "." IDENTIFIER "(" args ")"
+   46           | "new" "int" "[" expression . "]"
+
+    "["   shift, and go to state 91
+    "]"   shift, and go to state 126
+    "."   shift, and go to state 92
+    "&&"  shift, and go to state 93
+    "<"   shift, and go to state 94
+    "+"   shift, and go to state 95
+    "-"   shift, and go to state 96
+    "*"   shift, and go to state 97
+
+
+State 120
+
+   47 expression: "new" IDENTIFIER "(" ")" .
+
+    $default  reduce using rule 47 (expression)
+
+
+State 121
+
+   28 statement: "if" "(" expression ")" statement "else" . statement
+
+    "if"        shift, and go to state 50
+    "while"     shift, and go to state 51
+    K_PRINTLN   shift, and go to state 52
+    "{"         shift, and go to state 53
+    IDENTIFIER  shift, and go to state 54
+
+    statement  转到状态 127
+
+
+State 122
+
+   38 expression: expression "[" expression "]" .
+
+    $default  reduce using rule 38 (expression)
+
+
+State 123
+
+   40 expression: expression "." IDENTIFIER "(" . args ")"
+
+    "true"           shift, and go to state 68
+    "false"          shift, and go to state 69
+    "this"           shift, and go to state 70
+    "new"            shift, and go to state 71
+    "("              shift, and go to state 72
+    "!"              shift, and go to state 73
+    INTEGER_LITERAL  shift, and go to state 74
+    IDENTIFIER       shift, and go to state 75
+
+    $default  reduce using rule 50 (args)
+
+    expression     转到状态 128
+    args           转到状态 129
+    args_nonempty  转到状态 130
+
+
+State 124
+
+   32 statement: IDENTIFIER "[" expression "]" "=" expression . ";"
+   33 expression: expression . "&&" expression
+   34           | expression . "<" expression
+   35           | expression . "+" expression
+   36           | expression . "-" expression
+   37           | expression . "*" expression
+   38           | expression . "[" expression "]"
+   39           | expression . "." "length"
+   40           | expression . "." IDENTIFIER "(" args ")"
+
+    "["   shift, and go to state 91
+    ";"   shift, and go to state 131
+    "."   shift, and go to state 92
+    "&&"  shift, and go to state 93
+    "<"   shift, and go to state 94
+    "+"   shift, and go to state 95
+    "-"   shift, and go to state 96
+    "*"   shift, and go to state 97
+
+
+State 125
+
+   13 method_declaration: "public" type IDENTIFIER "(" params ")" "{" vars statements "return" expression ";" . "}"
+
+    "}"  shift, and go to state 132
+
+
+State 126
+
+   46 expression: "new" "int" "[" expression "]" .
+
+    $default  reduce using rule 46 (expression)
+
+
+State 127
+
+   28 statement: "if" "(" expression ")" statement "else" statement .
+
+    $default  reduce using rule 28 (statement)
+
+
+State 128
+
+   33 expression: expression . "&&" expression
+   34           | expression . "<" expression
+   35           | expression . "+" expression
+   36           | expression . "-" expression
+   37           | expression . "*" expression
+   38           | expression . "[" expression "]"
+   39           | expression . "." "length"
+   40           | expression . "." IDENTIFIER "(" args ")"
+   52 args_nonempty: expression .
+
+    "["   shift, and go to state 91
+    "."   shift, and go to state 92
+    "&&"  shift, and go to state 93
+    "<"   shift, and go to state 94
+    "+"   shift, and go to state 95
+    "-"   shift, and go to state 96
+    "*"   shift, and go to state 97
+
+    $default  reduce using rule 52 (args_nonempty)
+
+
+State 129
+
+   40 expression: expression "." IDENTIFIER "(" args . ")"
+
+    ")"  shift, and go to state 133
+
+
+State 130
+
+   51 args: args_nonempty .
+   53 args_nonempty: args_nonempty . "," expression
+
+    ","  shift, and go to state 134
+
+    $default  reduce using rule 51 (args)
+
+
+State 131
+
+   32 statement: IDENTIFIER "[" expression "]" "=" expression ";" .
+
+    $default  reduce using rule 32 (statement)
+
+
+State 132
+
+   13 method_declaration: "public" type IDENTIFIER "(" params ")" "{" vars statements "return" expression ";" "}" .
+
+    $default  reduce using rule 13 (method_declaration)
+
+
+State 133
+
+   40 expression: expression "." IDENTIFIER "(" args ")" .
+
+    $default  reduce using rule 40 (expression)
+
+
+State 134
+
+   53 args_nonempty: args_nonempty "," . expression
+
+    "true"           shift, and go to state 68
+    "false"          shift, and go to state 69
+    "this"           shift, and go to state 70
+    "new"            shift, and go to state 71
+    "("              shift, and go to state 72
+    "!"              shift, and go to state 73
+    INTEGER_LITERAL  shift, and go to state 74
+    IDENTIFIER       shift, and go to state 75
+
+    expression  转到状态 135
+
+
+State 135
+
+   33 expression: expression . "&&" expression
+   34           | expression . "<" expression
+   35           | expression . "+" expression
+   36           | expression . "-" expression
+   37           | expression . "*" expression
+   38           | expression . "[" expression "]"
+   39           | expression . "." "length"
+   40           | expression . "." IDENTIFIER "(" args ")"
+   53 args_nonempty: args_nonempty "," expression .
+
+    "["   shift, and go to state 91
+    "."   shift, and go to state 92
+    "&&"  shift, and go to state 93
+    "<"   shift, and go to state 94
+    "+"   shift, and go to state 95
+    "-"   shift, and go to state 96
+    "*"   shift, and go to state 97
+
+    $default  reduce using rule 53 (args_nonempty)
