@@ -68,4 +68,4 @@ task bison(type:Exec) {
     ]
 }
 
-build.dependsOn jflex, bison
+compileJava.dependsOn jflex, bison
