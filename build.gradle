@@ -44,3 +44,28 @@ compileTestKotlin {
     }
 }
 
+task jflex(type:Exec) {
+    workingDir 'src/main/java/moe/taiho/minijaba'
+    inputs.file file("${projectDir}/src/main/java/moe/taiho/minijaba/Lexer.l")
+    outputs.files files("${projectDir}/src/main/java/moe/taiho/minijaba/Lexer.java")
+    executable = 'jflex'
+    args = [
+            '-v',
+            'Lexer.l',
+    ]
+}
+
+task bison(type:Exec) {
+    workingDir 'src/main/java/moe/taiho/minijaba'
+    inputs.file file("${projectDir}/src/main/java/moe/taiho/minijaba/Parser.y")
+    outputs.files files("${projectDir}/src/main/java/moe/taiho/minijaba/Parser.java",
+            "${projectDir}/src/main/java/moe/taiho/minijaba/Parser.output")
+    executable = 'bison'
+    args = [
+           '--verbose',
+           '--warnings=all',
+           'Parser.y',
+    ]
+}
+
+build.dependsOn jflex, bison
