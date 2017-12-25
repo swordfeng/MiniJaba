@@ -39,8 +39,10 @@ package moe.taiho.minijaba;
 /* "%code imports" blocks.  */
 /* "Parser.y":5  */ /* lalr1.java:93  */
 
+    import java.util.ArrayList;
+    import moe.taiho.minijaba.ast.*;
 
-/* "Parser.java":44  */ /* lalr1.java:93  */
+/* "Parser.java":46  */ /* lalr1.java:93  */
 
 /**
  * A Bison parser, automatically generated from <tt>Parser.y</tt>.
@@ -379,8 +381,379 @@ class Parser
 
     switch (yyn)
       {
-        
-/* "Parser.java":384  */ /* lalr1.java:489  */
+          case 2:
+  if (yyn == 2)
+    /* "Parser.y":83  */ /* lalr1.java:489  */
+    { yyval = new Goal(((MainClassDecl)(yystack.valueAt (2-(1)))), ((ArrayList<ClassDecl>)(yystack.valueAt (2-(2))))); };
+  break;
+    
+
+  case 3:
+  if (yyn == 3)
+    /* "Parser.y":87  */ /* lalr1.java:489  */
+    { yyval = new ArrayList<ClassDecl>(); };
+  break;
+    
+
+  case 4:
+  if (yyn == 4)
+    /* "Parser.y":88  */ /* lalr1.java:489  */
+    { ((ArrayList<ClassDecl>)(yystack.valueAt (2-(1)))).add(((ClassDecl)(yystack.valueAt (2-(2))))); yyval = ((ArrayList<ClassDecl>)(yystack.valueAt (2-(1)))); };
+  break;
+    
+
+  case 5:
+  if (yyn == 5)
+    /* "Parser.y":92  */ /* lalr1.java:489  */
+    { yyval = new MainClassDecl(((String)(yystack.valueAt (17-(2)))), ((Stmt)(yystack.valueAt (17-(15))))); };
+  break;
+    
+
+  case 6:
+  if (yyn == 6)
+    /* "Parser.y":96  */ /* lalr1.java:489  */
+    { yyval= new ClassDecl(((String)(yystack.valueAt (7-(2)))), ((String)(yystack.valueAt (7-(3)))), ((ArrayList<VarDecl>)(yystack.valueAt (7-(5)))), ((ArrayList<MethodDecl>)(yystack.valueAt (7-(6))))); };
+  break;
+    
+
+  case 7:
+  if (yyn == 7)
+    /* "Parser.y":100  */ /* lalr1.java:489  */
+    { yyval = null; };
+  break;
+    
+
+  case 8:
+  if (yyn == 8)
+    /* "Parser.y":101  */ /* lalr1.java:489  */
+    { yyval = ((String)(yystack.valueAt (2-(2)))); };
+  break;
+    
+
+  case 9:
+  if (yyn == 9)
+    /* "Parser.y":105  */ /* lalr1.java:489  */
+    { yyval = new ArrayList<VarDecl>(); };
+  break;
+    
+
+  case 10:
+  if (yyn == 10)
+    /* "Parser.y":106  */ /* lalr1.java:489  */
+    { ((ArrayList<VarDecl>)(yystack.valueAt (2-(1)))).add(((VarDecl)(yystack.valueAt (2-(2))))); yyval = ((ArrayList<VarDecl>)(yystack.valueAt (2-(1)))); };
+  break;
+    
+
+  case 11:
+  if (yyn == 11)
+    /* "Parser.y":110  */ /* lalr1.java:489  */
+    { yyval = new ArrayList<MethodDecl>(); };
+  break;
+    
+
+  case 12:
+  if (yyn == 12)
+    /* "Parser.y":111  */ /* lalr1.java:489  */
+    { ((ArrayList<MethodDecl>)(yystack.valueAt (2-(1)))).add(((MethodDecl)(yystack.valueAt (2-(2))))); yyval = ((ArrayList<MethodDecl>)(yystack.valueAt (2-(1)))); };
+  break;
+    
+
+  case 13:
+  if (yyn == 13)
+    /* "Parser.y":115  */ /* lalr1.java:489  */
+    { yyval = new VarDecl(((String)(yystack.valueAt (3-(2)))), ((Type)(yystack.valueAt (3-(1))))); };
+  break;
+    
+
+  case 14:
+  if (yyn == 14)
+    /* "Parser.y":119  */ /* lalr1.java:489  */
+    { yyval = new MethodDecl(((String)(yystack.valueAt (13-(3)))), ((Type)(yystack.valueAt (13-(2)))), ((ArrayList<VarDecl>)(yystack.valueAt (13-(5)))), ((ArrayList<VarDecl>)(yystack.valueAt (13-(8)))), ((ArrayList<Stmt>)(yystack.valueAt (13-(9)))), ((Exp)(yystack.valueAt (13-(11))))); };
+  break;
+    
+
+  case 15:
+  if (yyn == 15)
+    /* "Parser.y":123  */ /* lalr1.java:489  */
+    { yyval = new ArrayList<VarDecl>(); };
+  break;
+    
+
+  case 16:
+  if (yyn == 16)
+    /* "Parser.y":124  */ /* lalr1.java:489  */
+    { yyval = ((ArrayList<VarDecl>)(yystack.valueAt (1-(1)))); };
+  break;
+    
+
+  case 17:
+  if (yyn == 17)
+    /* "Parser.y":128  */ /* lalr1.java:489  */
+    { ArrayList<VarDecl> l = new ArrayList<>(); l.add(((VarDecl)(yystack.valueAt (1-(1))))); yyval = l; };
+  break;
+    
+
+  case 18:
+  if (yyn == 18)
+    /* "Parser.y":129  */ /* lalr1.java:489  */
+    { ((ArrayList<VarDecl>)(yystack.valueAt (3-(1)))).add(((VarDecl)(yystack.valueAt (3-(3))))); yyval = ((ArrayList<VarDecl>)(yystack.valueAt (3-(1)))); };
+  break;
+    
+
+  case 19:
+  if (yyn == 19)
+    /* "Parser.y":133  */ /* lalr1.java:489  */
+    { yyval = new VarDecl(((String)(yystack.valueAt (2-(2)))), ((Type)(yystack.valueAt (2-(1))))); };
+  break;
+    
+
+  case 20:
+  if (yyn == 20)
+    /* "Parser.y":137  */ /* lalr1.java:489  */
+    { yyval = new ArrayList<Stmt>(); };
+  break;
+    
+
+  case 21:
+  if (yyn == 21)
+    /* "Parser.y":138  */ /* lalr1.java:489  */
+    { yyval = ((ArrayList<Stmt>)(yystack.valueAt (1-(1)))); };
+  break;
+    
+
+  case 22:
+  if (yyn == 22)
+    /* "Parser.y":142  */ /* lalr1.java:489  */
+    { ArrayList<Stmt> l = new ArrayList<>(); l.add(((Stmt)(yystack.valueAt (1-(1))))); yyval = l; };
+  break;
+    
+
+  case 23:
+  if (yyn == 23)
+    /* "Parser.y":143  */ /* lalr1.java:489  */
+    { ((ArrayList<Stmt>)(yystack.valueAt (2-(1)))).add(((Stmt)(yystack.valueAt (2-(2))))); yyval = ((ArrayList<Stmt>)(yystack.valueAt (2-(1)))); };
+  break;
+    
+
+  case 24:
+  if (yyn == 24)
+    /* "Parser.y":147  */ /* lalr1.java:489  */
+    { yyval = new IntArrayType(); };
+  break;
+    
+
+  case 25:
+  if (yyn == 25)
+    /* "Parser.y":148  */ /* lalr1.java:489  */
+    { yyval = new BoolType(); };
+  break;
+    
+
+  case 26:
+  if (yyn == 26)
+    /* "Parser.y":149  */ /* lalr1.java:489  */
+    { yyval = new IntType(); };
+  break;
+    
+
+  case 27:
+  if (yyn == 27)
+    /* "Parser.y":150  */ /* lalr1.java:489  */
+    { yyval = new ClassType(((String)(yystack.valueAt (1-(1))))); };
+  break;
+    
+
+  case 28:
+  if (yyn == 28)
+    /* "Parser.y":154  */ /* lalr1.java:489  */
+    { yyval = new BlockStmt(((ArrayList<Stmt>)(yystack.valueAt (3-(2))))); };
+  break;
+    
+
+  case 29:
+  if (yyn == 29)
+    /* "Parser.y":155  */ /* lalr1.java:489  */
+    { yyval = new IfStmt(((Exp)(yystack.valueAt (7-(3)))), ((Stmt)(yystack.valueAt (7-(5)))), ((Stmt)(yystack.valueAt (7-(7))))); };
+  break;
+    
+
+  case 30:
+  if (yyn == 30)
+    /* "Parser.y":156  */ /* lalr1.java:489  */
+    { yyval = new WhileStmt(((Exp)(yystack.valueAt (5-(3)))), ((Stmt)(yystack.valueAt (5-(5))))); };
+  break;
+    
+
+  case 31:
+  if (yyn == 31)
+    /* "Parser.y":157  */ /* lalr1.java:489  */
+    { yyval = new PrintlnStmt(((Exp)(yystack.valueAt (5-(3))))); };
+  break;
+    
+
+  case 32:
+  if (yyn == 32)
+    /* "Parser.y":158  */ /* lalr1.java:489  */
+    { yyval = new AssignStmt(((String)(yystack.valueAt (4-(1)))), ((Exp)(yystack.valueAt (4-(3))))); };
+  break;
+    
+
+  case 33:
+  if (yyn == 33)
+    /* "Parser.y":159  */ /* lalr1.java:489  */
+    { yyval = new ArrayAssignStmt(((String)(yystack.valueAt (7-(1)))), ((Exp)(yystack.valueAt (7-(3)))), ((Exp)(yystack.valueAt (7-(6))))); };
+  break;
+    
+
+  case 34:
+  if (yyn == 34)
+    /* "Parser.y":163  */ /* lalr1.java:489  */
+    { yyval = new AndExp(((Exp)(yystack.valueAt (3-(1)))), ((Exp)(yystack.valueAt (3-(3))))); };
+  break;
+    
+
+  case 35:
+  if (yyn == 35)
+    /* "Parser.y":164  */ /* lalr1.java:489  */
+    { yyval = new LessThanExp(((Exp)(yystack.valueAt (3-(1)))), ((Exp)(yystack.valueAt (3-(3))))); };
+  break;
+    
+
+  case 36:
+  if (yyn == 36)
+    /* "Parser.y":165  */ /* lalr1.java:489  */
+    { yyval = new AddExp(((Exp)(yystack.valueAt (3-(1)))), ((Exp)(yystack.valueAt (3-(3))))); };
+  break;
+    
+
+  case 37:
+  if (yyn == 37)
+    /* "Parser.y":166  */ /* lalr1.java:489  */
+    { yyval = new SubExp(((Exp)(yystack.valueAt (3-(1)))), ((Exp)(yystack.valueAt (3-(3))))); };
+  break;
+    
+
+  case 38:
+  if (yyn == 38)
+    /* "Parser.y":167  */ /* lalr1.java:489  */
+    { yyval = new MulExp(((Exp)(yystack.valueAt (3-(1)))), ((Exp)(yystack.valueAt (3-(3))))); };
+  break;
+    
+
+  case 39:
+  if (yyn == 39)
+    /* "Parser.y":168  */ /* lalr1.java:489  */
+    { yyval = new ArrayAccessExp(((Exp)(yystack.valueAt (4-(1)))), ((Exp)(yystack.valueAt (4-(3))))); };
+  break;
+    
+
+  case 40:
+  if (yyn == 40)
+    /* "Parser.y":169  */ /* lalr1.java:489  */
+    { yyval = new ArrayLengthExp(((Exp)(yystack.valueAt (3-(1))))); };
+  break;
+    
+
+  case 41:
+  if (yyn == 41)
+    /* "Parser.y":170  */ /* lalr1.java:489  */
+    { yyval = new MethodCallExp(((Exp)(yystack.valueAt (6-(1)))), ((String)(yystack.valueAt (6-(3)))), ((ArrayList<Exp>)(yystack.valueAt (6-(5))))); };
+  break;
+    
+
+  case 42:
+  if (yyn == 42)
+    /* "Parser.y":171  */ /* lalr1.java:489  */
+    { yyval = new IntLiteralExp(((int)(yystack.valueAt (1-(1))))); };
+  break;
+    
+
+  case 43:
+  if (yyn == 43)
+    /* "Parser.y":172  */ /* lalr1.java:489  */
+    { yyval = new TrueExp(); };
+  break;
+    
+
+  case 44:
+  if (yyn == 44)
+    /* "Parser.y":173  */ /* lalr1.java:489  */
+    { yyval = new FalseExp(); };
+  break;
+    
+
+  case 45:
+  if (yyn == 45)
+    /* "Parser.y":174  */ /* lalr1.java:489  */
+    { yyval = new IdentExp(((String)(yystack.valueAt (1-(1))))); };
+  break;
+    
+
+  case 46:
+  if (yyn == 46)
+    /* "Parser.y":175  */ /* lalr1.java:489  */
+    { yyval = new ThisExp(); };
+  break;
+    
+
+  case 47:
+  if (yyn == 47)
+    /* "Parser.y":176  */ /* lalr1.java:489  */
+    { yyval = new ArrayAllocExp(((Exp)(yystack.valueAt (5-(4))))); };
+  break;
+    
+
+  case 48:
+  if (yyn == 48)
+    /* "Parser.y":177  */ /* lalr1.java:489  */
+    { yyval = new ObjectAllocExp(((String)(yystack.valueAt (4-(2))))); };
+  break;
+    
+
+  case 49:
+  if (yyn == 49)
+    /* "Parser.y":178  */ /* lalr1.java:489  */
+    { yyval = new NotExp(((Exp)(yystack.valueAt (2-(2))))); };
+  break;
+    
+
+  case 50:
+  if (yyn == 50)
+    /* "Parser.y":179  */ /* lalr1.java:489  */
+    { yyval = new BracketExp(((Exp)(yystack.valueAt (3-(2))))); };
+  break;
+    
+
+  case 51:
+  if (yyn == 51)
+    /* "Parser.y":183  */ /* lalr1.java:489  */
+    { yyval = new ArrayList<Exp>(); };
+  break;
+    
+
+  case 52:
+  if (yyn == 52)
+    /* "Parser.y":184  */ /* lalr1.java:489  */
+    { yyval = ((ArrayList<Exp>)(yystack.valueAt (1-(1)))); };
+  break;
+    
+
+  case 53:
+  if (yyn == 53)
+    /* "Parser.y":188  */ /* lalr1.java:489  */
+    { ArrayList<Exp> l = new ArrayList<Exp>(); l.add(((Exp)(yystack.valueAt (1-(1))))); yyval = l; };
+  break;
+    
+
+  case 54:
+  if (yyn == 54)
+    /* "Parser.y":189  */ /* lalr1.java:489  */
+    { ((ArrayList<Exp>)(yystack.valueAt (3-(1)))).add(((Exp)(yystack.valueAt (3-(3))))); yyval = ((ArrayList<Exp>)(yystack.valueAt (3-(1)))); };
+  break;
+    
+
+
+/* "Parser.java":757  */ /* lalr1.java:489  */
         default: break;
       }
 
@@ -919,12 +1292,12 @@ private static final short yycheck_[] = yycheck_init();
   {
     return new short[]
     {
-       0,    60,    60,    64,    65,    69,    73,    77,    78,    82,
-      83,    87,    88,    92,    96,   100,   101,   105,   106,   110,
-     114,   115,   119,   120,   124,   125,   126,   127,   131,   132,
-     133,   134,   135,   136,   140,   141,   142,   143,   144,   145,
-     146,   147,   148,   149,   150,   151,   152,   153,   154,   155,
-     156,   160,   161,   165,   166
+       0,    83,    83,    87,    88,    92,    96,   100,   101,   105,
+     106,   110,   111,   115,   119,   123,   124,   128,   129,   133,
+     137,   138,   142,   143,   147,   148,   149,   150,   154,   155,
+     156,   157,   158,   159,   163,   164,   165,   166,   167,   168,
+     169,   170,   171,   172,   173,   174,   175,   176,   177,   178,
+     179,   183,   184,   188,   189
     };
   }
 
@@ -1010,5 +1383,5 @@ private static final short yycheck_[] = yycheck_init();
 
 }
 
-/* "Parser.y":169  */ /* lalr1.java:1070  */
+/* "Parser.y":192  */ /* lalr1.java:1070  */
 

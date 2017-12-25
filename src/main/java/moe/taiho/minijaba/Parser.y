@@ -3,6 +3,8 @@
 %define parser_class_name {Parser}
 
 %code imports {
+    import java.util.ArrayList;
+    import moe.taiho.minijaba.ast.*;
 }
 
 %token K_CLASS "class"
@@ -54,116 +56,137 @@
 %right "!"
 %precedence "[" "."
 
+
+%type <Goal> goal
+%type <ArrayList<ClassDecl>> classes
+%type <MainClassDecl> main_class
+%type <ClassDecl> class_declaration
+%type <String> extends
+%type <ArrayList<VarDecl>> vars
+%type <ArrayList<MethodDecl>> methods
+%type <VarDecl> var_declaration
+%type <MethodDecl> method_declaration
+%type <ArrayList<VarDecl>> params
+%type <ArrayList<VarDecl>> params_nonempty
+%type <VarDecl> param_declaration
+%type <ArrayList<Stmt>> statements
+%type <ArrayList<Stmt>> statements_nonempty
+%type <Type> type
+%type <Stmt> statement
+%type <Exp> expression
+%type <ArrayList<Exp>> args
+%type <ArrayList<Exp>> args_nonempty
+
 %%
 
 goal:
-  main_class classes
+  main_class classes { $$ = new Goal($1, $2); }
 ;
 
 classes:
-  %empty
-| classes class_declaration
+  %empty { $$ = new ArrayList<ClassDecl>(); }
+| classes class_declaration { $1.add($2); $$ = $1; }
 ;
 
 main_class:
-  "class" IDENTIFIER "{" "public" "static" "void" "main" "(" "String" "[" "]" IDENTIFIER ")" "{" statement "}" "}"
+  "class" IDENTIFIER "{" "public" "static" "void" "main" "(" "String" "[" "]" IDENTIFIER ")" "{" statement "}" "}" { $$ = new MainClassDecl($2, $15); }
 ;
 
 class_declaration:
-  "class" IDENTIFIER extends "{" vars methods "}"
+  "class" IDENTIFIER extends "{" vars methods "}" { $$= new ClassDecl($2, $3, $5, $6); }
 ;
 
 extends:
-  %empty
-| "extends" IDENTIFIER
+  %empty { $$ = null; }
+| "extends" IDENTIFIER { $$ = $2; }
 ;
 
 vars:
-  %empty
-| vars var_declaration
+  %empty { $$ = new ArrayList<VarDecl>(); }
+| vars var_declaration { $1.add($2); $$ = $1; }
 ;
 
 methods:
-  %empty
-| methods method_declaration
+  %empty { $$ = new ArrayList<MethodDecl>(); }
+| methods method_declaration { $1.add($2); $$ = $1; }
 ;
 
 var_declaration:
-  type IDENTIFIER ";"
+  type IDENTIFIER ";" { $$ = new VarDecl($2, $1); }
 ;
 
 method_declaration:
-  "public" type IDENTIFIER "(" params ")" "{" vars statements "return" expression ";" "}"
+  "public" type IDENTIFIER "(" params ")" "{" vars statements "return" expression ";" "}" { $$ = new MethodDecl($3, $2, $5, $8, $9, $11); }
 ;
 
 params:
-  %empty
-| params_nonempty
+  %empty { $$ = new ArrayList<VarDecl>(); }
+| params_nonempty { $$ = $1; }
 ;
 
 params_nonempty:
-  param_declaration
-| params_nonempty "," param_declaration
+  param_declaration { ArrayList<VarDecl> l = new ArrayList<>(); l.add($1); $$ = l; }
+| params_nonempty "," param_declaration { $1.add($3); $$ = $1; }
 ;
 
 param_declaration:
-  type IDENTIFIER
+  type IDENTIFIER { $$ = new VarDecl($2, $1); }
 ;
 
 statements:
-  %empty
-| statements_nonempty
+  %empty { $$ = new ArrayList<Stmt>(); }
+| statements_nonempty { $$ = $1; }
 ;
 
 statements_nonempty:
-  statement
-| statements_nonempty statement
+  statement { ArrayList<Stmt> l = new ArrayList<>(); l.add($1); $$ = l; }
+| statements_nonempty statement { $1.add($2); $$ = $1; }
 ;
 
 type:
-  "int" "[" "]"
-| "boolean"
-| "int"
-| IDENTIFIER
+  "int" "[" "]" { $$ = new IntArrayType(); }
+| "boolean" { $$ = new BoolType(); }
+| "int" { $$ = new IntType(); }
+| IDENTIFIER { $$ = new ClassType($1); }
 ;
 
 statement:
-  "{" statements "}"
-| "if" "(" expression ")" statement "else" statement
-| "while" "(" expression ")" statement
-| K_PRINTLN "(" expression ")" ";"
-| IDENTIFIER "=" expression ";"
-| IDENTIFIER "[" expression "]" "=" expression ";"
+  "{" statements "}" { $$ = new BlockStmt($2); }
+| "if" "(" expression ")" statement "else" statement { $$ = new IfStmt($3, $5, $7); }
+| "while" "(" expression ")" statement { $$ = new WhileStmt($3, $5); }
+| K_PRINTLN "(" expression ")" ";" { $$ = new PrintlnStmt($3); }
+| IDENTIFIER "=" expression ";" { $$ = new AssignStmt($1, $3); }
+| IDENTIFIER "[" expression "]" "=" expression ";" { $$ = new ArrayAssignStmt($1, $3, $6); }
 ;
 
 expression:
-  expression "&&" expression
-| expression "<" expression
-| expression "+" expression
-| expression "-" expression
-| expression "*" expression
-| expression "[" expression "]"
-| expression "." "length"
-| expression "." IDENTIFIER "(" args ")"
-| INTEGER_LITERAL
-| "true"
-| "false"
-| IDENTIFIER
-| "this"
-| "new" "int" "[" expression "]"
-| "new" IDENTIFIER "(" ")"
-| "!" expression
-| "(" expression ")"
+  expression "&&" expression { $$ = new AndExp($1, $3); }
+| expression "<" expression { $$ = new LessThanExp($1, $3); }
+| expression "+" expression { $$ = new AddExp($1, $3); }
+| expression "-" expression { $$ = new SubExp($1, $3); }
+| expression "*" expression { $$ = new MulExp($1, $3); }
+| expression "[" expression "]" { $$ = new ArrayAccessExp($1, $3); }
+| expression "." "length" { $$ = new ArrayLengthExp($1); }
+| expression "." IDENTIFIER "(" args ")" { $$ = new MethodCallExp($1, $3, $5); }
+| INTEGER_LITERAL { $$ = new IntLiteralExp($1); }
+| "true" { $$ = new TrueExp(); }
+| "false" { $$ = new FalseExp(); }
+| IDENTIFIER { $$ = new IdentExp($1); }
+| "this" { $$ = new ThisExp(); }
+| "new" "int" "[" expression "]" { $$ = new ArrayAllocExp($4); }
+| "new" IDENTIFIER "(" ")" { $$ = new ObjectAllocExp($2); }
+| "!" expression { $$ = new NotExp($2); }
+| "(" expression ")" { $$ = new BracketExp($2); }
 ;
 
 args:
-  %empty
-| args_nonempty
+  %empty { $$ = new ArrayList<Exp>(); }
+| args_nonempty { $$ = $1; }
 ;
 
 args_nonempty:
-  expression
-| args_nonempty "," expression
+  expression { ArrayList<Exp> l = new ArrayList<Exp>(); l.add($1); $$ = l; }
+| args_nonempty "," expression { $1.add($3); $$ = $1; }
 ;
 
 %%

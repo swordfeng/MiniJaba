@@ -2,4 +2,9 @@
 .idea/
 *.iml
 
+.gradle/
+build/
+out/
+
 *.java~
+

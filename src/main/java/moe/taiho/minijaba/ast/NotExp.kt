@@ -1,3 +1,3 @@
 package moe.taiho.minijaba.ast
 
-class NotExp
+class NotExp(val value: Exp) : Exp()

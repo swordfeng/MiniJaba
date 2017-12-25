@@ -1,3 +1,3 @@
 package moe.taiho.minijaba.ast
 
-class PrintlnStmt : Stmt()
+class PrintlnStmt(val exp: Exp) : Stmt()

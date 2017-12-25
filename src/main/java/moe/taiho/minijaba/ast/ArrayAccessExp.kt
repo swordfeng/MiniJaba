@@ -1,3 +1,3 @@
 package moe.taiho.minijaba.ast
 
-class ArrayAccessExp : Exp()
+class ArrayAccessExp(val arr: Exp, val index: Exp) : Exp()

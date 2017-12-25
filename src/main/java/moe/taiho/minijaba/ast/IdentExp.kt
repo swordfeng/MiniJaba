@@ -1,3 +1,3 @@
 package moe.taiho.minijaba.ast
 
-class IdentExp : Exp()
+class IdentExp(val ident: String) : Exp()

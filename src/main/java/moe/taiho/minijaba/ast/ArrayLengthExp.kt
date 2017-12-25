@@ -1,3 +1,3 @@
 package moe.taiho.minijaba.ast
 
-class ArrayLengthExp : Exp()
+class ArrayLengthExp(val arr: Exp) : Exp()

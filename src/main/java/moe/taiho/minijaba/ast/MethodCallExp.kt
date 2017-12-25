@@ -1,3 +1,3 @@
 package moe.taiho.minijaba.ast
 
-class MethodCallExp : Exp()
+class MethodCallExp(val obj: Exp, val methodName: String, val args: List<Exp>) : Exp()

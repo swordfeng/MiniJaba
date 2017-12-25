@@ -1,3 +1,3 @@
 package moe.taiho.minijaba.ast
 
-class ObjectAllocExp : Exp()
+class ObjectAllocExp(val className: String) : Exp()

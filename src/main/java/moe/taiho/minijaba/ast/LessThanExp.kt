@@ -1,3 +1,3 @@
 package moe.taiho.minijaba.ast
 
-class LessThanExp : BinaryExp()
+class LessThanExp(left: Exp, right: Exp) : BinaryExp(left, right)

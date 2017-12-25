@@ -1,3 +1,3 @@
 package moe.taiho.minijaba.ast
 
-class MainClassDecl : BaseDecl()
+class MainClassDecl(val ident: String, val stmt: Stmt) : BaseDecl()

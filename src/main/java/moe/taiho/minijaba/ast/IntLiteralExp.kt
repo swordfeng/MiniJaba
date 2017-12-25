@@ -1,3 +1,3 @@
 package moe.taiho.minijaba.ast
 
-class IntLiteralExp : Exp()
+class IntLiteralExp(val value: Int) : Exp()

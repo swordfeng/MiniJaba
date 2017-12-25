@@ -1,3 +1,3 @@
 package moe.taiho.minijaba.ast
 
-class ClassType : Type()
+class ClassType(val ident: String) : Type()

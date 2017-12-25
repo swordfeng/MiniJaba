@@ -1,3 +1,3 @@
 package moe.taiho.minijaba.ast
 
-class WhileStmt : Stmt()
+class WhileStmt(val cond: Exp, val loopBody: Stmt) : Stmt()
