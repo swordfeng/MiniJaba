@@ -46,7 +46,6 @@
 %token S_COMMA ","
 %token S_DOT "."
 
-
 %token O_ASSIGN "="
 %token O_AND "&&"
 %token O_LT "<"
@@ -57,6 +56,8 @@
 
 %token <int> INTEGER_LITERAL
 %token <String> IDENTIFIER
+
+%token UNEXPECTED
 
 %left "&&"
 %left "<"
@@ -212,5 +213,13 @@ class Position {
     @Override
     public String toString() {
         return line + ":" + column + "(" + charpos + ")";
+    }
+    @Override
+    public boolean equals(Object rhs) {
+        if (!(rhs instanceof Position)) {
+            return false;
+        }
+        Position p = (Position) rhs;
+        return charpos == p.charpos;
     }
 }

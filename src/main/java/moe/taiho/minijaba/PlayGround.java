@@ -8,7 +8,7 @@ import java.io.*;
 public class PlayGround {
     static public void main(String[] args) throws IOException {
         //Reader reader = new BufferedReader(new FileReader("samples/binarysearch.java"));
-        Reader reader = new StringReader("gg");
+        Reader reader = new StringReader("class Main { gg");
         Lexer lexer = new Lexer(reader);
         Parser parser = new Parser(lexer);
         parser.parse();

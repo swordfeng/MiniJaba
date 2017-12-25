@@ -37,8 +37,9 @@ import moe.taiho.minijaba.Parser;
 
     public void yyerror(Parser.Location location, String msg) {
         System.err.println("Error@" +
-            location.begin.toString() + "-" +
-            location.end.toString() + ": " + msg);
+            location.begin.toString() +
+            (location.begin.equals(location.end) ? "" : "-" + location.end.toString())
+            + ": " + msg);
     }
 %}
 
@@ -101,3 +102,5 @@ IDENTIFIER = [A-Za-z_][A-Za-z0-9_]*
 {COMMENT} {}
 
 <<EOF>> { updateLastPos(); return EOF; }
+
+[^] { updateLastPos(); return UNEXPECTED; }

@@ -203,6 +203,8 @@ public class Parser
     static final int INTEGER_LITERAL = 293;
     /** Token number,to be returned by the scanner.  */
     static final int IDENTIFIER = 294;
+    /** Token number,to be returned by the scanner.  */
+    static final int UNEXPECTED = 295;
 
 
     /**
@@ -477,377 +479,377 @@ public class Parser
       {
           case 2:
   if (yyn == 2)
-    /* "Parser.y":92  */ /* lalr1.java:489  */
+    /* "Parser.y":93  */ /* lalr1.java:489  */
     { result = new Goal(((MainClassDecl)(yystack.valueAt (2-(1)))), ((ArrayList<ClassDecl>)(yystack.valueAt (2-(2))))); yyval = result; return YYACCEPT; };
   break;
     
 
   case 3:
   if (yyn == 3)
-    /* "Parser.y":96  */ /* lalr1.java:489  */
+    /* "Parser.y":97  */ /* lalr1.java:489  */
     { yyval = new ArrayList<ClassDecl>(); };
   break;
     
 
   case 4:
   if (yyn == 4)
-    /* "Parser.y":97  */ /* lalr1.java:489  */
+    /* "Parser.y":98  */ /* lalr1.java:489  */
     { ((ArrayList<ClassDecl>)(yystack.valueAt (2-(1)))).add(((ClassDecl)(yystack.valueAt (2-(2))))); yyval = ((ArrayList<ClassDecl>)(yystack.valueAt (2-(1)))); };
   break;
     
 
   case 5:
   if (yyn == 5)
-    /* "Parser.y":101  */ /* lalr1.java:489  */
+    /* "Parser.y":102  */ /* lalr1.java:489  */
     { yyval = new MainClassDecl(((String)(yystack.valueAt (17-(2)))), ((Stmt)(yystack.valueAt (17-(15)))), ((String)(yystack.valueAt (17-(12))))); };
   break;
     
 
   case 6:
   if (yyn == 6)
-    /* "Parser.y":105  */ /* lalr1.java:489  */
+    /* "Parser.y":106  */ /* lalr1.java:489  */
     { yyval= new ClassDecl(((String)(yystack.valueAt (7-(2)))), ((String)(yystack.valueAt (7-(3)))), ((ArrayList<VarDecl>)(yystack.valueAt (7-(5)))), ((ArrayList<MethodDecl>)(yystack.valueAt (7-(6))))); };
   break;
     
 
   case 7:
   if (yyn == 7)
-    /* "Parser.y":109  */ /* lalr1.java:489  */
+    /* "Parser.y":110  */ /* lalr1.java:489  */
     { yyval = null; };
   break;
     
 
   case 8:
   if (yyn == 8)
-    /* "Parser.y":110  */ /* lalr1.java:489  */
+    /* "Parser.y":111  */ /* lalr1.java:489  */
     { yyval = ((String)(yystack.valueAt (2-(2)))); };
   break;
     
 
   case 9:
   if (yyn == 9)
-    /* "Parser.y":114  */ /* lalr1.java:489  */
+    /* "Parser.y":115  */ /* lalr1.java:489  */
     { yyval = new ArrayList<VarDecl>(); };
   break;
     
 
   case 10:
   if (yyn == 10)
-    /* "Parser.y":115  */ /* lalr1.java:489  */
+    /* "Parser.y":116  */ /* lalr1.java:489  */
     { ((ArrayList<VarDecl>)(yystack.valueAt (2-(1)))).add(((VarDecl)(yystack.valueAt (2-(2))))); yyval = ((ArrayList<VarDecl>)(yystack.valueAt (2-(1)))); };
   break;
     
 
   case 11:
   if (yyn == 11)
-    /* "Parser.y":119  */ /* lalr1.java:489  */
+    /* "Parser.y":120  */ /* lalr1.java:489  */
     { yyval = new ArrayList<MethodDecl>(); };
   break;
     
 
   case 12:
   if (yyn == 12)
-    /* "Parser.y":120  */ /* lalr1.java:489  */
+    /* "Parser.y":121  */ /* lalr1.java:489  */
     { ((ArrayList<MethodDecl>)(yystack.valueAt (2-(1)))).add(((MethodDecl)(yystack.valueAt (2-(2))))); yyval = ((ArrayList<MethodDecl>)(yystack.valueAt (2-(1)))); };
   break;
     
 
   case 13:
   if (yyn == 13)
-    /* "Parser.y":124  */ /* lalr1.java:489  */
+    /* "Parser.y":125  */ /* lalr1.java:489  */
     { yyval = new VarDecl(((String)(yystack.valueAt (3-(2)))), ((Type)(yystack.valueAt (3-(1))))); };
   break;
     
 
   case 14:
   if (yyn == 14)
-    /* "Parser.y":128  */ /* lalr1.java:489  */
+    /* "Parser.y":129  */ /* lalr1.java:489  */
     { yyval = new MethodDecl(((String)(yystack.valueAt (13-(3)))), ((Type)(yystack.valueAt (13-(2)))), ((ArrayList<VarDecl>)(yystack.valueAt (13-(5)))), ((ArrayList<VarDecl>)(yystack.valueAt (13-(8)))), ((ArrayList<Stmt>)(yystack.valueAt (13-(9)))), ((Exp)(yystack.valueAt (13-(11))))); };
   break;
     
 
   case 15:
   if (yyn == 15)
-    /* "Parser.y":132  */ /* lalr1.java:489  */
+    /* "Parser.y":133  */ /* lalr1.java:489  */
     { yyval = new ArrayList<VarDecl>(); };
   break;
     
 
   case 16:
   if (yyn == 16)
-    /* "Parser.y":133  */ /* lalr1.java:489  */
+    /* "Parser.y":134  */ /* lalr1.java:489  */
     { yyval = ((ArrayList<VarDecl>)(yystack.valueAt (1-(1)))); };
   break;
     
 
   case 17:
   if (yyn == 17)
-    /* "Parser.y":137  */ /* lalr1.java:489  */
+    /* "Parser.y":138  */ /* lalr1.java:489  */
     { ArrayList<VarDecl> l = new ArrayList<>(); l.add(((VarDecl)(yystack.valueAt (1-(1))))); yyval = l; };
   break;
     
 
   case 18:
   if (yyn == 18)
-    /* "Parser.y":138  */ /* lalr1.java:489  */
+    /* "Parser.y":139  */ /* lalr1.java:489  */
     { ((ArrayList<VarDecl>)(yystack.valueAt (3-(1)))).add(((VarDecl)(yystack.valueAt (3-(3))))); yyval = ((ArrayList<VarDecl>)(yystack.valueAt (3-(1)))); };
   break;
     
 
   case 19:
   if (yyn == 19)
-    /* "Parser.y":142  */ /* lalr1.java:489  */
+    /* "Parser.y":143  */ /* lalr1.java:489  */
     { yyval = new VarDecl(((String)(yystack.valueAt (2-(2)))), ((Type)(yystack.valueAt (2-(1))))); };
   break;
     
 
   case 20:
   if (yyn == 20)
-    /* "Parser.y":146  */ /* lalr1.java:489  */
+    /* "Parser.y":147  */ /* lalr1.java:489  */
     { yyval = new ArrayList<Stmt>(); };
   break;
     
 
   case 21:
   if (yyn == 21)
-    /* "Parser.y":147  */ /* lalr1.java:489  */
+    /* "Parser.y":148  */ /* lalr1.java:489  */
     { yyval = ((ArrayList<Stmt>)(yystack.valueAt (1-(1)))); };
   break;
     
 
   case 22:
   if (yyn == 22)
-    /* "Parser.y":151  */ /* lalr1.java:489  */
+    /* "Parser.y":152  */ /* lalr1.java:489  */
     { ArrayList<Stmt> l = new ArrayList<>(); l.add(((Stmt)(yystack.valueAt (1-(1))))); yyval = l; };
   break;
     
 
   case 23:
   if (yyn == 23)
-    /* "Parser.y":152  */ /* lalr1.java:489  */
+    /* "Parser.y":153  */ /* lalr1.java:489  */
     { ((ArrayList<Stmt>)(yystack.valueAt (2-(1)))).add(((Stmt)(yystack.valueAt (2-(2))))); yyval = ((ArrayList<Stmt>)(yystack.valueAt (2-(1)))); };
   break;
     
 
   case 24:
   if (yyn == 24)
-    /* "Parser.y":156  */ /* lalr1.java:489  */
+    /* "Parser.y":157  */ /* lalr1.java:489  */
     { yyval = new IntArrayType(); };
   break;
     
 
   case 25:
   if (yyn == 25)
-    /* "Parser.y":157  */ /* lalr1.java:489  */
+    /* "Parser.y":158  */ /* lalr1.java:489  */
     { yyval = new BoolType(); };
   break;
     
 
   case 26:
   if (yyn == 26)
-    /* "Parser.y":158  */ /* lalr1.java:489  */
+    /* "Parser.y":159  */ /* lalr1.java:489  */
     { yyval = new IntType(); };
   break;
     
 
   case 27:
   if (yyn == 27)
-    /* "Parser.y":159  */ /* lalr1.java:489  */
+    /* "Parser.y":160  */ /* lalr1.java:489  */
     { yyval = new ClassType(((String)(yystack.valueAt (1-(1))))); };
   break;
     
 
   case 28:
   if (yyn == 28)
-    /* "Parser.y":163  */ /* lalr1.java:489  */
+    /* "Parser.y":164  */ /* lalr1.java:489  */
     { yyval = new BlockStmt(((ArrayList<Stmt>)(yystack.valueAt (3-(2))))); };
   break;
     
 
   case 29:
   if (yyn == 29)
-    /* "Parser.y":164  */ /* lalr1.java:489  */
+    /* "Parser.y":165  */ /* lalr1.java:489  */
     { yyval = new IfStmt(((Exp)(yystack.valueAt (7-(3)))), ((Stmt)(yystack.valueAt (7-(5)))), ((Stmt)(yystack.valueAt (7-(7))))); };
   break;
     
 
   case 30:
   if (yyn == 30)
-    /* "Parser.y":165  */ /* lalr1.java:489  */
+    /* "Parser.y":166  */ /* lalr1.java:489  */
     { yyval = new WhileStmt(((Exp)(yystack.valueAt (5-(3)))), ((Stmt)(yystack.valueAt (5-(5))))); };
   break;
     
 
   case 31:
   if (yyn == 31)
-    /* "Parser.y":166  */ /* lalr1.java:489  */
+    /* "Parser.y":167  */ /* lalr1.java:489  */
     { yyval = new PrintlnStmt(((Exp)(yystack.valueAt (5-(3))))); };
   break;
     
 
   case 32:
   if (yyn == 32)
-    /* "Parser.y":167  */ /* lalr1.java:489  */
+    /* "Parser.y":168  */ /* lalr1.java:489  */
     { yyval = new AssignStmt(((String)(yystack.valueAt (4-(1)))), ((Exp)(yystack.valueAt (4-(3))))); };
   break;
     
 
   case 33:
   if (yyn == 33)
-    /* "Parser.y":168  */ /* lalr1.java:489  */
+    /* "Parser.y":169  */ /* lalr1.java:489  */
     { yyval = new ArrayAssignStmt(((String)(yystack.valueAt (7-(1)))), ((Exp)(yystack.valueAt (7-(3)))), ((Exp)(yystack.valueAt (7-(6))))); };
   break;
     
 
   case 34:
   if (yyn == 34)
-    /* "Parser.y":172  */ /* lalr1.java:489  */
+    /* "Parser.y":173  */ /* lalr1.java:489  */
     { yyval = new AndExp(((Exp)(yystack.valueAt (3-(1)))), ((Exp)(yystack.valueAt (3-(3))))); };
   break;
     
 
   case 35:
   if (yyn == 35)
-    /* "Parser.y":173  */ /* lalr1.java:489  */
+    /* "Parser.y":174  */ /* lalr1.java:489  */
     { yyval = new LessThanExp(((Exp)(yystack.valueAt (3-(1)))), ((Exp)(yystack.valueAt (3-(3))))); };
   break;
     
 
   case 36:
   if (yyn == 36)
-    /* "Parser.y":174  */ /* lalr1.java:489  */
+    /* "Parser.y":175  */ /* lalr1.java:489  */
     { yyval = new AddExp(((Exp)(yystack.valueAt (3-(1)))), ((Exp)(yystack.valueAt (3-(3))))); };
   break;
     
 
   case 37:
   if (yyn == 37)
-    /* "Parser.y":175  */ /* lalr1.java:489  */
+    /* "Parser.y":176  */ /* lalr1.java:489  */
     { yyval = new SubExp(((Exp)(yystack.valueAt (3-(1)))), ((Exp)(yystack.valueAt (3-(3))))); };
   break;
     
 
   case 38:
   if (yyn == 38)
-    /* "Parser.y":176  */ /* lalr1.java:489  */
+    /* "Parser.y":177  */ /* lalr1.java:489  */
     { yyval = new MulExp(((Exp)(yystack.valueAt (3-(1)))), ((Exp)(yystack.valueAt (3-(3))))); };
   break;
     
 
   case 39:
   if (yyn == 39)
-    /* "Parser.y":177  */ /* lalr1.java:489  */
+    /* "Parser.y":178  */ /* lalr1.java:489  */
     { yyval = new ArrayAccessExp(((Exp)(yystack.valueAt (4-(1)))), ((Exp)(yystack.valueAt (4-(3))))); };
   break;
     
 
   case 40:
   if (yyn == 40)
-    /* "Parser.y":178  */ /* lalr1.java:489  */
+    /* "Parser.y":179  */ /* lalr1.java:489  */
     { yyval = new ArrayLengthExp(((Exp)(yystack.valueAt (3-(1))))); };
   break;
     
 
   case 41:
   if (yyn == 41)
-    /* "Parser.y":179  */ /* lalr1.java:489  */
+    /* "Parser.y":180  */ /* lalr1.java:489  */
     { yyval = new MethodCallExp(((Exp)(yystack.valueAt (6-(1)))), ((String)(yystack.valueAt (6-(3)))), ((ArrayList<Exp>)(yystack.valueAt (6-(5))))); };
   break;
     
 
   case 42:
   if (yyn == 42)
-    /* "Parser.y":180  */ /* lalr1.java:489  */
+    /* "Parser.y":181  */ /* lalr1.java:489  */
     { yyval = new IntLiteralExp(((int)(yystack.valueAt (1-(1))))); };
   break;
     
 
   case 43:
   if (yyn == 43)
-    /* "Parser.y":181  */ /* lalr1.java:489  */
+    /* "Parser.y":182  */ /* lalr1.java:489  */
     { yyval = new TrueExp(); };
   break;
     
 
   case 44:
   if (yyn == 44)
-    /* "Parser.y":182  */ /* lalr1.java:489  */
+    /* "Parser.y":183  */ /* lalr1.java:489  */
     { yyval = new FalseExp(); };
   break;
     
 
   case 45:
   if (yyn == 45)
-    /* "Parser.y":183  */ /* lalr1.java:489  */
+    /* "Parser.y":184  */ /* lalr1.java:489  */
     { yyval = new IdentExp(((String)(yystack.valueAt (1-(1))))); };
   break;
     
 
   case 46:
   if (yyn == 46)
-    /* "Parser.y":184  */ /* lalr1.java:489  */
+    /* "Parser.y":185  */ /* lalr1.java:489  */
     { yyval = new ThisExp(); };
   break;
     
 
   case 47:
   if (yyn == 47)
-    /* "Parser.y":185  */ /* lalr1.java:489  */
+    /* "Parser.y":186  */ /* lalr1.java:489  */
     { yyval = new ArrayAllocExp(((Exp)(yystack.valueAt (5-(4))))); };
   break;
     
 
   case 48:
   if (yyn == 48)
-    /* "Parser.y":186  */ /* lalr1.java:489  */
+    /* "Parser.y":187  */ /* lalr1.java:489  */
     { yyval = new ObjectAllocExp(((String)(yystack.valueAt (4-(2))))); };
   break;
     
 
   case 49:
   if (yyn == 49)
-    /* "Parser.y":187  */ /* lalr1.java:489  */
+    /* "Parser.y":188  */ /* lalr1.java:489  */
     { yyval = new NotExp(((Exp)(yystack.valueAt (2-(2))))); };
   break;
     
 
   case 50:
   if (yyn == 50)
-    /* "Parser.y":188  */ /* lalr1.java:489  */
+    /* "Parser.y":189  */ /* lalr1.java:489  */
     { yyval = new BracketExp(((Exp)(yystack.valueAt (3-(2))))); };
   break;
     
 
   case 51:
   if (yyn == 51)
-    /* "Parser.y":192  */ /* lalr1.java:489  */
+    /* "Parser.y":193  */ /* lalr1.java:489  */
     { yyval = new ArrayList<Exp>(); };
   break;
     
 
   case 52:
   if (yyn == 52)
-    /* "Parser.y":193  */ /* lalr1.java:489  */
+    /* "Parser.y":194  */ /* lalr1.java:489  */
     { yyval = ((ArrayList<Exp>)(yystack.valueAt (1-(1)))); };
   break;
     
 
   case 53:
   if (yyn == 53)
-    /* "Parser.y":197  */ /* lalr1.java:489  */
+    /* "Parser.y":198  */ /* lalr1.java:489  */
     { ArrayList<Exp> l = new ArrayList<Exp>(); l.add(((Exp)(yystack.valueAt (1-(1))))); yyval = l; };
   break;
     
 
   case 54:
   if (yyn == 54)
-    /* "Parser.y":198  */ /* lalr1.java:489  */
+    /* "Parser.y":199  */ /* lalr1.java:489  */
     { ((ArrayList<Exp>)(yystack.valueAt (3-(1)))).add(((Exp)(yystack.valueAt (3-(3))))); yyval = ((ArrayList<Exp>)(yystack.valueAt (3-(1)))); };
   break;
     
 
 
-/* "Parser.java":851  */ /* lalr1.java:489  */
+/* "Parser.java":853  */ /* lalr1.java:489  */
         default: break;
       }
 
@@ -1311,20 +1313,20 @@ private static final short yycheck_[] = yycheck_init();
   {
     return new byte[]
     {
-       0,     3,    41,    43,    39,     0,    42,    22,     3,    44,
-       4,    39,     5,     9,    45,     6,    39,    22,     7,    46,
-      24,    11,    12,    39,    47,    48,    55,     8,    26,     4,
-      23,    49,    39,    26,    27,    55,    28,    27,    39,    39,
-      24,    25,    50,    51,    52,    55,    22,    25,    29,    39,
-      13,    15,    16,    22,    39,    56,    22,    52,    24,    24,
-      24,    53,    54,    56,    26,    31,    23,    46,    18,    19,
-      20,    21,    24,    37,    38,    39,    57,    57,    57,    23,
-      56,    57,    57,    23,    39,    53,    11,    39,    57,    57,
+       0,     3,    42,    44,    39,     0,    43,    22,     3,    45,
+       4,    39,     5,     9,    46,     6,    39,    22,     7,    47,
+      24,    11,    12,    39,    48,    49,    56,     8,    26,     4,
+      23,    50,    39,    26,    27,    56,    28,    27,    39,    39,
+      24,    25,    51,    52,    53,    56,    22,    25,    29,    39,
+      13,    15,    16,    22,    39,    57,    22,    53,    24,    24,
+      24,    54,    55,    57,    26,    31,    23,    47,    18,    19,
+      20,    21,    24,    37,    38,    39,    58,    58,    58,    23,
+      57,    58,    58,    23,    39,    54,    11,    39,    58,    58,
       25,    26,    30,    32,    33,    34,    35,    36,    25,    25,
-      27,    28,    10,    26,    24,    25,    56,    57,    17,    39,
-      57,    57,    57,    57,    57,    56,    28,    31,    57,    57,
-      25,    14,    27,    24,    57,    28,    27,    56,    57,    58,
-      59,    28,    23,    25,    29,    57
+      27,    28,    10,    26,    24,    25,    57,    58,    17,    39,
+      58,    58,    58,    58,    58,    57,    28,    31,    58,    58,
+      25,    14,    27,    24,    58,    28,    27,    57,    58,    59,
+      60,    28,    23,    25,    29,    58
     };
   }
 
@@ -1334,12 +1336,12 @@ private static final short yycheck_[] = yycheck_init();
   {
     return new byte[]
     {
-       0,    40,    41,    42,    42,    43,    44,    45,    45,    46,
-      46,    47,    47,    48,    49,    50,    50,    51,    51,    52,
-      53,    53,    54,    54,    55,    55,    55,    55,    56,    56,
-      56,    56,    56,    56,    57,    57,    57,    57,    57,    57,
-      57,    57,    57,    57,    57,    57,    57,    57,    57,    57,
-      57,    58,    58,    59,    59
+       0,    41,    42,    43,    43,    44,    45,    46,    46,    47,
+      47,    48,    48,    49,    50,    51,    51,    52,    52,    53,
+      54,    54,    55,    55,    56,    56,    56,    56,    57,    57,
+      57,    57,    57,    57,    58,    58,    58,    58,    58,    58,
+      58,    58,    58,    58,    58,    58,    58,    58,    58,    58,
+      58,    59,    59,    60,    60
     };
   }
 
@@ -1368,7 +1370,8 @@ private static final short yycheck_[] = yycheck_init();
        0,   256,   257,   258,   259,   260,   261,   262,   263,   264,
      265,   266,   267,   268,   269,   270,   271,   272,   273,   274,
      275,   276,   277,   278,   279,   280,   281,   282,   283,   284,
-     285,   286,   287,   288,   289,   290,   291,   292,   293,   294
+     285,   286,   287,   288,   289,   290,   291,   292,   293,   294,
+     295
     };
   }
 
@@ -1385,11 +1388,12 @@ private static final short yycheck_[] = yycheck_init();
   "\"length\"", "\"true\"", "\"false\"", "\"this\"", "\"new\"", "\"{\"",
   "\"}\"", "\"(\"", "\")\"", "\"[\"", "\"]\"", "\";\"", "\",\"", "\".\"",
   "\"=\"", "\"&&\"", "\"<\"", "\"+\"", "\"-\"", "\"*\"", "\"!\"",
-  "INTEGER_LITERAL", "IDENTIFIER", "$accept", "goal", "classes",
-  "main_class", "class_declaration", "extends", "vars", "methods",
-  "var_declaration", "method_declaration", "params", "params_nonempty",
-  "param_declaration", "statements", "statements_nonempty", "type",
-  "statement", "expression", "args", "args_nonempty", null
+  "INTEGER_LITERAL", "IDENTIFIER", "UNEXPECTED", "$accept", "goal",
+  "classes", "main_class", "class_declaration", "extends", "vars",
+  "methods", "var_declaration", "method_declaration", "params",
+  "params_nonempty", "param_declaration", "statements",
+  "statements_nonempty", "type", "statement", "expression", "args",
+  "args_nonempty", null
     };
   }
 
@@ -1399,12 +1403,12 @@ private static final short yycheck_[] = yycheck_init();
   {
     return new short[]
     {
-       0,    92,    92,    96,    97,   101,   105,   109,   110,   114,
-     115,   119,   120,   124,   128,   132,   133,   137,   138,   142,
-     146,   147,   151,   152,   156,   157,   158,   159,   163,   164,
-     165,   166,   167,   168,   172,   173,   174,   175,   176,   177,
-     178,   179,   180,   181,   182,   183,   184,   185,   186,   187,
-     188,   192,   193,   197,   198
+       0,    93,    93,    97,    98,   102,   106,   110,   111,   115,
+     116,   120,   121,   125,   129,   133,   134,   138,   139,   143,
+     147,   148,   152,   153,   157,   158,   159,   160,   164,   165,
+     166,   167,   168,   169,   173,   174,   175,   176,   177,   178,
+     179,   180,   181,   182,   183,   184,   185,   186,   187,   188,
+     189,   193,   194,   198,   199
     };
   }
 
@@ -1464,7 +1468,7 @@ private static final short yycheck_[] = yycheck_init();
        5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
       15,    16,    17,    18,    19,    20,    21,    22,    23,    24,
       25,    26,    27,    28,    29,    30,    31,    32,    33,    34,
-      35,    36,    37,    38,    39
+      35,    36,    37,    38,    39,    40
     };
   }
 
@@ -1482,9 +1486,9 @@ private static final short yycheck_[] = yycheck_init();
   private static final int yyfinal_ = 5;
   private static final int yyterror_ = 1;
   private static final int yyerrcode_ = 256;
-  private static final int yyntokens_ = 40;
+  private static final int yyntokens_ = 41;
 
-  private static final int yyuser_token_number_max_ = 294;
+  private static final int yyuser_token_number_max_ = 295;
   private static final int yyundef_token_ = 2;
 
 /* User implementation code.  */
@@ -1496,11 +1500,11 @@ private static final short yycheck_[] = yycheck_init();
         return result;
     }
 
-/* "Parser.java":1500  */ /* lalr1.java:1066  */
+/* "Parser.java":1504  */ /* lalr1.java:1066  */
 
 }
 
-/* "Parser.y":201  */ /* lalr1.java:1070  */
+/* "Parser.y":202  */ /* lalr1.java:1070  */
 
 
 class Position {
@@ -1515,5 +1519,13 @@ class Position {
     @Override
     public String toString() {
         return line + ":" + column + "(" + charpos + ")";
+    }
+    @Override
+    public boolean equals(Object rhs) {
+        if (!(rhs instanceof Position)) {
+            return false;
+        }
+        Position p = (Position) rhs;
+        return charpos == p.charpos;
     }
 }

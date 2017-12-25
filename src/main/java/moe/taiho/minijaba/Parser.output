@@ -1,3 +1,8 @@
+Terminals unused in grammar
+
+   UNEXPECTED
+
+
 语法
 
     0 $accept: goal $end
@@ -116,50 +121,51 @@ K_PRINTLN (271) 30
 "!" (292) 48
 INTEGER_LITERAL (293) 41
 IDENTIFIER (294) 4 5 7 12 13 18 26 31 32 40 44 47
+UNEXPECTED (295)
 
 
 Nonterminals, with rules where they appear
 
-$accept (40)
+$accept (41)
     on left: 0
-goal (41)
+goal (42)
     on left: 1, on right: 0
-classes (42)
+classes (43)
     on left: 2 3, on right: 1 3
-main_class (43)
+main_class (44)
     on left: 4, on right: 1
-class_declaration (44)
+class_declaration (45)
     on left: 5, on right: 3
-extends (45)
+extends (46)
     on left: 6 7, on right: 5
-vars (46)
+vars (47)
     on left: 8 9, on right: 5 9 13
-methods (47)
+methods (48)
     on left: 10 11, on right: 5 11
-var_declaration (48)
+var_declaration (49)
     on left: 12, on right: 9
-method_declaration (49)
+method_declaration (50)
     on left: 13, on right: 11
-params (50)
+params (51)
     on left: 14 15, on right: 13
-params_nonempty (51)
+params_nonempty (52)
     on left: 16 17, on right: 15 17
-param_declaration (52)
+param_declaration (53)
     on left: 18, on right: 16 17
-statements (53)
+statements (54)
     on left: 19 20, on right: 13 27
-statements_nonempty (54)
+statements_nonempty (55)
     on left: 21 22, on right: 20 22
-type (55)
+type (56)
     on left: 23 24 25 26, on right: 12 13 18
-statement (56)
+statement (57)
     on left: 27 28 29 30 31 32, on right: 4 21 22 28 29
-expression (57)
+expression (58)
     on left: 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49, on right:
     13 28 29 30 31 32 33 34 35 36 37 38 39 40 46 48 49 52 53
-args (58)
+args (59)
     on left: 50 51, on right: 40
-args_nonempty (59)
+args_nonempty (60)
     on left: 52 53, on right: 51 53
 
 
