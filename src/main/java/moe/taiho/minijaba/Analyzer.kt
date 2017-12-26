@@ -1,5 +1,6 @@
 package moe.taiho.minijaba
 
+import jdk.internal.org.objectweb.asm.tree.MethodNode
 import moe.taiho.minijaba.ast.*
 
 object Analyzer {
@@ -71,8 +72,10 @@ object Analyzer {
                 }
             }
         }
-        fun findVar(varName: String): VarDecl? {
-            return variables[varName] ?: ctx.classScopes[decl.baseClass]?.findVar(varName)
+        fun findMethod(methodName: String): MethodDecl? {
+            return methods[methodName] ?: decl.baseClass?.let { base ->
+                ctx.classScopes[base]!!.findMethod(methodName)
+            }
         }
     }
 
@@ -117,7 +120,7 @@ object Analyzer {
             }
         }
         fun findVar(varName: String): VarDecl? {
-            return variables[varName] ?: ctx.findVar(varName)
+            return variables[varName] ?: ctx.variables[varName]
         }
     }
 

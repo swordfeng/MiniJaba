@@ -20,6 +20,8 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 
     compile "org.yaml:snakeyaml:1.19"
+    compile 'org.ow2.asm:asm:6.0'
+
 
     testCompile 'junit:junit:4.12'
 }
