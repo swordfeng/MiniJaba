@@ -7,13 +7,18 @@ import java.io.*;
 
 public class PlayGround {
     static public void main(String[] args) throws IOException {
-        Reader reader = new BufferedReader(new FileReader("samples/bubblesort.java"));
-        //Reader reader = new StringReader("class Main { gg");
-        Lexer lexer = new Lexer(reader);
-        Parser parser = new Parser(lexer);
-        parser.parse();
-        Goal goal = parser.getResult();
-        Interpreter.Context ctx = new Interpreter.Context(goal);
-        ctx.run();
+        A a = new B();
+        System.out.println(a.getY());
     }
+}
+
+class A {
+    int x = 5;
+    int getX() { return x; }
+    int getY() { return getX(); }
+}
+
+class B extends A {
+    int x = 7;
+    int getY() { return getX(); }
 }

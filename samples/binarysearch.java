@@ -135,7 +135,7 @@ class BS{
 	while (j < (size)) {
 	    aux01 = 2 * j ;
 	    aux02 = k - 3 ;
-	    number[j] = aux01 + aux02 ;
+        number[j] = aux01 + aux02 ;
 	    j = j + 1 ;
 	    k = k - 1 ;
 	}
