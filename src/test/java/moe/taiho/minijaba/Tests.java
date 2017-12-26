@@ -2,6 +2,7 @@ package moe.taiho.minijaba;
 
 import moe.taiho.minijaba.ast.Goal;
 import moe.taiho.minijaba.backend.interpreter.Interpreter;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.*;
@@ -91,5 +92,6 @@ public class Tests {
         Goal goal = parser.getResult();
         Analyzer.GoalScope ctx = new Analyzer.GoalScope(goal);
         ctx.typeCheck();
+        Assert.assertFalse(ctx.getHaserror());
     }
 }
