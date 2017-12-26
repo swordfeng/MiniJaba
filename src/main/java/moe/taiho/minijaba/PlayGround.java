@@ -1,5 +1,6 @@
 package moe.taiho.minijaba;
 
+import moe.taiho.minijaba.ast.ClassDecl;
 import moe.taiho.minijaba.ast.Goal;
 import moe.taiho.minijaba.backend.bytecode.Codegen;
 import moe.taiho.minijaba.backend.interpreter.Interpreter;
@@ -17,21 +18,24 @@ public class PlayGround {
         ctx.typeCheck();
 
         Codegen compiler = new Codegen(ctx);
-
-        
-
-        byte[] result = compiler.genClass(ctx.getClassScopes().get("BS"));
-        OutputStream s = new BufferedOutputStream(new FileOutputStream("t/moe/taiho/minijaba/generated/BS.class"));
-        s.write(result);
-        s.close();
-
-        result = compiler.genMainClass();
-        s = new BufferedOutputStream(new FileOutputStream("t/moe/taiho/minijaba/generated/BinarySearch.class"));
-        s.write(result);
-        s.close();
+        writeAll(compiler, "sampleout/moe/taiho/minijaba/generated");
     }
 
-    static void writeFile(byte[] data, String file) throws IOException {
+    static void writeAll(Codegen compiler, String path) throws IOException {
+        Goal goal = compiler.getCtx().getGoal();
+        String m = goal.getMainClass().getIdent();
+        byte[] r = compiler.genMainClass();
+        writeFile(r, path + "/" + m + ".class");
+        for (ClassDecl c : goal.getClasses()) {
+            m = c.getIdent();
+            r = compiler.genClass(compiler.getCtx().getClassScopes().get(m));
+            writeFile(r, path + "/" + m + ".class");
+        }
+    }
+
+    static void writeFile(byte[] data, String path) throws IOException {
+        File file = new File(path);
+        file.getParentFile().mkdirs();
         OutputStream s = new BufferedOutputStream(new FileOutputStream(file));
         s.write(data);
         s.close();
