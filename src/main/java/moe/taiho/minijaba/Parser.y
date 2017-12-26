@@ -110,7 +110,7 @@ class_declaration:
 
 extends:
   %empty { $$ = null; }
-| "extends" IDENTIFIER { $$ = $2; ((BaseDecl)$$).setPos(@$); }
+| "extends" IDENTIFIER { $$ = $2; }
 ;
 
 vars:

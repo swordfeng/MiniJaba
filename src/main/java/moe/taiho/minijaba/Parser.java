@@ -539,7 +539,7 @@ public class Parser
   case 8:
   if (yyn == 8)
     /* "Parser.y":113  */ /* lalr1.java:489  */
-    { yyval = ((String)(yystack.valueAt (2-(2)))); ((BaseDecl)yyval).setPos((yyloc)); };
+    { yyval = ((String)(yystack.valueAt (2-(2)))); };
   break;
     
 

@@ -3,7 +3,8 @@ package moe.taiho.minijaba.backend.interpreter
 import moe.taiho.minijaba.ast.*
 
 object Interpreter {
-    fun checkType(type: Type, value: Any) {
+    fun checkType(type: Type, value: Any, ctx: Context) {
+        if (value is Null) return
         if (! when (type) {
             is IntArrayType -> value is Array<*>
             is BoolType -> value is Boolean
@@ -11,34 +12,70 @@ object Interpreter {
             is ClassType -> value is Obj && value.typeDecl.ident == type.ident
             else -> false
         }) {
-            throw UnknownError("type mismatch ${type.javaClass.simpleName} -> ${value}")
+            if ((type is ClassType || type is IntArrayType) && value is Null) return
+            if (type is ClassType && value is Obj) {
+                var t = value.typeDecl
+                while (t != null) {
+                    if (t.ident == type.ident) return
+                    if (t.baseClass == null) break
+                    t = ctx.findClass(t.baseClass!!)
+                }
+            }
+            val tName = if (type is ClassType) type.ident else type.javaClass.simpleName
+            val vtName = if (value is Obj) value.typeDecl.ident else value.javaClass.simpleName
+            throw UnknownError("type mismatch ${tName} -> ${vtName}")
         }
     }
 
-    fun varInit(vs: HashMap<String, Any>, t: ClassDecl, ctx: Context) {
-        if (t.baseClass != null) varInit(vs, ctx.findClass(t.baseClass!!), ctx)
-        t.varList.forEach { v -> vs[v.ident] = ctx.initValue(v.type) }
-    }
-
+    val BASE_IDENT = "\$base";
+    class Null
     class Obj(val typeDecl: ClassDecl, ctx: Context) {
         val variables: HashMap<String, Any> = HashMap()
         init {
-            varInit(variables, typeDecl, ctx)
+            if (typeDecl.baseClass != null) {
+                variables[BASE_IDENT] = Obj(ctx.findClass(typeDecl.baseClass!!), ctx)
+            }
+            typeDecl.varList.forEach { v -> variables[v.ident] = ctx.initValue(v.type) }
+        }
+
+        fun findVar(varName: String): Any? {
+            if (variables.containsKey(varName)) return variables[varName]
+            else if (typeDecl.baseClass != null) return (variables[BASE_IDENT] as Obj).findVar(varName)
+            else return null
+        }
+        fun setVar(varName: String, value: Any): Boolean {
+            if (variables.containsKey(varName)) {
+                val oldvalue = variables[varName]!!
+                if (!(oldvalue is Null) && !(value is Null) && oldvalue.javaClass != value.javaClass) {
+                    throw UnknownError("assigned with different type: ${varName} " +
+                            "(${oldvalue.javaClass.simpleName} => ${value.javaClass.simpleName})")
+                }
+                variables[varName] = value
+                return true
+            }
+            else if (typeDecl.baseClass != null) return (variables[BASE_IDENT] as Obj).setVar(varName, value)
+            return false
+        }
+
+        tailrec fun findMethod(methodName: String): MethodDecl {
+            val decls = typeDecl.methodList.filter { m -> m.ident == methodName }
+            if (decls.size > 0) return decls[0]
+            return (variables[BASE_IDENT] as Obj).findMethod(methodName)
         }
 
         fun callMethod(methodName: String, args: List<Any>, ctx: Context): Any {
-            val methodDecl = typeDecl.methodList.filter { m -> m.ident == methodName }[0]
+            val methodDecl = findMethod(methodName)
             val scope = Scope(ctx.rootScope, this)
             val oldscope = ctx.curScope
             ctx.curScope = scope
             methodDecl.paramList.zip(args).forEach { (p, a) ->
-                checkType(p.type, a)
+                checkType(p.type, a, ctx)
                 scope.variables[p.ident] = a
             }
             methodDecl.varList.forEach { v -> scope.variables[v.ident] = ctx.initValue(v.type) }
             methodDecl.stmtList.forEach { s -> ctx.evalStmt(s) }
             val ret = ctx.evalExp(methodDecl.returnExp)
-            checkType(methodDecl.returnType, ret)
+            checkType(methodDecl.returnType, ret, ctx)
             ctx.curScope = oldscope
             return ret
         }
@@ -47,19 +84,18 @@ object Interpreter {
     class Scope(val parent: Scope?, private val thisObj: Obj?) {
         val variables: HashMap<String, Any> = HashMap()
         fun findVar(varName: String): Any? {
-            return variables[varName] ?: thisObj?.variables?.get(varName) ?: parent?.findVar(varName)
+            return variables[varName] ?: thisObj?.findVar(varName) ?: parent?.findVar(varName)
         }
         fun setVar(varName: String, value: Any) {
             if (variables.containsKey(varName)) {
-                if (variables[varName]!!.javaClass != value.javaClass) {
-                    throw UnknownError("assigned with different type: ${varName}")
+                val oldvalue = variables[varName]!!
+                if (!(oldvalue is Null) && !(value is Null) && oldvalue.javaClass != value.javaClass) {
+                    throw UnknownError("assigned with different type: ${varName} " +
+                            "(${oldvalue.javaClass.simpleName} => ${value.javaClass.simpleName})")
                 }
                 variables[varName] = value
-            } else if (thisObj?.variables?.containsKey(varName) == true) {
-                if (thisObj.variables[varName]!!.javaClass != value.javaClass) {
-                    throw UnknownError("assigned with different type: ${varName}")
-                }
-                thisObj.variables[varName] = value
+            } else if (thisObj?.setVar(varName, value) == true) {
+                return
             } else {
                 parent!!.setVar(varName, value)
             }
@@ -93,10 +129,10 @@ object Interpreter {
         }
         fun initValue(type: Type): Any {
             return when (type) {
-                is IntArrayType -> arrayOf<Int>()
+                is IntArrayType -> Null()
                 is BoolType -> false
                 is IntType -> 0
-                is ClassType -> Obj(findClass(type.ident), this)
+                is ClassType -> Null()
                 else -> throw UnknownError("Trying to initialize: ${type.javaClass.name}")
             }
         }
@@ -123,9 +159,9 @@ object Interpreter {
                 is AssignStmt -> setVar(s.ident, evalExp(s.value))
                 is ArrayAssignStmt -> {
                     val index = evalExp(s.index)
-                    checkType(IntType(), index)
+                    checkType(IntType(), index, this)
                     val value = evalExp(s.value)
-                    checkType(IntType(), value)
+                    checkType(IntType(), value, this)
                     (findVar(s.ident) as Array<Int>)[index as Int] = value as Int
                 }
                 is PrintlnStmt -> println(evalExp(s.exp))
