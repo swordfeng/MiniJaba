@@ -320,10 +320,10 @@ class Lexer implements Parser.Lexer {
             + ": " + msg);
     }
 
-    private void debug() {
-        System.err.println("Debug@" +
+    private void llerror() {
+        System.err.println("Error@" +
             getStartPos().toString() + "-" + getEndPos().toString()
-            + ": " + yytext());
+            + ": lexical error unexpected token " + yytext());
     }
 
 
@@ -702,7 +702,7 @@ class Lexer implements Parser.Lexer {
       else {
         switch (zzAction < 0 ? zzAction : ZZ_ACTION[zzAction]) {
           case 1: 
-            { debug(); return UNEXPECTED;
+            { llerror(); return UNEXPECTED;
             }
           case 40: break;
           case 2: 

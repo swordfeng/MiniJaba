@@ -154,8 +154,8 @@ statements_nonempty:
   statement { ArrayList<Stmt> l = new ArrayList<>(); l.add($1); $$ = l; }
 | statements_nonempty statement { $1.add($2); $$ = $1; }
 // errors
-| error { yyerror(@1, "invalid statement"); ArrayList<Stmt> l = new ArrayList<>(); l.add(new InvStmt()); $$ = l; }
-| statements_nonempty error { yyerror(@2, "invalid statement"); $1.add(new InvStmt()); $$ = $1; }
+| error { yyerror(@1, "syntax error invalid statement"); ArrayList<Stmt> l = new ArrayList<>(); l.add(new InvStmt()); $$ = l; }
+| statements_nonempty error { yyerror(@2, "syntax error invalid statement"); $1.add(new InvStmt()); $$ = $1; }
 ;
 
 type:
@@ -173,11 +173,11 @@ statement:
 | IDENTIFIER "=" expression ";" { $$ = new AssignStmt($1, $3); }
 | IDENTIFIER "[" expression "]" "=" expression ";" { $$ = new ArrayAssignStmt($1, $3, $6); }
 // errors
-| "else" statement { yyerror(@$, "if statement required"); $$ = new InvStmt(); }
-| "if" error  { yyerror(@$, "invalid if statement"); $$ = new InvStmt(); }
-| "while" error { yyerror(@$, "invalid while statement"); $$ = new InvStmt(); }
-| K_PRINTLN error { yyerror(@$, "invalid println statement"); $$ = new InvStmt(); }
-| error ";" { yyerror(@$, "invalid statement"); $$ = new InvStmt(); }
+| "else" statement { yyerror(@$, "syntax error if statement required"); $$ = new InvStmt(); }
+| "if" error  { yyerror(@$, "syntax error invalid if statement"); $$ = new InvStmt(); }
+| "while" error { yyerror(@$, "syntax error invalid while statement"); $$ = new InvStmt(); }
+| K_PRINTLN error { yyerror(@$, "syntax error invalid println statement"); $$ = new InvStmt(); }
+| error ";" { yyerror(@$, "syntax error invalid statement"); $$ = new InvStmt(); }
 ;
 
 expression:

@@ -651,14 +651,14 @@ public class Parser
   case 24:
   if (yyn == 24)
     /* "Parser.y":157  */ /* lalr1.java:489  */
-    { yyerror(yystack.locationAt (1-(1)), "invalid statement"); ArrayList<Stmt> l = new ArrayList<>(); l.add(new InvStmt()); yyval = l; };
+    { yyerror(yystack.locationAt (1-(1)), "syntax error invalid statement"); ArrayList<Stmt> l = new ArrayList<>(); l.add(new InvStmt()); yyval = l; };
   break;
     
 
   case 25:
   if (yyn == 25)
     /* "Parser.y":158  */ /* lalr1.java:489  */
-    { yyerror(yystack.locationAt (2-(2)), "invalid statement"); ((ArrayList<Stmt>)(yystack.valueAt (2-(1)))).add(new InvStmt()); yyval = ((ArrayList<Stmt>)(yystack.valueAt (2-(1)))); };
+    { yyerror(yystack.locationAt (2-(2)), "syntax error invalid statement"); ((ArrayList<Stmt>)(yystack.valueAt (2-(1)))).add(new InvStmt()); yyval = ((ArrayList<Stmt>)(yystack.valueAt (2-(1)))); };
   break;
     
 
@@ -735,35 +735,35 @@ public class Parser
   case 36:
   if (yyn == 36)
     /* "Parser.y":176  */ /* lalr1.java:489  */
-    { yyerror((yyloc), "if statement required"); yyval = new InvStmt(); };
+    { yyerror((yyloc), "syntax error if statement required"); yyval = new InvStmt(); };
   break;
     
 
   case 37:
   if (yyn == 37)
     /* "Parser.y":177  */ /* lalr1.java:489  */
-    { yyerror((yyloc), "invalid if statement"); yyval = new InvStmt(); };
+    { yyerror((yyloc), "syntax error invalid if statement"); yyval = new InvStmt(); };
   break;
     
 
   case 38:
   if (yyn == 38)
     /* "Parser.y":178  */ /* lalr1.java:489  */
-    { yyerror((yyloc), "invalid while statement"); yyval = new InvStmt(); };
+    { yyerror((yyloc), "syntax error invalid while statement"); yyval = new InvStmt(); };
   break;
     
 
   case 39:
   if (yyn == 39)
     /* "Parser.y":179  */ /* lalr1.java:489  */
-    { yyerror((yyloc), "invalid println statement"); yyval = new InvStmt(); };
+    { yyerror((yyloc), "syntax error invalid println statement"); yyval = new InvStmt(); };
   break;
     
 
   case 40:
   if (yyn == 40)
     /* "Parser.y":180  */ /* lalr1.java:489  */
-    { yyerror((yyloc), "invalid statement"); yyval = new InvStmt(); };
+    { yyerror((yyloc), "syntax error invalid statement"); yyval = new InvStmt(); };
   break;
     
 

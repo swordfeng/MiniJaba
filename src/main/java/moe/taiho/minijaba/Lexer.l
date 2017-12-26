@@ -35,10 +35,10 @@ import moe.taiho.minijaba.Parser;
             + ": " + msg);
     }
 
-    private void debug() {
-        System.err.println("Debug@" +
+    private void llerror() {
+        System.err.println("Error@" +
             getStartPos().toString() + "-" + getEndPos().toString()
-            + ": " + yytext());
+            + ": lexical error unexpected token " + yytext());
     }
 %}
 
@@ -102,4 +102,4 @@ IDENTIFIER = [A-Za-z_][A-Za-z0-9_]*
 
 <<EOF>> { return EOF; }
 
-[^] { debug(); return UNEXPECTED; }
+[^] { llerror(); return UNEXPECTED; }
