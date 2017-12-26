@@ -77,6 +77,17 @@ object Analyzer {
                 ctx.classScopes[base]!!.findMethod(methodName)
             }
         }
+        fun findVar(varName: String): VarDecl? {
+            return variables[varName] ?: decl.baseClass.let { base ->
+                ctx.classScopes[base]!!.findVar(varName)
+            }
+        }
+        fun findVarScope(varName: String): ClassScope? {
+            if (variables.containsKey(varName)) return this
+            return decl.baseClass.let { base ->
+                ctx.classScopes[base]!!.findVarScope(varName)
+            }
+        }
     }
 
     class MethodScope(val decl: MethodDecl, val ctx: ClassScope) {
@@ -120,7 +131,7 @@ object Analyzer {
             }
         }
         fun findVar(varName: String): VarDecl? {
-            return variables[varName] ?: ctx.variables[varName]
+            return variables[varName] ?: ctx.findVar(varName)
         }
     }
 

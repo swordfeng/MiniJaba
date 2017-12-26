@@ -139,9 +139,10 @@ class Codegen(val ctx: Analyzer.GoalScope) {
                     }
                 } else {
                     // field
+                    val classScope = methodScope.ctx.findVarScope(s.ident)!!
                     mw.visitIntInsn(ALOAD, 0)
                     genExpression(mw, s.value, methodScope, varMap)
-                    mw.visitFieldInsn(PUTFIELD, CLASS_NAME_PREFIX + methodScope.ctx.decl.ident, s.ident, genDescriptor(t))
+                    mw.visitFieldInsn(PUTFIELD, CLASS_NAME_PREFIX + classScope.decl.ident, s.ident, genDescriptor(t))
                 }
             }
             is ArrayAssignStmt -> {
@@ -284,9 +285,10 @@ class Codegen(val ctx: Analyzer.GoalScope) {
                     t
                 } else {
                     // field
-                    val t = methodScope.ctx.variables[e.ident]!!.type
+                    val classScope = methodScope.ctx.findVarScope(e.ident)!!
+                    val t = classScope.variables[e.ident]!!.type
                     mw.visitIntInsn(ALOAD, 0)
-                    mw.visitFieldInsn(GETFIELD, CLASS_NAME_PREFIX + methodScope.ctx.decl.ident, e.ident, genDescriptor(t))
+                    mw.visitFieldInsn(GETFIELD, CLASS_NAME_PREFIX + classScope.decl.ident, e.ident, genDescriptor(t))
                     t
                 }
             }
