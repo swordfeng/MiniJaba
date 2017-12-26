@@ -92,7 +92,7 @@
 %%
 
 goal:
-  main_class classes { result = new Goal($1, $2); $$ = result; return YYACCEPT; }
+  main_class classes { result = new Goal($1, $2); $$ = result; ((BaseDecl)$$).setPos(@$); return YYACCEPT; }
 ;
 
 classes:
@@ -101,16 +101,16 @@ classes:
 ;
 
 main_class:
-  "class" IDENTIFIER "{" "public" "static" "void" "main" "(" "String" "[" "]" IDENTIFIER ")" "{" statement "}" "}" { $$ = new MainClassDecl($2, $15, $12); }
+  "class" IDENTIFIER "{" "public" "static" "void" "main" "(" "String" "[" "]" IDENTIFIER ")" "{" statement "}" "}" { $$ = new MainClassDecl($2, $15, $12); ((BaseDecl)$$).setPos(@$); }
 ;
 
 class_declaration:
-  "class" IDENTIFIER extends "{" vars methods "}" { $$= new ClassDecl($2, $3, $5, $6); }
+  "class" IDENTIFIER extends "{" vars methods "}" { $$= new ClassDecl($2, $3, $5, $6); ((BaseDecl)$$).setPos(@$); }
 ;
 
 extends:
   %empty { $$ = null; }
-| "extends" IDENTIFIER { $$ = $2; }
+| "extends" IDENTIFIER { $$ = $2; ((BaseDecl)$$).setPos(@$); }
 ;
 
 vars:
@@ -119,16 +119,16 @@ vars:
 ;
 
 methods:
-  %empty { $$ = new ArrayList<MethodDecl>(); }
-| methods method_declaration { $1.add($2); $$ = $1; }
+  %empty { $$ = new ArrayList<MethodDecl>();; }
+| methods method_declaration { $1.add($2); $$ = $1;; }
 ;
 
 var_declaration:
-  type IDENTIFIER ";" { $$ = new VarDecl($2, $1); }
+  type IDENTIFIER ";" { $$ = new VarDecl($2, $1); ((BaseDecl)$$).setPos(@$); }
 ;
 
 method_declaration:
-  "public" type IDENTIFIER "(" params ")" "{" vars statements "return" expression ";" "}" { $$ = new MethodDecl($3, $2, $5, $8, $9, $11); }
+  "public" type IDENTIFIER "(" params ")" "{" vars statements "return" expression ";" "}" { $$ = new MethodDecl($3, $2, $5, $8, $9, $11); ((BaseDecl)$$).setPos(@$); }
 ;
 
 params:
@@ -142,7 +142,7 @@ params_nonempty:
 ;
 
 param_declaration:
-  type IDENTIFIER { $$ = new VarDecl($2, $1); }
+  type IDENTIFIER { $$ = new VarDecl($2, $1); ((BaseDecl)$$).setPos(@$); }
 ;
 
 statements:
@@ -159,45 +159,45 @@ statements_nonempty:
 ;
 
 type:
-  "int" "[" "]" { $$ = new IntArrayType(); }
-| "boolean" { $$ = new BoolType(); }
-| "int" { $$ = new IntType(); }
-| IDENTIFIER { $$ = new ClassType($1); }
+  "int" "[" "]" { $$ = new IntArrayType(); ((BaseDecl)$$).setPos(@$); }
+| "boolean" { $$ = new BoolType(); ((BaseDecl)$$).setPos(@$); }
+| "int" { $$ = new IntType(); ((BaseDecl)$$).setPos(@$); }
+| IDENTIFIER { $$ = new ClassType($1); ((BaseDecl)$$).setPos(@$); }
 ;
 
 statement:
-  "{" statements "}" { $$ = new BlockStmt($2); }
-| "if" "(" expression ")" statement "else" statement { $$ = new IfStmt($3, $5, $7); }
-| "while" "(" expression ")" statement { $$ = new WhileStmt($3, $5); }
-| K_PRINTLN "(" expression ")" ";" { $$ = new PrintlnStmt($3); }
-| IDENTIFIER "=" expression ";" { $$ = new AssignStmt($1, $3); }
-| IDENTIFIER "[" expression "]" "=" expression ";" { $$ = new ArrayAssignStmt($1, $3, $6); }
+  "{" statements "}" { $$ = new BlockStmt($2); ((BaseDecl)$$).setPos(@$); }
+| "if" "(" expression ")" statement "else" statement { $$ = new IfStmt($3, $5, $7); ((BaseDecl)$$).setPos(@$); }
+| "while" "(" expression ")" statement { $$ = new WhileStmt($3, $5); ((BaseDecl)$$).setPos(@$); }
+| K_PRINTLN "(" expression ")" ";" { $$ = new PrintlnStmt($3); ((BaseDecl)$$).setPos(@$); }
+| IDENTIFIER "=" expression ";" { $$ = new AssignStmt($1, $3); ((BaseDecl)$$).setPos(@$); }
+| IDENTIFIER "[" expression "]" "=" expression ";" { $$ = new ArrayAssignStmt($1, $3, $6); ((BaseDecl)$$).setPos(@$); }
 // errors
-| "else" statement { yyerror(@$, "syntax error if statement required"); $$ = new InvStmt(); }
-| "if" error  { yyerror(@$, "syntax error invalid if statement"); $$ = new InvStmt(); }
-| "while" error { yyerror(@$, "syntax error invalid while statement"); $$ = new InvStmt(); }
-| K_PRINTLN error { yyerror(@$, "syntax error invalid println statement"); $$ = new InvStmt(); }
-| error ";" { yyerror(@$, "syntax error invalid statement"); $$ = new InvStmt(); }
+| "else" statement { yyerror(@$, "syntax error if statement required"); $$ = new InvStmt(); ((BaseDecl)$$).setPos(@$); }
+| "if" error  { yyerror(@$, "syntax error invalid if statement"); $$ = new InvStmt(); ((BaseDecl)$$).setPos(@$); }
+| "while" error { yyerror(@$, "syntax error invalid while statement"); $$ = new InvStmt(); ((BaseDecl)$$).setPos(@$); }
+| K_PRINTLN error { yyerror(@$, "syntax error invalid println statement"); $$ = new InvStmt(); ((BaseDecl)$$).setPos(@$); }
+| error ";" { yyerror(@$, "syntax error invalid statement"); $$ = new InvStmt(); ((BaseDecl)$$).setPos(@$); }
 ;
 
 expression:
-  expression "&&" expression { $$ = new AndExp($1, $3); }
-| expression "<" expression { $$ = new LessThanExp($1, $3); }
-| expression "+" expression { $$ = new AddExp($1, $3); }
-| expression "-" expression { $$ = new SubExp($1, $3); }
-| expression "*" expression { $$ = new MulExp($1, $3); }
-| expression "[" expression "]" { $$ = new ArrayAccessExp($1, $3); }
-| expression "." "length" { $$ = new ArrayLengthExp($1); }
-| expression "." IDENTIFIER "(" args ")" { $$ = new MethodCallExp($1, $3, $5); }
-| INTEGER_LITERAL { $$ = new IntLiteralExp($1); }
-| "true" { $$ = new TrueExp(); }
-| "false" { $$ = new FalseExp(); }
-| IDENTIFIER { $$ = new IdentExp($1); }
-| "this" { $$ = new ThisExp(); }
-| "new" "int" "[" expression "]" { $$ = new ArrayAllocExp($4); }
-| "new" IDENTIFIER "(" ")" { $$ = new ObjectAllocExp($2); }
-| "!" expression { $$ = new NotExp($2); }
-| "(" expression ")" { $$ = new BracketExp($2); }
+  expression "&&" expression { $$ = new AndExp($1, $3); ((BaseDecl)$$).setPos(@$); }
+| expression "<" expression { $$ = new LessThanExp($1, $3); ((BaseDecl)$$).setPos(@$); }
+| expression "+" expression { $$ = new AddExp($1, $3); ((BaseDecl)$$).setPos(@$); }
+| expression "-" expression { $$ = new SubExp($1, $3); ((BaseDecl)$$).setPos(@$); }
+| expression "*" expression { $$ = new MulExp($1, $3); ((BaseDecl)$$).setPos(@$); }
+| expression "[" expression "]" { $$ = new ArrayAccessExp($1, $3); ((BaseDecl)$$).setPos(@$); }
+| expression "." "length" { $$ = new ArrayLengthExp($1); ((BaseDecl)$$).setPos(@$); }
+| expression "." IDENTIFIER "(" args ")" { $$ = new MethodCallExp($1, $3, $5); ((BaseDecl)$$).setPos(@$); }
+| INTEGER_LITERAL { $$ = new IntLiteralExp($1); ((BaseDecl)$$).setPos(@$); }
+| "true" { $$ = new TrueExp(); ((BaseDecl)$$).setPos(@$); }
+| "false" { $$ = new FalseExp(); ((BaseDecl)$$).setPos(@$); }
+| IDENTIFIER { $$ = new IdentExp($1); ((BaseDecl)$$).setPos(@$); }
+| "this" { $$ = new ThisExp(); ((BaseDecl)$$).setPos(@$); }
+| "new" "int" "[" expression "]" { $$ = new ArrayAllocExp($4); ((BaseDecl)$$).setPos(@$); }
+| "new" IDENTIFIER "(" ")" { $$ = new ObjectAllocExp($2); ((BaseDecl)$$).setPos(@$); }
+| "!" expression { $$ = new NotExp($2); ((BaseDecl)$$).setPos(@$); }
+| "(" expression ")" { $$ = new BracketExp($2); ((BaseDecl)$$).setPos(@$); }
 ;
 
 args:
@@ -211,26 +211,3 @@ args_nonempty:
 ;
 
 %%
-
-class Position {
-    public int line;
-    public int column;
-    public int charpos;
-    Position(int line, int column, int charpos) {
-        this.line = line;
-        this.column = column;
-        this.charpos = charpos;
-    }
-    @Override
-    public String toString() {
-        return line + ":" + column + "(" + charpos + ")";
-    }
-    @Override
-    public boolean equals(Object rhs) {
-        if (!(rhs instanceof Position)) {
-            return false;
-        }
-        Position p = (Position) rhs;
-        return charpos == p.charpos;
-    }
-}
