@@ -94,4 +94,16 @@ public class Tests {
         ctx.typeCheck();
         Assert.assertFalse(ctx.getHaserror());
     }
+
+    @Test
+    public void Errors() throws IOException {
+        Reader reader = new BufferedReader(new FileReader("samples/errors.java"));
+        Lexer lexer = new Lexer(reader);
+        Parser parser = new Parser(lexer);
+        parser.parse();
+        Goal goal = parser.getResult();
+        Analyzer.GoalScope ctx = new Analyzer.GoalScope(goal);
+        ctx.typeCheck();
+        Assert.assertTrue(ctx.getHaserror());
+    }
 }
