@@ -1,6 +1,5 @@
-package moe.taiho.minijaba.backend
+package moe.taiho.minijaba.backend.interpreter
 
-import com.sun.org.apache.xpath.internal.operations.Bool
 import moe.taiho.minijaba.ast.*
 
 object Interpreter {
@@ -16,10 +15,15 @@ object Interpreter {
         }
     }
 
+    fun varInit(vs: HashMap<String, Any>, t: ClassDecl, ctx: Context) {
+        if (t.baseClass != null) varInit(vs, ctx.findClass(t.baseClass!!), ctx)
+        t.varList.forEach { v -> vs[v.ident] = ctx.initValue(v.type) }
+    }
+
     class Obj(val typeDecl: ClassDecl, ctx: Context) {
         val variables: HashMap<String, Any> = HashMap()
         init {
-            typeDecl.varList.forEach { v -> variables[v.ident] = ctx.initValue(v.type) }
+            varInit(variables, typeDecl, ctx)
         }
 
         fun callMethod(methodName: String, args: List<Any>, ctx: Context): Any {
