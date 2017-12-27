@@ -7,9 +7,14 @@ import moe.taiho.minijaba.backend.interpreter.Interpreter;
 
 import java.io.*;
 
+import static org.bytedeco.javacpp.LLVM.LLVMModuleCreateWithName;
+import static org.bytedeco.javacpp.LLVM.LLVMStructCreateNamed;
+
 public class PlayGround {
     static public void main(String[] args) throws IOException {
-        Reader reader = new BufferedReader(new FileReader("samples/binarysearch.java"));
+        LLVMModuleCreateWithName("generated");
+        /*
+        Reader reader = new BufferedReader(new FileReader("a.java"));
         Lexer lexer = new Lexer(reader);
         Parser parser = new Parser(lexer);
         parser.parse();
@@ -19,6 +24,7 @@ public class PlayGround {
 
         Codegen compiler = new Codegen(ctx);
         writeAll(compiler, "sampleout/moe/taiho/minijaba/generated");
+        */
     }
 
     static void writeAll(Codegen compiler, String path) throws IOException {
