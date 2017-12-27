@@ -18,9 +18,9 @@ class Codegen(val goalScope: Analyzer.GoalScope) {
     val lctx: LLVMContextRef = LLVMContextCreate()
     val mod = LLVMModuleCreateWithNameInContext("moe.taiho.minijaba.generated", lctx)
 
-    val intType = LLVMIntTypeInContext(lctx, 32)
-    val int8Type = LLVMIntTypeInContext(lctx, 8)
-    val boolType = LLVMIntTypeInContext(lctx, 1)
+    val intType = LLVMInt32TypeInContext(lctx)
+    val int8Type = LLVMInt8TypeInContext(lctx)
+    val boolType = LLVMInt1TypeInContext(lctx)
     val intArrayRefStruct = LLVMStructTypeInContext(lctx,
             makepp(LLVMPointerType(intType, 0), intType), 2, 0)
 
@@ -119,6 +119,8 @@ class Codegen(val goalScope: Analyzer.GoalScope) {
                 makepp(LLVMPointerType(int8Type, 0)), 1, 1))
         LLVMAddFunction(mod, "GC_malloc", LLVMFunctionType(LLVMPointerType(int8Type, 0),
                 makepp(intType), 1, 0))
+        LLVMAddFunction(mod, "malloc", LLVMFunctionType(LLVMPointerType(int8Type, 0),
+                makepp(intType), 1, 0))
         LLVMAddFunction(mod, "GC_collect_a_little", LLVMFunctionType(intType,
                 makepp<LLVMTypeRef>(), 0, 0))
 
@@ -169,8 +171,8 @@ class Codegen(val goalScope: Analyzer.GoalScope) {
         val counter = Counter()
 
         // initialize frame
-        var lastblock = LLVMAppendBasicBlock(fn, "entry")
-        val beginBuilder = LLVMCreateBuilder()
+        var lastblock = LLVMAppendBasicBlockInContext(lctx, fn, "entry")
+        val beginBuilder = LLVMCreateBuilderInContext(lctx)
         LLVMPositionBuilderAtEnd(beginBuilder, lastblock)
         varMap["this"] = LLVMGetParam(fn, 0)
         m.paramList.zip(1..m.paramList.size).forEach { (p, i) ->
@@ -187,7 +189,7 @@ class Codegen(val goalScope: Analyzer.GoalScope) {
 
         m.stmtList.forEach { s -> lastblock = genStatement(fn, lastblock, s, methodScope, varMap, counter) }
 
-        val endBuilder = LLVMCreateBuilder()
+        val endBuilder = LLVMCreateBuilderInContext(lctx)
         LLVMPositionBuilderAtEnd(endBuilder, lastblock)
         val retval = genExpression(endBuilder, m.returnExp, methodScope, varMap, counter)
         LLVMBuildRet(endBuilder, retval)
@@ -202,7 +204,7 @@ class Codegen(val goalScope: Analyzer.GoalScope) {
                 lastblock
             }
             is IfStmt -> {
-                val builder = LLVMCreateBuilder()
+                val builder = LLVMCreateBuilderInContext(lctx)
                 LLVMPositionBuilderAtEnd(builder, block)
                 val cond = genExpression(builder, s.cond, methodScope, varMap, counter)
 
@@ -222,7 +224,7 @@ class Codegen(val goalScope: Analyzer.GoalScope) {
                 endBlock
             }
             is WhileStmt -> {
-                val builder = LLVMCreateBuilder()
+                val builder = LLVMCreateBuilderInContext(lctx)
                 LLVMPositionBuilderAtEnd(builder, block)
 
                 val stcount = counter.next()
@@ -242,7 +244,7 @@ class Codegen(val goalScope: Analyzer.GoalScope) {
                 endBlock
             }
             is AssignStmt -> {
-                val builder = LLVMCreateBuilder()
+                val builder = LLVMCreateBuilderInContext(lctx)
                 LLVMPositionBuilderAtEnd(builder, block)
                 val value = genExpression(builder, s.value, methodScope, varMap, counter)
                 val ptr = getVal(builder, s.ident, methodScope.ctx, varMap, counter)
@@ -250,7 +252,7 @@ class Codegen(val goalScope: Analyzer.GoalScope) {
                 block
             }
             is ArrayAssignStmt -> {
-                val builder = LLVMCreateBuilder()
+                val builder = LLVMCreateBuilderInContext(lctx)
                 LLVMPositionBuilderAtEnd(builder, block)
                 val index = genExpression(builder, s.index, methodScope, varMap, counter)
                 val value = genExpression(builder, s.value, methodScope, varMap, counter)
@@ -264,7 +266,7 @@ class Codegen(val goalScope: Analyzer.GoalScope) {
             }
             is PrintlnStmt -> {
                 val printf = LLVMGetNamedFunction(mod, "printf")
-                val builder = LLVMCreateBuilder()
+                val builder = LLVMCreateBuilderInContext(lctx)
                 LLVMPositionBuilderAtEnd(builder, block)
                 val value = genExpression(builder, s.exp, methodScope, varMap, counter)
                 val fmt = LLVMBuildInBoundsGEP(builder, PRINT_INT,
@@ -355,7 +357,7 @@ class Codegen(val goalScope: Analyzer.GoalScope) {
                 val arrSize = genExpression(builder, e.size, methodScope, varMap, counter)
                 val arrPtr = LLVMBuildArrayMalloc(builder, intType, arrSize, "${counter.next()}")
                 // todo initialize
-                LLVMConstStruct(makepp(arrPtr, arrSize), 2, 0)
+                LLVMConstStructInContext(lctx, makepp(arrPtr, arrSize), 2, 0)
             }
             is ObjectAllocExp -> {
                 val layout = classLayouts[e.className]!!
