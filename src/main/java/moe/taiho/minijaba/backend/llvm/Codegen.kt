@@ -1,4 +1,4 @@
-package moe.taiho.minijaba.backend.native
+package moe.taiho.minijaba.backend.llvm
 
 import moe.taiho.minijaba.Analyzer
 import moe.taiho.minijaba.ast.*
@@ -91,6 +91,7 @@ class Codegen(val goalScope: Analyzer.GoalScope) {
                 genFunction(functions[functionName]!!, methodScope)
             }
         }
+        LLVMDumpModule(mod)
     }
 
     fun genFuncType(methodDecl: MethodDecl, classDecl: ClassDecl): LLVMTypeRef {
