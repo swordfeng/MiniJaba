@@ -372,7 +372,10 @@ class Codegen(val goalScope: Analyzer.GoalScope) {
                 val vtField = LLVMBuildGEP(builder, objV,
                         makepp(LLVMConstInt(intType, 0, 0),
                                 LLVMConstInt(intType, 0, 0)), 2, "${counter.next()}")
-                LLVMBuildStore(builder, layout.vt, vtField)
+                val vt = LLVMBuildGEP(builder, layout.vt,
+                        makepp(LLVMConstInt(intType, 0, 0),
+                                LLVMConstInt(intType, 0, 0)), 2, "${counter.next()}")
+                LLVMBuildStore(builder, vt, vtField)
                 // todo initialize
                 obj
             }
