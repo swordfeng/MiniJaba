@@ -30,13 +30,12 @@ class Codegen(val goalScope: Analyzer.GoalScope) {
 
     val coreStruct = LLVMStructTypeInContext(lctx, makepp(vtRef), 1, 0)
 
-
-    val PRINT_INT = LLVMAddGlobal(mod, LLVMArrayType(int8Type, 5),
+    val PRINT_INT = LLVMAddGlobal(mod, LLVMArrayType(int8Type, 4),
             ".str")
     init {
         LLVMSetInitializer(PRINT_INT, LLVMConstArray(int8Type,
-                makepp(*("%d\\n\u0000".map { c -> LLVMConstInt(int8Type, c.toLong(), 0) }
-                        .toTypedArray())), 5))
+                makepp(*("%d\n\u0000".map { c -> LLVMConstInt(int8Type, c.toLong(), 0) }
+                        .toTypedArray())), 4))
         LLVMSetGlobalConstant(PRINT_INT, 1)
         LLVMSetLinkage(PRINT_INT, LLVMInternalLinkage)
         LLVMSetAlignment(PRINT_INT, 1)
