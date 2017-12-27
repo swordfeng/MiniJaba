@@ -319,8 +319,9 @@ class Codegen(val goalScope: Analyzer.GoalScope) {
                 val arrayRef = genExpression(builder, e.arr, methodScope, varMap, counter)
                 val arrayPtr = LLVMBuildExtractValue(builder, arrayRef, 0, "${counter.next()}")
                 val index = genExpression(builder, e.index, methodScope, varMap, counter)
-                LLVMBuildInBoundsGEP(builder, arrayPtr,
+                val valPtr = LLVMBuildInBoundsGEP(builder, arrayPtr,
                         makepp(index), 1, "${counter.next()}")
+                LLVMBuildLoad(builder, valPtr, "${counter.next()}")
             }
             is ArrayLengthExp -> {
                 val arrayRef = genExpression(builder, e.arr, methodScope, varMap, counter)
