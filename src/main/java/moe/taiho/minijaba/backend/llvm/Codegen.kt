@@ -3,21 +3,28 @@ package moe.taiho.minijaba.backend.llvm
 import moe.taiho.minijaba.Analyzer
 import moe.taiho.minijaba.ast.*
 import org.bytedeco.javacpp.LLVM.*
+import org.bytedeco.javacpp.Pointer
 import org.bytedeco.javacpp.PointerPointer
 
 class Codegen(val goalScope: Analyzer.GoalScope) {
 
+    companion object {
+        private fun <T: Pointer> makepp(vararg args: T): PointerPointer<T> {
+            return PointerPointer<T>(*args)
+        }
+    }
+
     val lctx: LLVMContextRef = LLVMContextCreate()
-    val mod = LLVMModuleCreateWithNameInContext("moe_taiho_minijaba_generated", lctx)
+    val mod = LLVMModuleCreateWithNameInContext("moe.taiho.minijaba.generated", lctx)
 
     val PRINT_INT = LLVMConstString("%d\n", 3, 0)
 
     val vtRef = LLVMPointerType(LLVMPointerType(LLVMInt8Type(), 0), 0)
-    val baseStruct = LLVMStructTypeInContext(lctx,
-            PointerPointer<LLVMTypeRef>(*arrayOf(vtRef)), 1, 0)
+    val coreStruct = LLVMStructType(
+            makepp(vtRef), 1, 0)
 
-    val intArrayRefStruct = LLVMStructTypeInContext(lctx,
-            PointerPointer(LLVMInt32Type(), LLVMPointerType(LLVMInt32Type(), 0)), 2, 0)
+    val intArrayRefStruct = LLVMStructType(
+            makepp(LLVMInt32Type(), LLVMPointerType(LLVMInt32Type(), 0)), 2, 0)
 
     val classLayouts = HashMap<String, ClassLayout>()
     val functions = HashMap<String, LLVMValueRef>()
@@ -26,10 +33,10 @@ class Codegen(val goalScope: Analyzer.GoalScope) {
         val lctx = ctx.lctx
         val struct = LLVMStructCreateNamed(lctx, classScope.decl.ident)
         val fieldMap = HashMap<String, Int>()
-        private val baseStruct = base?.struct ?: ctx.baseStruct
+        private val baseStruct = base?.struct ?: ctx.coreStruct
         fun initFields() {
             val fields = Array<LLVMTypeRef>(classScope.decl.varList.size + 1) { i ->
-                if (i == 0) baseStruct
+                if (i == 0) LLVMPointerType(baseStruct, 0)
                 else {
                     val varDecl = classScope.decl.varList[i - 1]
                     fieldMap[varDecl.ident] = i
@@ -37,7 +44,7 @@ class Codegen(val goalScope: Analyzer.GoalScope) {
                     ctx.getType(t)
                 }
             }
-            LLVMStructSetBody(struct, PointerPointer(*fields), fields.size, 0)
+            LLVMStructSetBody(struct, makepp(*fields), fields.size, 0)
         }
         val methodMap = HashMap<String, Int>()
         init {
@@ -68,14 +75,16 @@ class Codegen(val goalScope: Analyzer.GoalScope) {
     }
 
     fun gen() {
-        initClassLayouts()
         // declare external C funcs
         LLVMAddFunction(mod, "printf", LLVMFunctionType(LLVMInt32Type(),
-                PointerPointer<LLVMTypeRef>(LLVMPointerType(LLVMInt8Type(), 0)), 1, 1))
+                makepp(LLVMPointerType(LLVMInt8Type(), 0)), 1, 1))
         LLVMAddFunction(mod, "GC_malloc", LLVMFunctionType(LLVMPointerType(LLVMInt8Type(), 0),
-                PointerPointer<LLVMTypeRef>(LLVMInt32Type()), 1, 0))
+                makepp(LLVMInt32Type()), 1, 0))
         LLVMAddFunction(mod, "GC_collect_a_little", LLVMFunctionType(LLVMInt32Type(),
-                PointerPointer<LLVMTypeRef>(), 0, 0))
+                makepp<LLVMTypeRef>(), 0, 0))
+        println(LLVMPrintModuleToString(mod).string)
+
+        initClassLayouts()
         // gen function signatures
         goalScope.classScopes.forEach { (className, classScope) ->
             classScope.methods.forEach { (methodName, methodDecl) ->
@@ -91,15 +100,14 @@ class Codegen(val goalScope: Analyzer.GoalScope) {
                 genFunction(functions[functionName]!!, methodScope)
             }
         }
-        LLVMDumpModule(mod)
     }
 
     fun genFuncType(methodDecl: MethodDecl, classDecl: ClassDecl): LLVMTypeRef {
         val className = classDecl.ident
-        val methodName = methodDecl.ident
         val retType = getType(methodDecl.returnType)
-        val paramsType = (listOf(classLayouts[className]!!.struct) + methodDecl.paramList.map { p -> getType(p.type) }).toTypedArray()
-        return LLVMFunctionType(retType, PointerPointer(*paramsType), paramsType.size, 0)
+        val paramsType = (listOf(LLVMPointerType(classLayouts[className]!!.struct, 0))
+                + methodDecl.paramList.map { p -> getType(p.type) }).toTypedArray()
+        return LLVMFunctionType(retType, makepp(*paramsType), paramsType.size, 0)
     }
 
     class Counter {
@@ -199,10 +207,11 @@ class Codegen(val goalScope: Analyzer.GoalScope) {
                 LLVMPositionBuilderAtEnd(builder, block)
                 val index = genExpression(builder, s.index, methodScope, varMap, counter)
                 val value = genExpression(builder, s.value, methodScope, varMap, counter)
-                val arrayRef = getVal(builder, s.ident, methodScope.ctx, varMap, counter)
+                val arrayRefPtr = getVal(builder, s.ident, methodScope.ctx, varMap, counter)
+                val arrayRef = LLVMBuildLoad(builder, arrayRefPtr, "${counter.next()}")
                 val arrayPtr = LLVMBuildExtractValue(builder, arrayRef, 1, "${counter.next()}")
                 val elemPtr = LLVMBuildInBoundsGEP(builder, arrayPtr,
-                        PointerPointer<LLVMValueRef>(*arrayOf(index)), 1, "${counter.next()}")
+                        makepp(index), 1, "${counter.next()}")
                 LLVMBuildStore(builder, value, elemPtr)
                 block
             }
@@ -212,7 +221,7 @@ class Codegen(val goalScope: Analyzer.GoalScope) {
                 LLVMPositionBuilderAtEnd(builder, block)
                 val value = genExpression(builder, s.exp, methodScope, varMap, counter)
                 LLVMBuildCall(builder, printf,
-                        PointerPointer<LLVMValueRef>(PRINT_INT, value), 2, "${counter.next()}")
+                        makepp(PRINT_INT, value), 2, "${counter.next()}")
                 block
             }
 
@@ -259,7 +268,7 @@ class Codegen(val goalScope: Analyzer.GoalScope) {
                 val arrayPtr = LLVMBuildExtractValue(builder, arrayRef, 1, "${counter.next()}")
                 val index = genExpression(builder, e.index, methodScope, varMap, counter)
                 LLVMBuildInBoundsGEP(builder, arrayPtr,
-                        PointerPointer<LLVMValueRef>(*arrayOf(index)), 1, "${counter.next()}")
+                        makepp(index), 1, "${counter.next()}")
             }
             is ArrayLengthExp -> {
                 val arrayRef = genExpression(builder, e.arr, methodScope, varMap, counter)
@@ -281,19 +290,19 @@ class Codegen(val goalScope: Analyzer.GoalScope) {
                     args.add(argc)
                 }
 
-                val objV = LLVMBuildBitCast(builder, obj, LLVMPointerType(baseStruct, 0), "${counter.next()}")
+                val objV = LLVMBuildBitCast(builder, obj, LLVMPointerType(coreStruct, 0), "${counter.next()}")
                 val vtField = LLVMBuildGEP(builder, objV,
-                        PointerPointer<LLVMValueRef>(LLVMConstInt(LLVMInt32Type(), 0, 0)), 1, "${counter.next()}")
+                        makepp(LLVMConstInt(LLVMInt32Type(), 0, 0)), 1, "${counter.next()}")
                 val vtPtr = LLVMBuildLoad(builder, vtField, "${counter.next()}")
                 val funcPtr = LLVMBuildGEP(builder, vtPtr,
-                        PointerPointer<LLVMValueRef>(LLVMConstInt(LLVMInt32Type(), funcIndex.toLong(), 0)), 1, "${counter.next()}")
-                val func = LLVMBuildBitCast(builder, funcPtr, genFuncType(targetMethodDecl, targetClassDecl), "${counter.next()}")
-                LLVMBuildCall(builder, func, PointerPointer(*args.toTypedArray()), args.size, "${counter.next()}")
+                        makepp(LLVMConstInt(LLVMInt32Type(), funcIndex.toLong(), 0)), 1, "${counter.next()}")
+                val func = LLVMBuildBitCast(builder, funcPtr, LLVMPointerType(genFuncType(targetMethodDecl, targetClassDecl), 0), "${counter.next()}")
+                LLVMBuildCall(builder, func, makepp(*args.toTypedArray()), args.size, "${counter.next()}")
             }
             is ArrayAllocExp -> {
                 val arrSize = genExpression(builder, e.size, methodScope, varMap, counter)
                 val arrPtr = LLVMBuildArrayMalloc(builder, LLVMInt32Type(), arrSize, "${counter.next()}")
-                LLVMConstStruct(PointerPointer(arrPtr, arrSize), 2, 0)
+                LLVMConstStruct(makepp(arrPtr, arrSize), 2, 0)
             }
             is ObjectAllocExp -> {
                 val layout = classLayouts[e.className]!!
@@ -306,7 +315,10 @@ class Codegen(val goalScope: Analyzer.GoalScope) {
             is TrueExp -> LLVMConstInt(LLVMInt1Type(), 1, 0)
             is FalseExp -> LLVMConstInt(LLVMInt1Type(), 1, 0)
             is IntLiteralExp -> LLVMConstInt(LLVMInt32Type(), e.value.toLong(), 1)
-            is IdentExp -> getVal(builder, e.ident, methodScope.ctx, varMap, counter)
+            is IdentExp -> {
+                val ptr = getVal(builder, e.ident, methodScope.ctx, varMap, counter)
+                LLVMBuildLoad(builder, ptr, "${counter.next()}")
+            }
 
             else -> throw Exception("compile error")
         }
@@ -314,7 +326,7 @@ class Codegen(val goalScope: Analyzer.GoalScope) {
 
     private fun genSizeOf(builder: LLVMBuilderRef, t: LLVMTypeRef, counter: Counter): LLVMValueRef {
         val zeroPtr = LLVMBuildInBoundsGEP(builder, LLVMConstNull(LLVMPointerType(t, 0)),
-                PointerPointer<LLVMValueRef>(*arrayOf(LLVMConstInt(LLVMInt32Type(), 1, 0))), 1, "${counter.next()}")
+                makepp(LLVMConstInt(LLVMInt32Type(), 1, 0)), 1, "${counter.next()}")
         return LLVMBuildPtrToInt(builder, zeroPtr, LLVMInt32Type(), "${counter.next()}")
     }
 
@@ -341,21 +353,13 @@ class Codegen(val goalScope: Analyzer.GoalScope) {
             is IntType -> LLVMInt32Type()
             is BoolType -> LLVMInt1Type()
             is IntArrayType -> intArrayRefStruct
-            is ClassType -> classLayouts[t.ident]!!.struct
+            is ClassType -> LLVMPointerType(classLayouts[t.ident]!!.struct, 0)
             else -> throw Exception("compile error")
         }
     }
 
     private fun getConst(t: Type): LLVMValueRef {
-        return when (t) {
-            is IntType -> LLVMConstInt(LLVMInt32Type(), 0, 1)
-            is BoolType -> LLVMConstInt(LLVMInt1Type(), 0, 1)
-            is IntArrayType -> LLVMConstStruct(
-                    PointerPointer(LLVMConstInt(LLVMInt32Type(), 0, 0),
-                    LLVMConstNull(LLVMInt32Type())), 2, 0)
-            is ClassType -> LLVMConstNull(classLayouts[t.ident]!!.struct)
-            else -> throw Exception("compile error")
-        }
+        return LLVMConstNull(getType(t))
     }
 
 }

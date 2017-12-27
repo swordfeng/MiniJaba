@@ -8,7 +8,7 @@ import java.io.*;
 
 public class PlayGround {
     static public void main(String[] args) throws IOException {
-        Reader reader = new BufferedReader(new FileReader("a.java"));
+        Reader reader = new BufferedReader(new FileReader("samples/binarysearch.java"));
         Lexer lexer = new Lexer(reader);
         Parser parser = new Parser(lexer);
         parser.parse();
@@ -17,6 +17,8 @@ public class PlayGround {
         ctx.typeCheck();
 
         Codegen compiler = new Codegen(ctx);
+        compiler.gen();
+        System.out.println("end");
     }
 }
 
