@@ -21,8 +21,9 @@ class Codegen(val goalScope: Analyzer.GoalScope) {
     val intType = LLVMInt32TypeInContext(lctx)
     val int8Type = LLVMInt8TypeInContext(lctx)
     val boolType = LLVMInt1TypeInContext(lctx)
-    val intArrayRefStruct = LLVMStructTypeInContext(lctx,
-            makepp(LLVMPointerType(intType, 0), intType), 2, 0)
+    //val intArrayRefStruct = LLVMStructTypeInContext(lctx,
+    //        makepp(LLVMPointerType(intType, 0), intType), 2, 0)
+    val arrayType = LLVMPointerType(intType, 0)
 
     val funcPtr = LLVMPointerType(int8Type, 0)
     val vtRef = LLVMPointerType(funcPtr, 0)
@@ -258,7 +259,8 @@ class Codegen(val goalScope: Analyzer.GoalScope) {
                 val value = genExpression(builder, s.value, methodScope, varMap, counter)
                 val arrayRefPtr = getVal(builder, s.ident, methodScope.ctx, varMap, counter)
                 val arrayRef = LLVMBuildLoad(builder, arrayRefPtr, "${counter.next()}")
-                val arrayPtr = LLVMBuildExtractValue(builder, arrayRef, 0, "${counter.next()}")
+                val arrayPtr = LLVMBuildGEP(builder, arrayRef, makepp(LLVMConstInt(intType, 1, 0)),
+                        1, "${counter.next()}")
                 val elemPtr = LLVMBuildInBoundsGEP(builder, arrayPtr,
                         makepp(index), 1, "${counter.next()}")
                 LLVMBuildStore(builder, value, elemPtr)
@@ -317,7 +319,8 @@ class Codegen(val goalScope: Analyzer.GoalScope) {
 
             is ArrayAccessExp -> {
                 val arrayRef = genExpression(builder, e.arr, methodScope, varMap, counter)
-                val arrayPtr = LLVMBuildExtractValue(builder, arrayRef, 0, "${counter.next()}")
+                val arrayPtr = LLVMBuildGEP(builder, arrayRef, makepp(LLVMConstInt(intType, 1, 0)),
+                        1, "${counter.next()}")
                 val index = genExpression(builder, e.index, methodScope, varMap, counter)
                 val valPtr = LLVMBuildInBoundsGEP(builder, arrayPtr,
                         makepp(index), 1, "${counter.next()}")
@@ -325,7 +328,7 @@ class Codegen(val goalScope: Analyzer.GoalScope) {
             }
             is ArrayLengthExp -> {
                 val arrayRef = genExpression(builder, e.arr, methodScope, varMap, counter)
-                LLVMBuildExtractValue(builder, arrayRef, 1, "${counter.next()}")
+                LLVMBuildLoad(builder, arrayRef, "${counter.next()}")
             }
             is MethodCallExp -> {
                 val objType = Analyzer.extractType(e.obj, methodScope) as ClassType
@@ -356,9 +359,11 @@ class Codegen(val goalScope: Analyzer.GoalScope) {
             }
             is ArrayAllocExp -> {
                 val arrSize = genExpression(builder, e.size, methodScope, varMap, counter)
-                val arrPtr = LLVMBuildArrayMalloc(builder, intType, arrSize, "${counter.next()}")
+                val mallocSize = LLVMBuildAdd(builder, arrSize, LLVMConstInt(intType, 1, 0), "${counter.next()}")
+                val arrPtr = LLVMBuildArrayMalloc(builder, intType, mallocSize, "${counter.next()}")
+                LLVMBuildStore(builder, arrSize, arrPtr)
                 // todo initialize
-                LLVMConstStructInContext(lctx, makepp(arrPtr, arrSize), 2, 0)
+                arrPtr
             }
             is ObjectAllocExp -> {
                 val layout = classLayouts[e.className]!!
@@ -414,7 +419,7 @@ class Codegen(val goalScope: Analyzer.GoalScope) {
         return when (t) {
             is IntType -> intType
             is BoolType -> boolType
-            is IntArrayType -> intArrayRefStruct
+            is IntArrayType -> arrayType
             is ClassType -> LLVMPointerType(classLayouts[t.ident]!!.struct, 0)
             else -> throw Exception("compile error")
         }
