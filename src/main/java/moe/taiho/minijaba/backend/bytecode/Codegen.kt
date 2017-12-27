@@ -163,38 +163,35 @@ class Codegen(val ctx: Analyzer.GoalScope) {
             }
             is PrintlnStmt -> {
                 mw.visitFieldInsn(GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;")
-                val t = genExpression(mw, s.exp, methodScope, varMap)
-                mw.visitMethodInsn(INVOKEVIRTUAL, "java/io/PrintStream", "println", "(${genDescriptor(t)})V", false)
+                genExpression(mw, s.exp, methodScope, varMap)
+                mw.visitMethodInsn(INVOKEVIRTUAL, "java/io/PrintStream", "println",
+                        "(${genDescriptor(Analyzer.extractType(s.exp, methodScope))})V", false)
             }
             else -> throw Exception("compile error")
         }
     }
-    fun genExpression(mw: MethodVisitor, e: Exp, methodScope: Analyzer.MethodScope, varMap: HashMap<String, Int>): Type {
+    fun genExpression(mw: MethodVisitor, e: Exp, methodScope: Analyzer.MethodScope, varMap: HashMap<String, Int>) {
         return when (e) {
             is BracketExp -> genExpression(mw, e.value, methodScope, varMap)
             is AddExp -> {
                 genExpression(mw, e.left, methodScope, varMap)
                 genExpression(mw, e.right, methodScope, varMap)
                 mw.visitInsn(IADD)
-                IntType()
             }
             is SubExp -> {
                 genExpression(mw, e.left, methodScope, varMap)
                 genExpression(mw, e.right, methodScope, varMap)
                 mw.visitInsn(ISUB)
-                IntType()
             }
             is MulExp -> {
                 genExpression(mw, e.left, methodScope, varMap)
                 genExpression(mw, e.right, methodScope, varMap)
                 mw.visitInsn(IMUL)
-                IntType()
             }
             is AndExp -> {
                 genExpression(mw, e.left, methodScope, varMap)
                 genExpression(mw, e.right, methodScope, varMap)
                 mw.visitInsn(IAND)
-                IntType()
             }
             is LessThanExp -> {
                 genExpression(mw, e.left, methodScope, varMap)
@@ -208,7 +205,6 @@ class Codegen(val ctx: Analyzer.GoalScope) {
                 mw.visitLabel(ltLabel)
                 mw.visitInsn(ICONST_1)
                 mw.visitLabel(endLabel)
-                BoolType()
             }
             is NotExp -> {
                 genExpression(mw, e.value, methodScope, varMap)
@@ -220,18 +216,15 @@ class Codegen(val ctx: Analyzer.GoalScope) {
                 mw.visitLabel(falseLabel)
                 mw.visitInsn(ICONST_1)
                 mw.visitLabel(endLabel)
-                BoolType()
             }
             is ArrayAccessExp -> {
                 genExpression(mw, e.arr, methodScope, varMap)
                 genExpression(mw, e.index, methodScope, varMap)
                 mw.visitInsn(IALOAD)
-                IntType()
             }
             is ArrayLengthExp -> {
                 genExpression(mw, e.arr, methodScope, varMap)
                 mw.visitInsn(ARRAYLENGTH)
-                IntType()
             }
             is MethodCallExp -> {
                 val t = genExpression(mw, e.obj, methodScope, varMap) as ClassType
@@ -241,12 +234,10 @@ class Codegen(val ctx: Analyzer.GoalScope) {
                 val desc = genDescriptor(methodDecl)
                 mw.visitMethodInsn(INVOKEVIRTUAL, CLASS_NAME_PREFIX + classScope.decl.ident,
                         e.methodName, desc, false)
-                methodDecl.returnType
             }
             is ArrayAllocExp -> {
                 genExpression(mw, e.size, methodScope, varMap)
                 mw.visitIntInsn(NEWARRAY, T_INT)
-                IntArrayType()
             }
             is ObjectAllocExp -> {
                 val classScope = methodScope.ctx.ctx.classScopes[e.className]!!
@@ -255,24 +246,19 @@ class Codegen(val ctx: Analyzer.GoalScope) {
                 mw.visitInsn(DUP)
                 mw.visitMethodInsn(INVOKESPECIAL, CLASS_NAME_PREFIX + classDecl.ident,
                         "<init>", "()V", false)
-                ClassType(classDecl.ident)
             }
 
             is ThisExp -> {
                 mw.visitIntInsn(ALOAD, 0)
-                ClassType(methodScope.ctx.decl.ident)
             }
             is TrueExp -> {
                 mw.visitInsn(ICONST_1)
-                BoolType()
             }
             is FalseExp -> {
                 mw.visitInsn(ICONST_0)
-                BoolType()
             }
             is IntLiteralExp -> {
                 mw.visitLdcInsn(e.value)
-                IntType()
             }
             is IdentExp -> {
                 if (varMap.containsKey(e.ident)) {
@@ -282,14 +268,12 @@ class Codegen(val ctx: Analyzer.GoalScope) {
                         is IntType, is BoolType -> mw.visitIntInsn(ILOAD, varMap[e.ident]!!)
                         else -> mw.visitIntInsn(ALOAD, varMap[e.ident]!!)
                     }
-                    t
                 } else {
                     // field
                     val classScope = methodScope.ctx.findVarScope(e.ident)!!
                     val t = classScope.variables[e.ident]!!.type
                     mw.visitIntInsn(ALOAD, 0)
                     mw.visitFieldInsn(GETFIELD, CLASS_NAME_PREFIX + classScope.decl.ident, e.ident, genDescriptor(t))
-                    t
                 }
             }
             else -> throw Exception("compile error")

@@ -1,5 +1,6 @@
 package moe.taiho.minijaba
 
+import com.sun.org.apache.xpath.internal.operations.Bool
 import jdk.internal.org.objectweb.asm.tree.MethodNode
 import moe.taiho.minijaba.ast.*
 
@@ -428,4 +429,34 @@ object Analyzer {
     fun printError(decl: BaseDecl, msg: String) {
         System.err.println("Error@${decl.begin}-${decl.end}: ${msg}")
     }
+
+    fun extractType(e: Exp, methodScope: MethodScope): Type {
+        return when (e) {
+            is BracketExp -> extractType(e.value, methodScope)
+            is AddExp -> IntType()
+            is SubExp -> IntType()
+            is MulExp -> IntType()
+            is AndExp -> BoolType()
+            is LessThanExp -> BoolType()
+            is NotExp -> BoolType()
+
+            is ArrayAccessExp -> IntType()
+            is ArrayLengthExp -> IntType()
+            is MethodCallExp -> methodScope.ctx.ctx
+                    .classScopes[(extractType(e.obj, methodScope) as ClassType).ident]!!
+                    .methods[e.methodName]!!
+                    .returnType
+            is ArrayAllocExp -> IntArrayType()
+            is ObjectAllocExp -> ClassType(e.className)
+
+            is ThisExp -> ClassType(methodScope.ctx.decl.ident)
+            is TrueExp -> BoolType()
+            is FalseExp -> BoolType()
+            is IntLiteralExp -> IntType()
+            is IdentExp -> methodScope.findVar(e.ident)!!.type
+
+            else -> throw Exception()
+        }
+    }
+
 }
