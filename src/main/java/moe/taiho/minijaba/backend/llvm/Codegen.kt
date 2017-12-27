@@ -18,8 +18,6 @@ class Codegen(val goalScope: Analyzer.GoalScope) {
         val vtRef = LLVMPointerType(funcPtr, 0)
         val coreStruct = LLVMStructType(makepp(vtRef), 1, 0)
 
-        val PRINT_INT_STR = LLVMConstString("%d\n", 3, 0)
-
         val intArrayRefStruct = LLVMStructType(
                 makepp(LLVMPointerType(LLVMInt32Type(), 0), LLVMInt32Type()), 2, 0)
     }
@@ -27,7 +25,16 @@ class Codegen(val goalScope: Analyzer.GoalScope) {
     val lctx: LLVMContextRef = LLVMContextCreate()
     val mod = LLVMModuleCreateWithNameInContext("moe.taiho.minijaba.generated", lctx)
 
-    val PRINT_INT = LLVMAddAlias(mod, LLVMPointerType(LLVMInt8Type(), 0), PRINT_INT_STR, ".str")
+    val PRINT_INT = LLVMAddGlobal(mod, LLVMArrayType(LLVMInt8Type(), 5),
+            ".str")
+    init {
+        LLVMSetInitializer(PRINT_INT, LLVMConstArray(LLVMInt8Type(),
+                makepp(*("%d\\n\u0000".map { c -> LLVMConstInt(LLVMInt8Type(), c.toLong(), 0) }
+                        .toTypedArray())), 5))
+        LLVMSetGlobalConstant(PRINT_INT, 1)
+        LLVMSetLinkage(PRINT_INT, LLVMInternalLinkage)
+        LLVMSetAlignment(PRINT_INT, 1)
+    }
 
     val classLayouts = HashMap<String, ClassLayout>()
     val functions = HashMap<String, LLVMValueRef>()
@@ -63,7 +70,7 @@ class Codegen(val goalScope: Analyzer.GoalScope) {
             }
         }
         var vtDefs: Array<String?>? = null
-        val vt = LLVMAddGlobal(ctx.mod, funcPtr, "${classScope.decl.ident}$$")
+        var vt: LLVMValueRef? = null
         fun initVTable() {
             vtDefs = Array(methodMap.size, { null })
             if (base != null) {
@@ -79,6 +86,8 @@ class Codegen(val goalScope: Analyzer.GoalScope) {
                 LLVMConstPointerCast(ctx.functions[funcName!!]!!, funcPtr)
             }.toTypedArray()
             val vtData = LLVMConstArray(funcPtr, makepp(*vtfuncs), vtDefs!!.size)
+            vt = LLVMAddGlobal(ctx.mod, LLVMArrayType(funcPtr, vtDefs!!.size),
+                    "${classScope.decl.ident}$$")
             LLVMSetInitializer(vt, vtData)
         }
     }
@@ -128,10 +137,10 @@ class Codegen(val goalScope: Analyzer.GoalScope) {
                 genFunction(functions[functionName]!!, methodScope)
             }
         }
-        //println(LLVMPrintModuleToString(mod).string)
-        val p = BytePointer(1024)
-        LLVMVerifyModule(mod, LLVMAbortProcessAction, p)
-        println(p.string)
+        val p = BytePointer(4096)
+        LLVMVerifyModule(mod, LLVMPrintMessageAction, p)
+        println(LLVMPrintModuleToString(mod).string)
+        return
     }
 
     fun genFuncType(methodDecl: MethodDecl, classDecl: ClassDecl): LLVMTypeRef {
@@ -252,8 +261,11 @@ class Codegen(val goalScope: Analyzer.GoalScope) {
                 val builder = LLVMCreateBuilder()
                 LLVMPositionBuilderAtEnd(builder, block)
                 val value = genExpression(builder, s.exp, methodScope, varMap, counter)
+                val fmt = LLVMBuildInBoundsGEP(builder, PRINT_INT,
+                        makepp(LLVMConstInt(LLVMInt32Type(), 0, 0),
+                                LLVMConstInt(LLVMInt32Type(), 0, 0)), 2, "${counter.next()}")
                 LLVMBuildCall(builder, printf,
-                        makepp(PRINT_INT, value), 2, "${counter.next()}")
+                        makepp(fmt, value), 2, "${counter.next()}")
                 block
             }
 
@@ -324,10 +336,12 @@ class Codegen(val goalScope: Analyzer.GoalScope) {
 
                 val objV = LLVMBuildBitCast(builder, obj, LLVMPointerType(coreStruct, 0), "${counter.next()}")
                 val vtField = LLVMBuildGEP(builder, objV,
-                        makepp(LLVMConstInt(LLVMInt32Type(), 0, 0)), 1, "${counter.next()}")
+                        makepp(LLVMConstInt(LLVMInt32Type(), 0, 0),
+                                LLVMConstInt(LLVMInt32Type(), 0, 0)), 2, "${counter.next()}")
                 val vtPtr = LLVMBuildLoad(builder, vtField, "${counter.next()}")
-                val funcPtr = LLVMBuildGEP(builder, vtPtr,
+                val funcPtrField = LLVMBuildGEP(builder, vtPtr,
                         makepp(LLVMConstInt(LLVMInt32Type(), funcIndex.toLong(), 0)), 1, "${counter.next()}")
+                val funcPtr = LLVMBuildLoad(builder, funcPtrField, "${counter.next()}")
                 val func = LLVMBuildBitCast(builder, funcPtr, LLVMPointerType(genFuncType(targetMethodDecl, targetClassDecl), 0), "${counter.next()}")
                 LLVMBuildCall(builder, func, makepp(*args.toTypedArray()), args.size, "${counter.next()}")
             }
@@ -342,7 +356,8 @@ class Codegen(val goalScope: Analyzer.GoalScope) {
                 val obj = LLVMBuildMalloc(builder, layout.struct, "${counter.next()}")
                 val objV = LLVMBuildBitCast(builder, obj, LLVMPointerType(coreStruct, 0), "${counter.next()}")
                 val vtField = LLVMBuildGEP(builder, objV,
-                        makepp(LLVMConstInt(LLVMInt32Type(), 0, 0)), 1, "${counter.next()}")
+                        makepp(LLVMConstInt(LLVMInt32Type(), 0, 0),
+                                LLVMConstInt(LLVMInt32Type(), 0, 0)), 2, "${counter.next()}")
                 LLVMBuildStore(builder, layout.vt, vtField)
                 // todo initialize
                 obj
