@@ -17,7 +17,8 @@ public class PlayGround {
         ctx.typeCheck();
 
         Codegen compiler = new Codegen(ctx);
-        compiler.gen();
+        compiler.genMod();
+        compiler.printMod();
     }
 }
 

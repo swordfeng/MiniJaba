@@ -114,7 +114,7 @@ class Codegen(val goalScope: Analyzer.GoalScope) {
         return layout
     }
 
-    fun gen() {
+    fun genMod() {
         // declare external C funcs
         LLVMAddFunction(mod, "printf", LLVMFunctionType(intType,
                 makepp(LLVMPointerType(int8Type, 0)), 1, 1))
@@ -146,10 +146,23 @@ class Codegen(val goalScope: Analyzer.GoalScope) {
                 genFunction(functions[functionName]!!, methodScope)
             }
         }
-        val p = BytePointer(4096)
-        LLVMVerifyModule(mod, LLVMPrintMessageAction, p)
+
+        val mainClassDecl = ClassDecl(goalScope.goal.mainClass.ident, null, listOf(), listOf())
+        val mainClassScope = Analyzer.ClassScope(mainClassDecl, goalScope)
+        val mainMethodDecl = MethodDecl("main", IntType(), listOf(), listOf(), listOf(), InvExp())
+        val mainMethodScope = Analyzer.MethodScope(mainMethodDecl, mainClassScope)
+        val mainFunc = LLVMAddFunction(mod, "main", LLVMFunctionType(
+                intType, makepp<LLVMValueRef>(), 0, 0))
+        var block = LLVMAppendBasicBlockInContext(lctx, mainFunc, "entry")
+        block = genStatement(mainFunc, block, goalScope.goal.mainClass.stmt, mainMethodScope,
+                HashMap(), Counter())
+        val builder = LLVMCreateBuilderInContext(lctx)
+        LLVMPositionBuilderAtEnd(builder, block)
+        LLVMBuildRet(builder, LLVMConstInt(intType, 0, 0))
+    }
+
+    fun printMod() {
         println(LLVMPrintModuleToString(mod).string)
-        return
     }
 
     fun genFuncType(methodDecl: MethodDecl, classDecl: ClassDecl): LLVMTypeRef {
