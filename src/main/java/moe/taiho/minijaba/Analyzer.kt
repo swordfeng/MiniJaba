@@ -78,13 +78,13 @@ object Analyzer {
             }
         }
         fun findVar(varName: String): VarDecl? {
-            return variables[varName] ?: decl.baseClass.let { base ->
+            return variables[varName] ?: decl.baseClass?.let { base ->
                 ctx.classScopes[base]!!.findVar(varName)
             }
         }
         fun findVarScope(varName: String): ClassScope? {
             if (variables.containsKey(varName)) return this
-            return decl.baseClass.let { base ->
+            return decl.baseClass?.let { base ->
                 ctx.classScopes[base]!!.findVarScope(varName)
             }
         }
@@ -149,7 +149,27 @@ object Analyzer {
     }
 
     fun typeCheck(methodScope: MethodScope) {
-        methodScope.decl.stmtList.forEach { s ->
+        val methodDecl = methodScope.decl
+        val baseMethodDecl = methodScope.ctx.decl.baseClass?.let { base ->
+            methodScope.ctx.ctx.classScopes[base]!!.findMethod(methodDecl.ident)
+        }
+        if (baseMethodDecl != null) {
+            if (!isSame(methodDecl.returnType, baseMethodDecl.returnType)) {
+                printError(methodDecl.returnType, "type error inconsistent method return type " +
+                        "expected ${baseMethodDecl.returnType.typeName()} actual ${methodDecl.returnType.typeName()}")
+            }
+            if (methodDecl.paramList.size != baseMethodDecl.paramList.size) {
+                printError(methodDecl.returnType, "type error inconsistent number of method parameters")
+            } else {
+                methodDecl.paramList.zip(baseMethodDecl.paramList).forEach { (mp, bp) ->
+                    if (!isSame(mp.type, bp.type)) {
+                        printError(mp, "type error inconsistent method parameter type " +
+                                "expected ${bp.type.typeName()} actual ${mp.type.typeName()}")
+                    }
+                }
+            }
+        }
+        methodDecl.stmtList.forEach { s ->
             typeCheck(s, methodScope)
         }
         typeCheck(methodScope.decl.returnExp, methodScope.decl.returnType, methodScope)
@@ -391,6 +411,16 @@ object Analyzer {
                 }
                 return false
             }
+            else -> false
+        }
+    }
+
+    fun isSame(t1: Type, t2: Type): Boolean {
+        return when (t1) {
+            is IntArrayType -> t2 is IntArrayType
+            is BoolType -> t2 is BoolType
+            is IntType -> t2 is IntType
+            is ClassType -> t2 is ClassType && t1.ident == t2.ident
             else -> false
         }
     }
