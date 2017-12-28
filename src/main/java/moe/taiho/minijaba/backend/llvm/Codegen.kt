@@ -158,7 +158,12 @@ class Codegen(val goalScope: Analyzer.GoalScope) {
         val builder = LLVMCreateBuilderInContext(lctx)
         LLVMPositionBuilderAtEnd(builder, block)
         LLVMBuildRet(builder, LLVMConstInt(intType, 0, 0))
-        LLVMVerifyModule(mod, LLVMAbortProcessAction, ByteArray(4096))
+        val buf = BytePointer(4096)
+        try {
+            LLVMVerifyModule(mod, LLVMAbortProcessAction, BytePointer(4096))
+        } finally {
+            buf.close()
+        }
     }
 
     fun getIRCode(): String {

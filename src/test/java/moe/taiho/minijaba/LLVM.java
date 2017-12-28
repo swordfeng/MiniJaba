@@ -1,8 +1,10 @@
 package moe.taiho.minijaba;
 
+import junit.framework.TestFailure;
 import moe.taiho.minijaba.ast.ClassDecl;
 import moe.taiho.minijaba.ast.Goal;
 import moe.taiho.minijaba.backend.llvm.Codegen;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.*;
@@ -42,7 +44,7 @@ public class LLVM {
     }
 
 
-    private synchronized void runCompile(String sourceFile) throws IOException {
+    private void runCompile(String sourceFile) throws IOException {
         Reader reader = new BufferedReader(new FileReader(sourceFile));
         Lexer lexer = new Lexer(reader);
         Parser parser = new Parser(lexer);
