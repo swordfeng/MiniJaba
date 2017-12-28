@@ -394,7 +394,7 @@ class Codegen(val goalScope: Analyzer.GoalScope) {
 
             is ThisExp -> varMap["this"]!!
             is TrueExp -> LLVMConstInt(boolType, 1, 0)
-            is FalseExp -> LLVMConstInt(boolType, 1, 0)
+            is FalseExp -> LLVMConstInt(boolType, 0, 0)
             is IntLiteralExp -> LLVMConstInt(intType, e.value.toLong(), 1)
             is IdentExp -> {
                 val ptr = getVal(builder, e.ident, methodScope.ctx, varMap, counter)
