@@ -14,11 +14,11 @@ object Interpreter {
         }) {
             if ((type is ClassType || type is IntArrayType) && value is Null) return
             if (type is ClassType && value is Obj) {
-                var t = value.typeDecl
+                var t: ClassDecl? = value.typeDecl
                 while (t != null) {
                     if (t.ident == type.ident) return
                     if (t.baseClass == null) break
-                    t = ctx.findClass(t.baseClass!!)
+                    t = ctx.classes[t.baseClass!!]
                 }
             }
             val tName = if (type is ClassType) type.ident else type.javaClass.simpleName
@@ -57,7 +57,7 @@ object Interpreter {
             return false
         }
 
-        tailrec fun findMethod(methodName: String): MethodDecl {
+        fun findMethod(methodName: String): MethodDecl {
             val decls = typeDecl.methodList.filter { m -> m.ident == methodName }
             if (decls.size > 0) return decls[0]
             return (variables[BASE_IDENT] as Obj).findMethod(methodName)

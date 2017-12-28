@@ -138,7 +138,7 @@ object Analyzer {
 
     fun typeCheck(goalScope: GoalScope) {
         //goalScope.goal.mainClass.stmt
-        goalScope.classScopes.forEach { className, classScope ->
+        goalScope.classScopes.forEach { _, classScope ->
             typeCheck(classScope)
         }
     }

@@ -107,8 +107,8 @@ class Codegen(val goalScope: Analyzer.GoalScope) {
     }
 
     fun initClassLayouts() {
-        goalScope.classScopes.forEach { (n, c) -> genClassLayout(n) }
-        classLayouts.forEach { (n, l) -> l.initFields() }
+        goalScope.classScopes.forEach { (n, _) -> genClassLayout(n) }
+        classLayouts.forEach { (_, l) -> l.initFields() }
     }
 
     fun genClassLayout(className: String): ClassLayout {
@@ -145,7 +145,7 @@ class Codegen(val goalScope: Analyzer.GoalScope) {
             }
         }
         // gen vtables
-        classLayouts.forEach { className, layout ->
+        classLayouts.forEach { _, layout ->
             layout.initVTable()
         }
         // gen function bodies
@@ -500,7 +500,6 @@ class Codegen(val goalScope: Analyzer.GoalScope) {
 
         val pass = LLVMCreatePassManager()
 
-        val fn = ByteBuffer.wrap(filename.toByteArray())
         val err = BytePointer(null as Pointer?)
         LLVMTargetMachineEmitToFile(machine, mod, BytePointer(filename), LLVMObjectFile, err)
 
