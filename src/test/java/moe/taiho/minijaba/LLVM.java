@@ -58,6 +58,10 @@ public class LLVM {
         compiler.getIRCode();
 
         String name = goal.getMainClass().getIdent();
+        FileWriter fw = new FileWriter(String.format("sampleout/%s.ll", name));
+        fw.write(compiler.getIRCode());
+        fw.flush();
+        fw.close();
         compiler.genBitCode(String.format("sampleout/%s.bc", name));
         compiler.genObject(String.format("sampleout/%s.o", name));
     }

@@ -74,6 +74,7 @@ public class Bytecode {
         file.getParentFile().mkdirs();
         OutputStream s = new BufferedOutputStream(new FileOutputStream(file));
         s.write(data);
+        s.flush();
         s.close();
     }
 }
