@@ -227,9 +227,9 @@ class Codegen(val ctx: Analyzer.GoalScope) {
                 mw.visitInsn(ARRAYLENGTH)
             }
             is MethodCallExp -> {
-                val t = genExpression(mw, e.obj, methodScope, varMap) as ClassType
+                genExpression(mw, e.obj, methodScope, varMap)
                 e.args.forEach { a -> genExpression(mw, a, methodScope, varMap) }
-                val classScope = methodScope.ctx.ctx.classScopes[t.ident]!!
+                val classScope = methodScope.ctx.ctx.classScopes[(Analyzer.extractType(e.obj, methodScope) as ClassType).ident]!!
                 val methodDecl = classScope.findMethod(e.methodName)!!
                 val desc = genDescriptor(methodDecl)
                 mw.visitMethodInsn(INVOKEVIRTUAL, CLASS_NAME_PREFIX + classScope.decl.ident,
