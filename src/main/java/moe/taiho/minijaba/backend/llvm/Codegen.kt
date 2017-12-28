@@ -13,6 +13,13 @@ class Codegen(val goalScope: Analyzer.GoalScope) {
         private fun <T : Pointer> makepp(vararg args: T): PointerPointer<T> {
             return PointerPointer<T>(*args)
         }
+        init {
+            LLVMInitializeAllTargetInfos();
+            LLVMInitializeAllTargets();
+            LLVMInitializeAllTargetMCs();
+            LLVMInitializeAllAsmParsers();
+            LLVMInitializeAllAsmPrinters();
+        }
     }
 
     val lctx: LLVMContextRef = LLVMContextCreate()
@@ -158,12 +165,11 @@ class Codegen(val goalScope: Analyzer.GoalScope) {
         val builder = LLVMCreateBuilderInContext(lctx)
         LLVMPositionBuilderAtEnd(builder, block)
         LLVMBuildRet(builder, LLVMConstInt(intType, 0, 0))
-        val buf = BytePointer(4096)
-        try {
-            LLVMVerifyModule(mod, LLVMAbortProcessAction, BytePointer(4096))
-        } finally {
-            buf.close()
-        }
+        LLVMDisposeBuilder(builder)
+
+        val buf = BytePointer(null as Pointer?)
+        LLVMVerifyModule(mod, LLVMAbortProcessAction, buf)
+        LLVMDisposeMessage(buf)
     }
 
     fun getIRCode(): String {
@@ -205,6 +211,7 @@ class Codegen(val goalScope: Analyzer.GoalScope) {
             varMap[v.ident] = varPtr
             LLVMBuildStore(beginBuilder, getConst(v.type), varPtr)
         }
+        LLVMDisposeBuilder(beginBuilder)
 
         m.stmtList.forEach { s -> lastblock = genStatement(fn, lastblock, s, methodScope, varMap, counter) }
 
@@ -212,6 +219,7 @@ class Codegen(val goalScope: Analyzer.GoalScope) {
         LLVMPositionBuilderAtEnd(endBuilder, lastblock)
         val retval = genExpression(endBuilder, m.returnExp, methodScope, varMap, counter)
         LLVMBuildRet(endBuilder, retval)
+        LLVMDisposeBuilder(endBuilder)
     }
 
     fun genStatement(fn: LLVMValueRef, block: LLVMBasicBlockRef, s: Stmt, methodScope: Analyzer.MethodScope,
@@ -259,7 +267,7 @@ class Codegen(val goalScope: Analyzer.GoalScope) {
                 loopBlock = genStatement(fn, loopBlock, s.loopBody, methodScope, varMap, counter)
                 LLVMPositionBuilderAtEnd(builder, loopBlock)
                 LLVMBuildBr(builder, chkBlock)
-
+                LLVMDisposeBuilder(builder)
                 endBlock
             }
             is AssignStmt -> {
@@ -268,6 +276,7 @@ class Codegen(val goalScope: Analyzer.GoalScope) {
                 val value = genExpression(builder, s.value, methodScope, varMap, counter)
                 val ptr = getVal(builder, s.ident, methodScope.ctx, varMap, counter)
                 LLVMBuildStore(builder, value, ptr)
+                LLVMDisposeBuilder(builder)
                 block
             }
             is ArrayAssignStmt -> {
@@ -282,6 +291,7 @@ class Codegen(val goalScope: Analyzer.GoalScope) {
                 val elemPtr = LLVMBuildInBoundsGEP(builder, arrayPtr,
                         makepp(index), 1, "${counter.next()}")
                 LLVMBuildStore(builder, value, elemPtr)
+                LLVMDisposeBuilder(builder)
                 block
             }
             is PrintlnStmt -> {
@@ -294,6 +304,7 @@ class Codegen(val goalScope: Analyzer.GoalScope) {
                                 LLVMConstInt(intType, 0, 0)), 2, "${counter.next()}")
                 LLVMBuildCall(builder, printf,
                         makepp(fmt, value), 2, "${counter.next()}")
+                LLVMDisposeBuilder(builder)
                 block
             }
 
@@ -448,6 +459,20 @@ class Codegen(val goalScope: Analyzer.GoalScope) {
 
     private fun getConst(t: Type): LLVMValueRef {
         return LLVMConstNull(getType(t))
+    }
+
+
+
+    fun genExec() {
+        val target = LLVMGetFirstTarget()
+        if (target.isNull) {
+            throw Exception("no target found!")
+        }
+        val triple = LLVMGetDefaultTargetTriple()
+        val machine = LLVMCreateTargetMachine(target, triple.string, "generic", "",
+                LLVMCodeGenLevelDefault, LLVMRelocStatic, LLVMCodeModelDefault)
+
+        //LLVMSetDataLayout(mod, LLVMCreateTargetDataLayout(machine))
     }
 
 }
