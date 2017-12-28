@@ -56,6 +56,10 @@ public class LLVM {
         Codegen compiler = new Codegen(ctx);
         compiler.genMod();
         compiler.getIRCode();
+
+        String name = goal.getMainClass().getIdent();
+        compiler.genBitCode(String.format("sampleout/%s.bc", name));
+        compiler.genObject(String.format("sampleout/%s.o", name));
     }
 
 }

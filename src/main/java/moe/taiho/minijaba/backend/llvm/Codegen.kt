@@ -24,7 +24,7 @@ class Codegen(val goalScope: Analyzer.GoalScope) {
     }
 
     val lctx: LLVMContextRef = LLVMContextCreate()
-    val mod = LLVMModuleCreateWithNameInContext("moe.taiho.minijaba.generated", lctx)
+    val mod = LLVMModuleCreateWithNameInContext("moe.taiho.minijaba.generated.${goalScope.goal.mainClass.ident}", lctx)
 
     val intType = LLVMInt32TypeInContext(lctx)
     val int8Type = LLVMInt8TypeInContext(lctx)
@@ -482,6 +482,9 @@ class Codegen(val goalScope: Analyzer.GoalScope) {
         return LLVMConstNull(getType(t))
     }
 
+    fun genBitCode(filename: String) {
+        LLVMWriteBitcodeToFile(mod, filename)
+    }
 
     fun genObject(filename: String) {
         val target = LLVMGetFirstTarget()
