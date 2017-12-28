@@ -125,10 +125,13 @@ class Codegen(val goalScope: Analyzer.GoalScope) {
         // declare external C funcs
         LLVMAddFunction(mod, "printf", LLVMFunctionType(intType,
                 makepp(LLVMPointerType(int8Type, 0)), 1, 1))
-        //LLVMAddFunction(mod, "GC_malloc", LLVMFunctionType(LLVMPointerType(int8Type, 0),
-        //        makepp(intType), 1, 0))
         LLVMAddFunction(mod, "malloc", LLVMFunctionType(LLVMPointerType(int8Type, 0),
                 makepp(intType), 1, 0))
+        // declare void @llvm.memset.p0i8.i32(i8* <dest>, i8 <val>, i32 <len>, i32 <align>, i1 <isvolatile>)
+        LLVMAddFunction(mod, "llvm.memset.p0i8.i32", LLVMFunctionType(LLVMVoidTypeInContext(lctx),
+                makepp(LLVMPointerType(int8Type, 0), int8Type, intType, intType, boolType), 5, 0))
+        //LLVMAddFunction(mod, "GC_malloc", LLVMFunctionType(LLVMPointerType(int8Type, 0),
+        //        makepp(intType), 1, 0))
         //LLVMAddFunction(mod, "GC_collect_a_little", LLVMFunctionType(intType,
         //        makepp<LLVMTypeRef>(), 0, 0))
 
@@ -390,14 +393,31 @@ class Codegen(val goalScope: Analyzer.GoalScope) {
             is ArrayAllocExp -> {
                 val arrSize = genExpression(builder, e.size, methodScope, varMap, counter)
                 val mallocSize = LLVMBuildAdd(builder, arrSize, LLVMConstInt(intType, 1, 0), "${counter.next()}")
-                val arrPtr = LLVMBuildArrayMalloc(builder, intType, mallocSize, "${counter.next()}")
-                LLVMBuildStore(builder, arrSize, arrPtr)
-                // todo initialize
-                arrPtr
+                val arrRef = LLVMBuildArrayMalloc(builder, intType, mallocSize, "${counter.next()}")
+                // initialize
+                val ptr = LLVMBuildBitCast(builder, arrRef, LLVMPointerType(int8Type, 0), "${counter.next()}")
+                val size = genSizeOf(builder, intType, mallocSize, counter)
+                val memset = LLVMGetNamedFunction(mod, "llvm.memset.p0i8.i32")
+                LLVMBuildCall(builder, memset,
+                        makepp(ptr, LLVMConstInt(int8Type, 0, 0), size,
+                                LLVMConstInt(intType, 1, 0), LLVMConstInt(boolType, 0, 0)),
+                        5, "")
+                LLVMBuildStore(builder, arrSize, arrRef)
+                arrRef
             }
             is ObjectAllocExp -> {
                 val layout = classLayouts[e.className]!!
                 val obj = LLVMBuildMalloc(builder, layout.struct, "${counter.next()}")
+
+                // initialize
+                val ptr = LLVMBuildBitCast(builder, obj, LLVMPointerType(int8Type, 0), "${counter.next()}")
+                val size = genSizeOf(builder, layout.struct, LLVMConstInt(intType, 0, 0), counter)
+                val memset = LLVMGetNamedFunction(mod, "llvm.memset.p0i8.i32")
+                LLVMBuildCall(builder, memset,
+                        makepp(ptr, LLVMConstInt(int8Type, 0, 0), size,
+                                LLVMConstInt(intType, 1, 0), LLVMConstInt(boolType, 0, 0)),
+                        5, "")
+
                 val objV = LLVMBuildBitCast(builder, obj, LLVMPointerType(coreStruct, 0), "${counter.next()}")
                 val vtField = LLVMBuildGEP(builder, objV,
                         makepp(LLVMConstInt(intType, 0, 0),
@@ -406,7 +426,6 @@ class Codegen(val goalScope: Analyzer.GoalScope) {
                         makepp(LLVMConstInt(intType, 0, 0),
                                 LLVMConstInt(intType, 0, 0)), 2, "${counter.next()}")
                 LLVMBuildStore(builder, vt, vtField)
-                // todo initialize
                 obj
             }
 
@@ -423,11 +442,12 @@ class Codegen(val goalScope: Analyzer.GoalScope) {
         }
     }
 
-    private fun genSizeOf(builder: LLVMBuilderRef, t: LLVMTypeRef, counter: Counter): LLVMValueRef {
+    private fun genSizeOf(builder: LLVMBuilderRef, t: LLVMTypeRef, n: LLVMValueRef, counter: Counter): LLVMValueRef {
         val zeroPtr = LLVMBuildInBoundsGEP(builder, LLVMConstNull(LLVMPointerType(t, 0)),
-                makepp(LLVMConstInt(intType, 1, 0)), 1, "${counter.next()}")
+                makepp(n), 1, "${counter.next()}")
         return LLVMBuildPtrToInt(builder, zeroPtr, intType, "${counter.next()}")
     }
+
 
     private fun getVal(builder: LLVMBuilderRef, ident: String, classScope: Analyzer.ClassScope,
                        varMap: HashMap<String, LLVMValueRef>, counter: Counter):
