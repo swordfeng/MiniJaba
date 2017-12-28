@@ -6,6 +6,7 @@ import org.bytedeco.javacpp.BytePointer
 import org.bytedeco.javacpp.LLVM.*
 import org.bytedeco.javacpp.Pointer
 import org.bytedeco.javacpp.PointerPointer
+import java.nio.ByteBuffer
 
 class Codegen(val goalScope: Analyzer.GoalScope) {
 
@@ -124,12 +125,12 @@ class Codegen(val goalScope: Analyzer.GoalScope) {
         // declare external C funcs
         LLVMAddFunction(mod, "printf", LLVMFunctionType(intType,
                 makepp(LLVMPointerType(int8Type, 0)), 1, 1))
-        LLVMAddFunction(mod, "GC_malloc", LLVMFunctionType(LLVMPointerType(int8Type, 0),
-                makepp(intType), 1, 0))
+        //LLVMAddFunction(mod, "GC_malloc", LLVMFunctionType(LLVMPointerType(int8Type, 0),
+        //        makepp(intType), 1, 0))
         LLVMAddFunction(mod, "malloc", LLVMFunctionType(LLVMPointerType(int8Type, 0),
                 makepp(intType), 1, 0))
-        LLVMAddFunction(mod, "GC_collect_a_little", LLVMFunctionType(intType,
-                makepp<LLVMTypeRef>(), 0, 0))
+        //LLVMAddFunction(mod, "GC_collect_a_little", LLVMFunctionType(intType,
+        //        makepp<LLVMTypeRef>(), 0, 0))
 
         initClassLayouts()
         // gen function signatures
@@ -462,8 +463,7 @@ class Codegen(val goalScope: Analyzer.GoalScope) {
     }
 
 
-
-    fun genExec() {
+    fun genObject(filename: String) {
         val target = LLVMGetFirstTarget()
         if (target.isNull) {
             throw Exception("no target found!")
@@ -471,8 +471,19 @@ class Codegen(val goalScope: Analyzer.GoalScope) {
         val triple = LLVMGetDefaultTargetTriple()
         val machine = LLVMCreateTargetMachine(target, triple.string, "generic", "",
                 LLVMCodeGenLevelDefault, LLVMRelocStatic, LLVMCodeModelDefault)
+        val layout = LLVMCreateTargetDataLayout(machine)
+        LLVMSetModuleDataLayout(mod, layout)
+        LLVMSetTarget(mod, triple)
 
-        //LLVMSetDataLayout(mod, LLVMCreateTargetDataLayout(machine))
+        val pass = LLVMCreatePassManager()
+
+        val fn = ByteBuffer.wrap(filename.toByteArray())
+        val err = BytePointer(null as Pointer?)
+        LLVMTargetMachineEmitToFile(machine, mod, BytePointer(filename), LLVMObjectFile, err)
+
+        LLVMDisposePassManager(pass)
+        LLVMDisposeTargetData(layout)
+        LLVMDisposeTargetMachine(machine)
     }
 
 }

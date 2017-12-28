@@ -18,7 +18,7 @@ public class PlayGround {
 
         Codegen compiler = new Codegen(ctx);
         compiler.genMod();
-        compiler.getIRCode();
+        compiler.genObject("a.o");
     }
 }
 
