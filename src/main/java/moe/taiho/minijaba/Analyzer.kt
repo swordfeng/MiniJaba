@@ -1,7 +1,5 @@
 package moe.taiho.minijaba
 
-import com.sun.org.apache.xpath.internal.operations.Bool
-import jdk.internal.org.objectweb.asm.tree.MethodNode
 import moe.taiho.minijaba.ast.*
 
 object Analyzer {
@@ -9,12 +7,12 @@ object Analyzer {
     class GoalScope(val goal: Goal) {
         val classes = HashMap<String, ClassDecl>()
         val classScopes = HashMap<String, ClassScope>()
-        var haserror = false
+        var hasError = false
         init {
             goal.classes.forEach { c ->
                 if (classes.containsKey(c.ident)) {
                     printError(c, "semantic error redefinition of class ${c.ident}")
-                    haserror = true
+                    hasError = true
                 } else {
                     classes[c.ident] = c
                 }
@@ -29,7 +27,7 @@ object Analyzer {
                 val base = classes[c.baseClass!!]
                 if (base == null) {
                     printError(c, "semantic error base class undefined")
-                    haserror = true
+                    hasError = true
                     return
                 }
                 initClassScope(base)
@@ -61,13 +59,13 @@ object Analyzer {
                 if (!err){
                     variables[v.ident] = v
                 } else {
-                    ctx.haserror = true
+                    ctx.hasError = true
                 }
             }
             decl.methodList.forEach { m ->
                 if (methods.containsKey(m.ident)) {
                     printError(m, "semantic error redefinition of member method ${m.ident}")
-                    ctx.haserror = true
+                    ctx.hasError = true
                 } else {
                     methods[m.ident] = m
                 }
@@ -109,7 +107,7 @@ object Analyzer {
                 if (!err){
                     variables[p.ident] = p
                 } else {
-                    ctx.ctx.haserror = true
+                    ctx.ctx.hasError = true
                 }
             }
             decl.varList.forEach { v ->
@@ -127,7 +125,7 @@ object Analyzer {
                 if (!err) {
                     variables[v.ident] = v
                 } else {
-                    ctx.ctx.haserror = true
+                    ctx.ctx.hasError = true
                 }
             }
         }
@@ -194,7 +192,7 @@ object Analyzer {
                 val varDecl = methodScope.findVar(stmt.ident)
                 if (varDecl == null) {
                     printError(stmt, "semantic error assign to undefined variable ${stmt.ident}")
-                    methodScope.ctx.ctx.haserror = true
+                    methodScope.ctx.ctx.hasError = true
                 }
                 typeCheck(stmt.value, varDecl?.type, methodScope)
             }
@@ -202,10 +200,10 @@ object Analyzer {
                 val varDecl = methodScope.findVar(stmt.ident)
                 if (varDecl == null) {
                     printError(stmt, "semantic error assign to undefined variable ${stmt.ident}")
-                    methodScope.ctx.ctx.haserror = true
+                    methodScope.ctx.ctx.hasError = true
                 } else if (!(varDecl.type is IntArrayType)) {
                     printError(stmt, "type error assign element to non-array ${stmt.ident}")
-                    methodScope.ctx.ctx.haserror = true
+                    methodScope.ctx.ctx.hasError = true
                 }
                 typeCheck(stmt.index, IntType(), methodScope)
                 typeCheck(stmt.value, IntType(), methodScope)
@@ -214,9 +212,9 @@ object Analyzer {
                 typeCheck(stmt.exp, null, methodScope)
             }
 
-            is InvStmt -> { methodScope.ctx.ctx.haserror = true }
+            is InvStmt -> { methodScope.ctx.ctx.hasError = true }
             else -> {
-                methodScope.ctx.ctx.haserror = true
+                methodScope.ctx.ctx.hasError = true
                 throw UnknownError("unexpected statement")
             }
         }
@@ -228,7 +226,7 @@ object Analyzer {
             is AddExp -> {
                 if (t != null && !(t is IntType)) {
                     printError(exp, "type error expected ${t.typeName()} actual ${IntType().typeName()}")
-                    methodScope.ctx.ctx.haserror = true
+                    methodScope.ctx.ctx.hasError = true
                 }
                 typeCheck(exp.left, IntType(), methodScope)
                 typeCheck(exp.right, IntType(), methodScope)
@@ -237,7 +235,7 @@ object Analyzer {
             is SubExp -> {
                 if (t != null && !(t is IntType)) {
                     printError(exp, "type error expected ${t.typeName()} actual ${IntType().typeName()}")
-                    methodScope.ctx.ctx.haserror = true
+                    methodScope.ctx.ctx.hasError = true
                 }
                 typeCheck(exp.left, IntType(), methodScope)
                 typeCheck(exp.right, IntType(), methodScope)
@@ -246,7 +244,7 @@ object Analyzer {
             is MulExp -> {
                 if (t != null && !(t is IntType)) {
                     printError(exp, "type error expected ${t.typeName()} actual ${IntType().typeName()}")
-                    methodScope.ctx.ctx.haserror = true
+                    methodScope.ctx.ctx.hasError = true
                 }
                 typeCheck(exp.left, IntType(), methodScope)
                 typeCheck(exp.right, IntType(), methodScope)
@@ -255,7 +253,7 @@ object Analyzer {
             is AndExp -> {
                 if (t != null && !(t is BoolType)) {
                     printError(exp, "type error expected ${t.typeName()} actual ${BoolType().typeName()}")
-                    methodScope.ctx.ctx.haserror = true
+                    methodScope.ctx.ctx.hasError = true
                 }
                 typeCheck(exp.left, BoolType(), methodScope)
                 typeCheck(exp.right, BoolType(), methodScope)
@@ -264,7 +262,7 @@ object Analyzer {
             is LessThanExp -> {
                 if (t != null && !(t is BoolType)) {
                     printError(exp, "type error expected ${t.typeName()} actual ${BoolType().typeName()}")
-                    methodScope.ctx.ctx.haserror = true
+                    methodScope.ctx.ctx.hasError = true
                 }
                 typeCheck(exp.left, IntType(), methodScope)
                 typeCheck(exp.right, IntType(), methodScope)
@@ -273,7 +271,7 @@ object Analyzer {
             is NotExp -> {
                 if (t != null && !(t is BoolType)) {
                     printError(exp, "type error expected ${t.typeName()} actual ${BoolType().typeName()}")
-                    methodScope.ctx.ctx.haserror = true
+                    methodScope.ctx.ctx.hasError = true
                 }
                 typeCheck(exp.value, BoolType(), methodScope)
                 return BoolType()
@@ -281,7 +279,7 @@ object Analyzer {
             is ArrayAccessExp -> {
                 if (t != null && !(t is IntType)) {
                     printError(exp, "type error expected ${t.typeName()} actual ${IntType().typeName()}")
-                    methodScope.ctx.ctx.haserror = true
+                    methodScope.ctx.ctx.hasError = true
                 }
                 typeCheck(exp.arr, IntArrayType(), methodScope)
                 typeCheck(exp.index, IntType(), methodScope)
@@ -290,7 +288,7 @@ object Analyzer {
             is ArrayLengthExp -> {
                 if (t != null && !(t is IntType)) {
                     printError(exp, "type error expected ${t.typeName()} actual ${IntType().typeName()}")
-                    methodScope.ctx.ctx.haserror = true
+                    methodScope.ctx.ctx.hasError = true
                 }
                 typeCheck(exp.arr, IntArrayType(), methodScope)
                 return IntType()
@@ -299,29 +297,29 @@ object Analyzer {
                 val objType = typeCheck(exp.obj, null, methodScope)
                 if (objType != null && !(objType is ClassType)) {
                     printError(exp.obj, "type error expected an object actual ${objType.typeName()}")
-                    methodScope.ctx.ctx.haserror = true
+                    methodScope.ctx.ctx.hasError = true
                     return null
                 }
                 if (objType == null) return null
                 val classScope = methodScope.ctx.ctx.classScopes[(objType as ClassType).ident]
                 if (classScope == null) {
                     printError(exp.obj, "semantic error unknown type ${objType.ident}")
-                    methodScope.ctx.ctx.haserror = true
+                    methodScope.ctx.ctx.hasError = true
                     return null
                 }
                 val methodDecl = classScope.methods[exp.methodName]
                 if (methodDecl == null) {
                     printError(exp, "semantic error unknown method ${exp.methodName}")
-                    methodScope.ctx.ctx.haserror = true
+                    methodScope.ctx.ctx.hasError = true
                     return null
                 }
                 if (t != null && !canCastTo(methodDecl.returnType, t, methodScope.ctx.ctx)) {
                     printError(exp, "type error expected ${t.typeName()} actual ${methodDecl.returnType.typeName()}")
-                    methodScope.ctx.ctx.haserror = true
+                    methodScope.ctx.ctx.hasError = true
                 }
                 if (exp.args.size != methodDecl.paramList.size) {
                     printError(exp, "type error param num mismatch expected ${methodDecl.paramList.size} actual ${exp.args.size}")
-                    methodScope.ctx.ctx.haserror = true
+                    methodScope.ctx.ctx.hasError = true
                 } else {
                     exp.args.zip(methodDecl.paramList).forEach { (a, p) ->
                         typeCheck(a, p.type, methodScope)
@@ -332,7 +330,7 @@ object Analyzer {
             is ArrayAllocExp -> {
                 if (t != null && !(t is IntArrayType)) {
                     printError(exp, "type error expected ${t.typeName()} actual ${IntArrayType().typeName()}")
-                    methodScope.ctx.ctx.haserror = true
+                    methodScope.ctx.ctx.hasError = true
                 }
                 typeCheck(exp.size, IntType(), methodScope)
                 return IntArrayType()
@@ -340,7 +338,7 @@ object Analyzer {
             is ObjectAllocExp -> {
                 if (t != null && !canCastTo(ClassType(exp.className), t, methodScope.ctx.ctx)) {
                     printError(exp, "type error expected ${t.typeName()} actual ${exp.className}")
-                    methodScope.ctx.ctx.haserror = true
+                    methodScope.ctx.ctx.hasError = true
                 }
                 return ClassType(exp.className)
             }
@@ -348,28 +346,28 @@ object Analyzer {
             is ThisExp -> {
                 if (t != null && !canCastTo(ClassType(methodScope.ctx.decl.ident), t, methodScope.ctx.ctx)) {
                     printError(exp, "type error expected ${t.typeName()} actual ${methodScope.ctx.decl.ident}")
-                    methodScope.ctx.ctx.haserror = true
+                    methodScope.ctx.ctx.hasError = true
                 }
                 return ClassType(methodScope.ctx.decl.ident)
             }
             is TrueExp -> {
                 if (t != null && !(t is BoolType)) {
                     printError(exp, "type error expected ${t.typeName()} actual ${BoolType().typeName()}")
-                    methodScope.ctx.ctx.haserror = true
+                    methodScope.ctx.ctx.hasError = true
                 }
                 return BoolType()
             }
             is FalseExp -> {
                 if (t != null && !(t is BoolType)) {
                     printError(exp, "type error expected ${t.typeName()} actual ${BoolType().typeName()}")
-                    methodScope.ctx.ctx.haserror = true
+                    methodScope.ctx.ctx.hasError = true
                 }
                 return BoolType()
             }
             is IntLiteralExp -> {
                 if (t != null && !(t is IntType)) {
                     printError(exp, "type error expected ${t.typeName()} actual ${IntType().typeName()}")
-                    methodScope.ctx.ctx.haserror = true
+                    methodScope.ctx.ctx.hasError = true
                 }
                 return IntType()
             }
@@ -377,22 +375,22 @@ object Analyzer {
                 val varDecl = methodScope.findVar(exp.ident)
                 if (varDecl == null) {
                     printError(exp, "semantic error unknown identifier ${exp.ident}")
-                    methodScope.ctx.ctx.haserror = true
+                    methodScope.ctx.ctx.hasError = true
                     return null
                 }
                 if (t != null && !canCastTo(varDecl.type, t, methodScope.ctx.ctx)) {
                     printError(exp, "type error expected ${t.typeName()} actual ${varDecl.type.typeName()}")
-                    methodScope.ctx.ctx.haserror = true
+                    methodScope.ctx.ctx.hasError = true
                 }
                 return varDecl.type
             }
 
             is InvExp -> {
-                methodScope.ctx.ctx.haserror = true
+                methodScope.ctx.ctx.hasError = true
                 return null
             }
             else -> {
-                methodScope.ctx.ctx.haserror = true
+                methodScope.ctx.ctx.hasError = true
                 throw UnknownError("unexpected expression")
             }
         }
@@ -408,7 +406,7 @@ object Analyzer {
                 var t = goalScope.classes[t1.ident]
                 while (t != null) {
                     if (t.ident == t2.ident) return true
-                    t = goalScope.classes[t.baseClass!!]
+                    t = t.baseClass?.let { bc -> goalScope.classes[bc] }
                 }
                 return false
             }
