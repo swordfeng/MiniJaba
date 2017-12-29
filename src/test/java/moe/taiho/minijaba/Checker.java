@@ -1,9 +1,6 @@
 package moe.taiho.minijaba;
 
-import moe.taiho.minijaba.ast.ClassDecl;
 import moe.taiho.minijaba.ast.Goal;
-import moe.taiho.minijaba.backend.bytecode.Codegen;
-import moe.taiho.minijaba.backend.interpreter.Interpreter;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -51,7 +48,7 @@ public class Checker {
         Goal goal = parser.getResult();
         Analyzer.GoalScope ctx = new Analyzer.GoalScope(goal);
         ctx.typeCheck();
-        Assert.assertFalse(ctx.getHaserror());
+        Assert.assertFalse(ctx.getHasError());
     }
 
     @Test
@@ -63,6 +60,6 @@ public class Checker {
         Goal goal = parser.getResult();
         Analyzer.GoalScope ctx = new Analyzer.GoalScope(goal);
         ctx.typeCheck();
-        Assert.assertTrue(ctx.getHaserror());
+        Assert.assertTrue(ctx.getHasError());
     }
 }
