@@ -30,6 +30,8 @@ Run
 ---
 Print AST:  
 `java -jar build/libs/MiniJaba-all.jar -p samples/binarysearch.java`  
+Run interpreter:  
+`java -jar build/libs/MiniJaba-all.jar -i samples/binarysearch.java`  
 Compile to bytecode:  
 `java -jar build/libs/MiniJaba-all.jar -j samples/binarysearch.java`  
 Run bytecode:  
