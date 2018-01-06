@@ -65,7 +65,7 @@ object Main {
         val goal = parser.result
         val ctx = Analyzer.GoalScope(goal)
         ctx.typeCheck()
-        if (ctx.hasError) return
+        if (lexer.hasError || ctx.hasError) return
 
         when (target) {
             0 -> {

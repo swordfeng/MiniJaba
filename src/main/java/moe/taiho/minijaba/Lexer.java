@@ -305,6 +305,7 @@ class Lexer implements Parser.Lexer {
         //debug();
         return yylval;
     }
+    public boolean hasError = false;
 
     public Position getStartPos() {
         return new Position(yyline + 1, yycolumn + 1, yychar);
@@ -314,6 +315,7 @@ class Lexer implements Parser.Lexer {
     }
 
     public void yyerror(Parser.Location location, String msg) {
+        hasError = true;
         System.err.println("Error@" +
             location.begin.toString() +
             (location.begin.equals(location.end) ? "" : "-" + location.end.toString())
