@@ -16,32 +16,31 @@ Prerequisites
 
 Build
 -----
-Generate lexer: (Optional)
-`./gradlew jflex`
-Generate parser: (Optional)
-`./gradlew bison`
-Build:
-`./gradlew build`
-Generate fat jar:
-`./gradlew shadowJar`
+Generate lexer: (Optional)  
+`./gradlew jflex`  
+Generate parser: (Optional)  
+`./gradlew bison`  
+Build:  
+`./gradlew build`  
+Generate fat jar:  
+`./gradlew shadowJar`  
 If you don't want to or cannot build the LLVM backend, please checkout the `nollvm` branch.
 
 Run
 ---
-Print AST:
-`java -jar build/libs/MiniJaba-all.jar -p samples/binarysearch.java`
-Compile to bytecode:
-`java -jar build/libs/MiniJaba-all.jar -j samples/binarysearch.java`
-Run bytecode:
-`java moe.taiho.minijaba.generated.BinarySearch`
-Compile to bitcode:
-`java -jar build/libs/MiniJaba-all.jar -l samples/binarysearch.java`
-Run bitcode:
-`lli BinarySearch.bc`
-Compile to native code:
-`java -jar build/libs/MiniJaba-all.jar -n samples/binarysearch.java`
-Link native code:
-`gcc -static BinarySearch.o -o BinarySearch`
-Run native code:
-`./BinarySearch`
-
+Print AST:  
+`java -jar build/libs/MiniJaba-all.jar -p samples/binarysearch.java`  
+Compile to bytecode:  
+`java -jar build/libs/MiniJaba-all.jar -j samples/binarysearch.java`  
+Run bytecode:  
+`java moe.taiho.minijaba.generated.BinarySearch`  
+Compile to bitcode:  
+`java -jar build/libs/MiniJaba-all.jar -l samples/binarysearch.java`  
+Run bitcode:  
+`lli BinarySearch.bc`  
+Compile to native code:  
+`java -jar build/libs/MiniJaba-all.jar -n samples/binarysearch.java`  
+Link native code:  
+`gcc -static BinarySearch.o -o BinarySearch`  
+Run native code:  
+`./BinarySearch`  
