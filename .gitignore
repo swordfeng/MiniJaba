@@ -11,3 +11,7 @@ out/
 *.java~
 
 sampleout/
+
+report.*
+!report.tex
+!report.pdf
