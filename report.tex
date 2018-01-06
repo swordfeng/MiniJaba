@@ -9,7 +9,7 @@
 \usepackage{listings}
 \usepackage{color}
 
-\usepackage[margin=1in]{geometry}
+\usepackage[margin=2cm]{geometry}
 
 \setmainfont{Times New Roman}
 \setmonofont{Noto Sans Mono}
@@ -74,8 +74,10 @@
     \item {\tt interpreter}是解释器
     \item {\tt bytecode}是JVM字节码生成
     \item {\tt llvm}是LLVM IR和本地代码生成
-\end{itemize}
-其它文件是测试文件。
+\end{itemize} \par
+其它文件是测试文件。\par
+{\tt sampleout}目录下放有测试的编译输出，Java和LLVM代码可以在任意平台运行，
+可执行文件可在Linux x86\_64下运行。
 
 \section{错误修复}
 运行{\tt java -jar build/libs/MiniJaba-all.jar -i samples/errors.java}
@@ -105,7 +107,7 @@ Lexer遇到无法匹配字符，输出：{\tt Error@37:32(810)-37:33(811): lexic
 \begin{lstlisting}[style=minijava]
     int sadkfj;
 \end{lstlisting} \par
-该错误在于在一个语句后面出现了一个声明。可以看到对应的错误信息：
+该错误在于在一个语句后面出现了一个声明。可以看到对应的错误信息：\par
 {\tt Error@30:9(602)-30:12(605): syntax error, unexpected int}
 
 \subsection{语义错误}
