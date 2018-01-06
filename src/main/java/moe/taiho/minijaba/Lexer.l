@@ -20,6 +20,7 @@ import moe.taiho.minijaba.Parser;
         //debug();
         return yylval;
     }
+    public boolean hasError = false;
 
     public Position getStartPos() {
         return new Position(yyline + 1, yycolumn + 1, yychar);
@@ -29,6 +30,7 @@ import moe.taiho.minijaba.Parser;
     }
 
     public void yyerror(Parser.Location location, String msg) {
+        hasError = true;
         System.err.println("Error@" +
             location.begin.toString() +
             (location.begin.equals(location.end) ? "" : "-" + location.end.toString())

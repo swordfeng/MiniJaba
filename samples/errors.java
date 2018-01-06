@@ -34,6 +34,7 @@ class TV {
         System.out.println(100000000);
 
         System.out.println(100 + false);
+        System.out.println(100 / false);
         System.out.println(100 false);
         System.out.println(100x false);
         System.out.println((100);
