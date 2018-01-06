@@ -1,6 +1,7 @@
 package moe.taiho.minijaba;
 
 import moe.taiho.minijaba.ast.Goal;
+import moe.taiho.minijaba.backend.astprinter.Printer;
 import moe.taiho.minijaba.backend.llvm.Codegen;
 
 import java.io.*;
@@ -16,9 +17,11 @@ public class PlayGround {
         Analyzer.GoalScope ctx = new Analyzer.GoalScope(goal);
         ctx.typeCheck();
 
-        Codegen compiler = new Codegen(ctx);
-        compiler.genMod();
-        compiler.genObject("a.o");
+        //Codegen compiler = new Codegen(ctx);
+        //compiler.genMod();
+        //compiler.genObject("a.o");
+        Printer printer = new Printer(0);
+        printer.print(goal);
     }
 }
 
