@@ -3,7 +3,6 @@ package moe.taiho.minijaba
 import moe.taiho.minijaba.backend.astprinter.Printer
 import java.io.*
 import moe.taiho.minijaba.backend.bytecode.Codegen as JCodegen
-import moe.taiho.minijaba.backend.llvm.Codegen as LCodegen
 
 object Main {
     @JvmStatic
@@ -70,14 +69,10 @@ object Main {
                 jcompilerWriteAll(compiler, "moe/taiho/minijaba/generated")
             }
             2 -> {
-                val compiler = LCodegen(ctx)
-                compiler.genMod()
-                compiler.genBitCode("${ctx.goal.mainClass.ident}.bc")
+                println("LLVM is not supported in this build!")
             }
             3 -> {
-                val compiler = LCodegen(ctx)
-                compiler.genMod()
-                compiler.genObject("${ctx.goal.mainClass.ident}.o")
+                println("LLVM is not supported in this build!")
             }
         }
     }
