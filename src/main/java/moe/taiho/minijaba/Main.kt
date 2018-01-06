@@ -1,6 +1,7 @@
 package moe.taiho.minijaba
 
 import moe.taiho.minijaba.backend.astprinter.Printer
+import moe.taiho.minijaba.backend.interpreter.Interpreter
 import java.io.*
 import moe.taiho.minijaba.backend.bytecode.Codegen as JCodegen
 
@@ -13,6 +14,7 @@ object Main {
         1: bytecode
         2: llvm bitcode
         3: native
+        4: interpreter
         */
         var target: Int = 0
         var input: String = ""
@@ -21,6 +23,9 @@ object Main {
             when (args[i]) {
                 "-h", "--help" -> {
                     help = true
+                }
+                "-i", "--interpret" -> {
+                    target = 4
                 }
                 "-j", "--bytecode" -> {
                     target = 1
@@ -44,6 +49,7 @@ object Main {
             println("usage: compile [options] inputfile")
             println("  -h, --help      help message")
             println("targets:")
+            println("  -i, --interpret Run in interpreter")
             println("  -j, --bytecode  JVM bytecode")
             println("  -l, --bitcode   LLVM bitcode")
             println("  -n, --native    native code")
@@ -58,6 +64,7 @@ object Main {
         val goal = parser.result
         val ctx = Analyzer.GoalScope(goal)
         ctx.typeCheck()
+        if (ctx.hasError) return
 
         when (target) {
             0 -> {
@@ -73,6 +80,10 @@ object Main {
             }
             3 -> {
                 println("LLVM is not supported in this build!")
+            }
+            4 -> {
+                val interp = Interpreter.Context(goal)
+                interp.run()
             }
         }
     }
