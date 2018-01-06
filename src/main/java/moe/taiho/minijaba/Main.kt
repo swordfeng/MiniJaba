@@ -1,0 +1,105 @@
+package moe.taiho.minijaba
+
+import moe.taiho.minijaba.backend.astprinter.Printer
+import java.io.*
+import moe.taiho.minijaba.backend.bytecode.Codegen as JCodegen
+import moe.taiho.minijaba.backend.llvm.Codegen as LCodegen
+
+object Main {
+    @JvmStatic
+    fun main(args: Array<String>) {
+        var help: Boolean = false
+        /*
+        0: print
+        1: bytecode
+        2: llvm bitcode
+        3: native
+        */
+        var target: Int = 0
+        var input: String = ""
+        var i = 0
+        while (i < args.size) {
+            when (args[i]) {
+                "-h", "--help" -> {
+                    help = true
+                }
+                "-j", "--bytecode" -> {
+                    target = 1
+                }
+                "-l", "--bitcode" -> {
+                    target = 2
+                }
+                "-n", "--native" -> {
+                    target = 3
+                }
+                "-p", "--print" -> {
+                    target = 0
+                }
+                else -> {
+                    input = args[i]
+                }
+            }
+            i++
+        }
+        if (help || input == "") {
+            println("usage: compile [options] inputfile")
+            println("  -h, --help      help message")
+            println("targets:")
+            println("  -j, --bytecode  JVM bytecode")
+            println("  -l, --bitcode   LLVM bitcode")
+            println("  -n, --native    native code")
+            println("  -p, --print     print AST")
+            return
+        }
+
+        val reader = BufferedReader(FileReader(input))
+        val lexer = Lexer(reader)
+        val parser = Parser(lexer)
+        parser.parse()
+        val goal = parser.result
+        val ctx = Analyzer.GoalScope(goal)
+        ctx.typeCheck()
+
+        when (target) {
+            0 -> {
+                val printer = Printer(0)
+                printer.print(goal)
+            }
+            1 -> {
+                val compiler = JCodegen(ctx)
+                jcompilerWriteAll(compiler, "moe/taiho/minijaba/generated")
+            }
+            2 -> {
+                val compiler = LCodegen(ctx)
+                compiler.genMod()
+                compiler.genBitCode("${ctx.goal.mainClass.ident}.bc")
+            }
+            3 -> {
+                val compiler = LCodegen(ctx)
+                compiler.genMod()
+                compiler.genObject("${ctx.goal.mainClass.ident}.o")
+            }
+        }
+    }
+
+    private fun jcompilerWriteAll(compiler: JCodegen, path: String) {
+        val goal = compiler.ctx.goal
+        var m = goal.mainClass.ident
+        var r = compiler.genMainClass()
+        jcompilerWriteFile(r, "$path/$m.class")
+        for (c in goal.classes) {
+            m = c.ident
+            r = compiler.genClass(compiler.ctx.classScopes[m]!!)
+            jcompilerWriteFile(r, "$path/$m.class")
+        }
+    }
+
+    private fun jcompilerWriteFile(data: ByteArray, path: String) {
+        val file = File(path)
+        file.parentFile.mkdirs()
+        val s = BufferedOutputStream(FileOutputStream(file))
+        s.write(data)
+        s.flush()
+        s.close()
+    }
+}
